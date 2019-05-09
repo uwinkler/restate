@@ -1,11 +1,11 @@
-import * as Rx from '../index'
-import { ForgeProps } from '../index'
+import * as Rx from "../index"
+import { ActionPropsSubState } from "../index"
 
 type MainView = {
   hello: string
 }
 
-const defaultMainView = { hello: 'world' }
+const defaultMainView = { hello: "world" }
 
 type AppState = {
   view: {
@@ -15,28 +15,32 @@ type AppState = {
 
 const defaultAppState: AppState = {
   view: {
-    main: defaultMainView,
-  },
+    main: defaultMainView
+  }
 }
 
 const store = Rx.createStore({ state: defaultAppState })
 const myOtherStore = Rx.createStore({ state: defaultAppState })
 
-const forgeAppState = ({ next }: ForgeProps<MainView>) => ({
+const forgeAppState = ({ next }: ActionPropsSubState<MainView>) => ({
   hello(greetings: string) {
     next(state => {
       state.hello = greetings
     })
-  },
+  }
 })
 
-const toolboxAppState = Rx.createToolbox(store, state => state.view.main, forgeAppState)
+const toolboxAppState = Rx.connectActions(
+  store,
+  state => state.view.main,
+  forgeAppState
+)
 
-it('should update store', () => {
-  expect(store.state.view.main.hello).toEqual('world')
-  toolboxAppState.hello('rx-state')
-  expect(store.state.view.main.hello).toEqual('rx-state')
-  expect(myOtherStore.state.view.main.hello).toEqual('world')
+it("should update store", () => {
+  expect(store.state.view.main.hello).toEqual("world")
+  toolboxAppState.hello("rx-state")
+  expect(store.state.view.main.hello).toEqual("rx-state")
+  expect(myOtherStore.state.view.main.hello).toEqual("world")
 })
 
 export default {}

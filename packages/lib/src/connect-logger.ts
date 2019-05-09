@@ -1,8 +1,7 @@
-import { zip } from "rxjs"
-
 import { distinctUntilChanged, pairwise } from "rxjs/operators"
-import { RxStore } from "./rx-store"
 import { Patch } from "immer"
+import { RxStore } from "./rx-store"
+import { zip } from "rxjs"
 
 export function connectLogger(appStore: RxStore<any>) {
   const name =
