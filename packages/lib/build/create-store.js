@@ -31,15 +31,4 @@ function createStore(_a) {
     return rx_store_1.RxStore.of(state$, opts);
 }
 exports.createStore = createStore;
-// function deepFreeze(obj: object) {
-//   // Retrieve the property names defined on object
-//   // obj[immerable] = true
-//   var propNames = Object.getOwnPropertyNames(obj)
-//   // Freeze properties before freezing self
-//   for (let name of propNames) {
-//     let value = obj[name]
-//     if (!Object.isFrozen(obj[name])) obj[name] = value && typeof value === 'object' ? deepFreeze(value) : value
-//   }
-//   return Object.freeze(obj)
-// }
 //# sourceMappingURL=create-store.js.map

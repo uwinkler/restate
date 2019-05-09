@@ -12,7 +12,10 @@ __export(require("./create-use-store-update-hook"));
 __export(require("./create-use-store-hook"));
 __export(require("./create-use-view-hook"));
 __export(require("./create-with-store-hoc"));
-__export(require("./provider"));
+__export(require("./create-provider"));
 __export(require("./rx-store"));
 __export(require("./subscribe"));
+__export(require("./connect-logger"));
+__export(require("./connect-message-bus"));
+__export(require("./connect-router"));
 //# sourceMappingURL=index.js.map
