@@ -1,5 +1,5 @@
 export * from "./create-store";
-export * from "./create-toolbox";
+export * from "./connect-actions";
 export * from "./create-use-message-bus-hook";
 export * from "./create-use-observable-hook";
 export * from "./create-use-store-state-hook";

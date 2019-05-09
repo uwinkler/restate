@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var rxjs_1 = require("rxjs");
 var operators_1 = require("rxjs/operators");
+var rxjs_1 = require("rxjs");
 function connectLogger(appStore) {
     var name = appStore.options.storeName === "" ? "RxState" : appStore.options.storeName;
     rxjs_1.zip(appStore.state$, appStore.meta$, appStore.patches$)
