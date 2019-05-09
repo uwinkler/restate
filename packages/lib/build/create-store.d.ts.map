@@ -1,0 +1,1 @@
+{"version":3,"file":"create-store.d.ts","sourceRoot":"","sources":["../src/create-store.ts"],"names":[],"mappings":"AAGA,OAAO,EAAE,OAAO,EAAE,cAAc,EAAE,MAAM,YAAY,CAAA;AAEpD,aAAK,gBAAgB,CAAC,SAAS,IAAI;IACjC,KAAK,EAAE,SAAS,CAAA;IAChB,OAAO,CAAC,EAAE,OAAO,CAAC,cAAc,CAAC,CAAA;CAClC,CAAA;AAOD,wBAAgB,WAAW,CAAC,KAAK,EAAE,EACjC,KAAK,EACL,OAAwB,EACzB,EAAE,gBAAgB,CAAC,KAAK,CAAC,kBAMzB"}
