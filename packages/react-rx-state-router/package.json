@@ -1,5 +1,5 @@
 {
-  "name": "@react-rx-state/router",
+  "name": "react-rx-state-router",
   "version": "0.4.6",
   "license": "MIT",
   "scripts": {
@@ -27,5 +27,5 @@
     "ts-jest": "^24.0.2",
     "typescript": "^3.4.5"
   },
-  "gitHead": "669af8815cc84aa40e26b177dbe31b1ae81c3177"
+  "gitHead": "4292cd650e145e09fef7c461c0ce85d3554ef455"
 }
