@@ -3,7 +3,7 @@
     "lerna": "^3.13.2"
   },
   "scripts": {
-    "publish": "lerna run build && lerna run test && lerna publish"
+    "publish": "lerna run clean && lerna run build && lerna run test && git commit -am 'PUBLISH' && lerna publish"
   },
   "name": "rx-state",
   "license": "MIT",

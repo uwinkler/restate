@@ -1,24 +1,23 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.defaultRouterState = {
-    location: {
-        pathname: "",
-        search: "",
-        state: {},
-        hash: ""
-    },
-    state: {}
+    pathname: "",
+    search: "",
+    state: undefined,
+    hash: ""
 };
 var INIT = "HISTORY/INIT";
 function connectReactRouter(props) {
     var appStore = props.appStore, history = props.history;
     var currentLocation = props.history.location;
+    var initState = appStore.state.location.state;
     appStore.next(function (state) {
-        state.router.location = currentLocation;
+        state.location = currentLocation;
+        state.location.state = initState;
     }, { type: INIT });
     history.listen(function (location, action) {
         appStore.next(function (state) {
-            state.router.location = Object.assign(state.router.location, location);
+            state.location = Object.assign(state.location, location);
         }, { type: "HISTORY/" + action });
     });
 }

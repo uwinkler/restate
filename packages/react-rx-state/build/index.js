@@ -6,7 +6,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 __export(require("./connect-actions"));
 __export(require("./connect-logger"));
 __export(require("./connect-message-bus"));
-__export(require("./connect-router"));
 __export(require("./create-provider"));
 __export(require("./create-store"));
 __export(require("./create-use-actions-hook"));

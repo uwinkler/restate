@@ -1,21 +1,15 @@
 import { Location, History } from "history"
-import { RxStore } from "./rx-store"
+import { RxStore } from "react-rx-state"
 
 export interface WithConnectReactRouterState<LocationState> {
-  router: {
-    location: Location
-    state: LocationState
-  }
+  location: Location<LocationState>
 }
 
 export const defaultRouterState = {
-  location: {
-    pathname: "",
-    search: "",
-    state: {},
-    hash: ""
-  },
-  state: {}
+  pathname: "",
+  search: "",
+  state: undefined as any,
+  hash: ""
 }
 
 const INIT = "HISTORY/INIT"
@@ -27,9 +21,12 @@ export function connectReactRouter<
   const { appStore, history } = props
   const currentLocation = props.history.location
 
+  const initState = appStore.state.location.state
+
   appStore.next(
     state => {
-      state.router.location = currentLocation as any
+      state.location = currentLocation as any
+      state.location.state = initState
     },
     { type: INIT }
   )
@@ -37,7 +34,7 @@ export function connectReactRouter<
   history.listen((location, action) => {
     appStore.next(
       state => {
-        state.router.location = Object.assign(state.router.location, location)
+        state.location = Object.assign(state.location, location)
       },
       { type: "HISTORY/" + action }
     )

@@ -1,19 +1,13 @@
 import { Location, History } from "history";
-import { RxStore } from "./rx-store";
+import { RxStore } from "react-rx-state";
 export interface WithConnectReactRouterState<LocationState> {
-    router: {
-        location: Location;
-        state: LocationState;
-    };
+    location: Location<LocationState>;
 }
 export declare const defaultRouterState: {
-    location: {
-        pathname: string;
-        search: string;
-        state: {};
-        hash: string;
-    };
-    state: {};
+    pathname: string;
+    search: string;
+    state: any;
+    hash: string;
 };
 export declare function connectReactRouter<LocationStateType, S extends WithConnectReactRouterState<LocationStateType>>(props: {
     appStore: RxStore<S>;

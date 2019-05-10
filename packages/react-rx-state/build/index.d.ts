@@ -1,7 +1,6 @@
 export * from "./connect-actions";
 export * from "./connect-logger";
 export * from "./connect-message-bus";
-export * from "./connect-router";
 export * from "./create-provider";
 export * from "./create-store";
 export * from "./create-use-actions-hook";
