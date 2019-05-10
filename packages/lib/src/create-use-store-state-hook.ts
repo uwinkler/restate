@@ -9,9 +9,7 @@ type SelectorFunction<S, T> = (state: S) => T
 type IdentifySelectorFunction<S> = (state: S) => S
 const identifySelectorFunction: IdentifySelectorFunction<any> = state => state
 
-export function createUseStoreStateHook<S extends object>(
-  context: RxStoreContext<S>
-) {
+export function createUseStoreStateHook<S>(context: RxStoreContext<S>) {
   function useStore<T extends object>(
     selectorFunction?: SelectorFunction<S, T>
   ): T {
