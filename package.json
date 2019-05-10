@@ -2,6 +2,10 @@
   "dependencies": {
     "lerna": "^3.13.2"
   },
+  "scripts": {
+    "publish": "lerna run build && lerna run test && lerna publish"
+  },
   "name": "rx-state",
-  "license": "MIT"
+  "license": "MIT",
+  "version": "0.0.0"
 }

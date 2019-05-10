@@ -7,7 +7,9 @@ var identifySelectorFunction = function (state) { return state; };
 function createUseStoreStateHook(context) {
     function useStore(selectorFunction) {
         var _store = react_1.useContext(context);
-        var selector = selectorFunction ? selectorFunction : identifySelectorFunction;
+        var selector = selectorFunction
+            ? selectorFunction
+            : identifySelectorFunction;
         var state$ = _store.state$;
         var startValue = selector(state$.value);
         var _a = react_1.useState(startValue), value = _a[0], setValue = _a[1];
@@ -19,7 +21,9 @@ function createUseStoreStateHook(context) {
                 var nextSubValue = selector(nextStateValue);
                 output$.next(nextSubValue);
             });
-            output$.pipe(operators_1.distinctUntilChanged()).subscribe(function (nextStateValue) { return setValue(nextStateValue); });
+            output$
+                .pipe(operators_1.distinctUntilChanged())
+                .subscribe(function (nextStateValue) { return setValue(nextStateValue); });
             return function cleanup() {
                 subscription.unsubscribe();
             };
