@@ -1,18 +1,24 @@
-import { BehaviorSubject } from 'rxjs'
-import { distinctUntilChanged } from 'rxjs/operators'
-import { RxStore } from './rx-store'
-import { useContext, useEffect, useMemo, useState } from 'react'
+import { BehaviorSubject } from "rxjs"
+import { distinctUntilChanged } from "rxjs/operators"
+import { RxStore } from "./rx-store"
+import { useContext, useEffect, useMemo, useState } from "react"
 
 type RxStoreContext<S> = React.Context<RxStore<S>>
-type SelectorFunction<S, T extends object> = (state: S) => T
+type SelectorFunction<S, T> = (state: S) => T
 
 type IdentifySelectorFunction<S> = (state: S) => S
 const identifySelectorFunction: IdentifySelectorFunction<any> = state => state
 
-export function createUseStoreStateHook<S extends object>(context: RxStoreContext<S>) {
-  function useStore<T extends object>(selectorFunction?: SelectorFunction<S, T>): T {
+export function createUseStoreStateHook<S extends object>(
+  context: RxStoreContext<S>
+) {
+  function useStore<T extends object>(
+    selectorFunction?: SelectorFunction<S, T>
+  ): T {
     const _store = useContext(context)
-    const selector = selectorFunction ? selectorFunction : identifySelectorFunction
+    const selector = selectorFunction
+      ? selectorFunction
+      : identifySelectorFunction
     const state$ = _store.state$
     const startValue = selector(state$.value)
 
@@ -28,7 +34,9 @@ export function createUseStoreStateHook<S extends object>(context: RxStoreContex
         output$.next(nextSubValue)
       })
 
-      output$.pipe(distinctUntilChanged()).subscribe(nextStateValue => setValue(nextStateValue))
+      output$
+        .pipe(distinctUntilChanged())
+        .subscribe(nextStateValue => setValue(nextStateValue))
 
       return function cleanup() {
         subscription.unsubscribe()

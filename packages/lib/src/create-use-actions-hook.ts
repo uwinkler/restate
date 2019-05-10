@@ -3,7 +3,7 @@ import { useContext, useMemo } from "react"
 import {
   ActionFactorySelectorFunction,
   connectActions,
-  ActionFactory
+  ActionFactoryConnectFunction
 } from "./connect-actions"
 
 export function createUseActionsHook<
@@ -13,7 +13,7 @@ export function createUseActionsHook<
 >(
   provider: React.Context<RxStore<STATE>>,
   selectorFunction: ActionFactorySelectorFunction<STATE, SUB_STATE>,
-  actionFactory: ActionFactory<STATE, SUB_STATE, ACTIONS>
+  actionFactory: ActionFactoryConnectFunction<STATE, SUB_STATE, ACTIONS>
 ) {
   return function useActions() {
     const store = useContext(provider)

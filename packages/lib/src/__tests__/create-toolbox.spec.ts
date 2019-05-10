@@ -1,5 +1,5 @@
 import * as Rx from "../index"
-import { ActionPropsSubState } from "../index"
+import { ActionFactoryProps } from "../connect-actions"
 
 type MainView = {
   hello: string
@@ -22,7 +22,7 @@ const defaultAppState: AppState = {
 const store = Rx.createStore({ state: defaultAppState })
 const myOtherStore = Rx.createStore({ state: defaultAppState })
 
-const forgeAppState = ({ next }: ActionPropsSubState<MainView>) => ({
+const forgeAppState = ({ next }: ActionFactoryProps<MainView>) => ({
   hello(greetings: string) {
     next(state => {
       state.hello = greetings

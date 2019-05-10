@@ -9,7 +9,6 @@ const defaultMetaInfo: MetaInfo = {
 
 export type ActionFactorySelectorFunction<S, T extends object> = (state: S) => T
 type UpdateFunction<T> = (subState: T) => void
-
 type IdentitySelectorFunction<S> = (state: S) => S
 const identitySelectorFunction: IdentitySelectorFunction<any> = state => state
 
@@ -18,19 +17,24 @@ export interface ActionPropsState<STATE> {
   subscription: Subscription
 }
 
-export interface ActionPropsSubState<SUB_STATE> {
+export interface ActionFactoryProps<SUB_STATE> {
   state$: Observable<SUB_STATE>
   meta$: Observable<MetaInfo>
   messageBus$: Observable<MetaInfo>
   next: (updateFunction: UpdateFunction<SUB_STATE>) => void
 }
 
-type ActionFactoryProps<S, T> = ActionPropsState<S> & ActionPropsSubState<T>
+export type ActionFactory<SUB_STATE, T> = (
+  props: ActionFactoryProps<SUB_STATE>
+) => T
+
+type ActionFactoryConnectProps<S, T> = ActionPropsState<S> &
+  ActionFactoryProps<T>
 
 function createPropsForForges<S, T extends Object>(
   store: RxStore<S>,
   selectorFunction: ActionFactorySelectorFunction<S, T>
-): ActionFactoryProps<S, T> {
+): ActionFactoryConnectProps<S, T> {
   const selector = selectorFunction
     ? selectorFunction
     : identitySelectorFunction
@@ -78,14 +82,14 @@ function createPropsForForges<S, T extends Object>(
   }
 }
 
-export type ActionFactory<STATE, SUB_STATE, ACTIONS> = (
-  props: ActionFactoryProps<STATE, SUB_STATE>
+export type ActionFactoryConnectFunction<STATE, SUB_STATE, ACTIONS> = (
+  props: ActionFactoryConnectProps<STATE, SUB_STATE>
 ) => ACTIONS
 
 export function connectActions<STATE, SUB_STATE extends Object, ACTIONS>(
   store: RxStore<STATE>,
   selectorFunction: ActionFactorySelectorFunction<STATE, SUB_STATE>,
-  actionFactory: ActionFactory<STATE, SUB_STATE, ACTIONS>
+  actionFactory: ActionFactoryConnectFunction<STATE, SUB_STATE, ACTIONS>
 ) {
   const props = createPropsForForges(store, selectorFunction)
   return actionFactory(props)
