@@ -1,6 +1,6 @@
 {
   "name": "@react-rx-state/router",
-  "version": "0.4.3",
+  "version": "0.4.4",
   "license": "MIT",
   "scripts": {
     "clean": "rm -rf build",
@@ -15,15 +15,15 @@
     "react-rx-state": "^0.4.0"
   },
   "devDependencies": {
-    "rxjs": "^6.5.1",
-    "react": "^16.8.6",
-    "react-dom": "^16.8.6",
     "@types/history": "^4.7.2",
     "@types/jest": "^24.0.12",
     "@types/react-test-renderer": "^16.8.1",
     "jest": "^24.8.0",
     "prettier": "^1.17.0",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
     "react-test-renderer": "^16.8.6",
+    "rxjs": "^6.5.1",
     "ts-jest": "^24.0.2",
     "typescript": "^3.4.5"
   }

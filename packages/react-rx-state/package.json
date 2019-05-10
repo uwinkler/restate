@@ -1,6 +1,6 @@
 {
   "name": "@react-rx-state/core",
-  "version": "0.4.3",
+  "version": "0.4.4",
   "license": "MIT",
   "scripts": {
     "clean": "rm -rf build",
