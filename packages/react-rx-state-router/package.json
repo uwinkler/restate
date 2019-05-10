@@ -26,5 +26,6 @@
     "rxjs": "^6.5.1",
     "ts-jest": "^24.0.2",
     "typescript": "^3.4.5"
-  }
+  },
+  "gitHead": "a2aa39cebab5fee1c6b4ca573ebb04c557d3763b"
 }

@@ -31,5 +31,6 @@
     "react-test-renderer": "^16.8.6",
     "ts-jest": "^24.0.2",
     "typescript": "^3.4.5"
-  }
+  },
+  "gitHead": "a2aa39cebab5fee1c6b4ca573ebb04c557d3763b"
 }
