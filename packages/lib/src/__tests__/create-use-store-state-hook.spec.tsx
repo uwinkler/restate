@@ -90,6 +90,7 @@ it("sub-state 1+2", () => {
 
   const TestComponent: React.FC = () => {
     const value = useAppStoreSubState(s => s.value)
+    expect(typeof value).toEqual("number")
     return <div>{value}</div>
   }
 
@@ -99,6 +100,7 @@ it("sub-state 1+2", () => {
     </AppStoreProvider.Provider>
   )
   let tree = component.toJSON()
+
   expect(tree).toMatchInlineSnapshot(`
           <div>
             1

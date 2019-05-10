@@ -18,13 +18,11 @@ export type UseStoreHookWithSelectorFunction<S> = <T>(
 
 export type UseStoreHookWithoutSelectorFunction<S> = () => S
 
-export type UseStoreStateHook<S> =
-  | UseStoreHookWithSelectorFunction<S>
-  | UseStoreHookWithoutSelectorFunction<S>
+export type UseStoreStateHook<S> = UseStoreHookWithSelectorFunction<S>
 
 export function createUseStoreStateHook<S>(
   context: React.Context<RxStore<S>>
-): UseStoreStateHook<S>
+): UseStoreHookWithSelectorFunction<S>
 
 export function createUseStoreStateHook<S, SUB_STATE>(
   context: React.Context<RxStore<S>>,

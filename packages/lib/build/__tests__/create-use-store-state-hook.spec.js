@@ -57,6 +57,7 @@ it("sub-state 1+2", function () {
     var useAppStoreSubState = create_use_store_state_hook_1.createUseStoreStateHook(AppStoreProvider, function (s) { return s.subState; });
     var TestComponent = function () {
         var value = useAppStoreSubState(function (s) { return s.value; });
+        expect(typeof value).toEqual("number");
         return react_1.default.createElement("div", null, value);
     };
     var component = react_test_renderer_1.default.create(react_1.default.createElement(AppStoreProvider.Provider, { value: store },
