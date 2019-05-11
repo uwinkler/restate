@@ -1,5 +1,5 @@
 /// <reference types="react" />
-import { RxStore } from './rx-store';
+import { RxStore } from "./rx-store";
 declare type CreateUseUpdateHookInput<S> = React.Context<RxStore<S>>;
 declare type SelectorFunction<S, T extends object> = (state: S) => T;
 declare type UpdateFunction<T> = (subState: T) => void;

@@ -8,7 +8,9 @@ var react_1 = require("react");
 var identifySelectorFunction = function (state) { return state; };
 function createUseStoreUpdateHook(provider) {
     function useUpdateStoreHook(selectorFunction) {
-        var selector = selectorFunction ? selectorFunction : identifySelectorFunction;
+        var selector = selectorFunction
+            ? selectorFunction
+            : identifySelectorFunction;
         var store = react_1.useContext(provider);
         var state$ = store.state$;
         var patches$ = store.patches$;
@@ -25,10 +27,10 @@ function createUseStoreUpdateHook(provider) {
             });
             state$.next(nextState);
             store.meta$.next({
-                type: '@RX/UPDATE_USE_UPDATE_HOOK',
+                type: "@RX/UPDATE_USE_UPDATE_HOOK",
                 payload: {
-                    func: updateFunction.toString(),
-                },
+                    func: updateFunction.toString()
+                }
             });
         }
         return updateState;
