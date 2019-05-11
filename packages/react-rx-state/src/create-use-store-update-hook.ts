@@ -1,6 +1,6 @@
-import produce from 'immer'
-import { RxStore } from './rx-store'
-import { useContext } from 'react'
+import produce from "immer"
+import { RxStore } from "./rx-store"
+import { useContext } from "react"
 
 type CreateUseUpdateHookInput<S> = React.Context<RxStore<S>>
 type SelectorFunction<S, T extends object> = (state: S) => T
@@ -9,11 +9,15 @@ type UpdateFunction<T> = (subState: T) => void
 type IdentifySelectorFunction<S> = (state: S) => S
 const identifySelectorFunction: IdentifySelectorFunction<any> = state => state
 
-export function createUseStoreUpdateHook<S extends object>(provider: CreateUseUpdateHookInput<S>) {
+export function createUseStoreUpdateHook<S extends object>(
+  provider: CreateUseUpdateHookInput<S>
+) {
   function useUpdateStoreHook<T extends object>(
-    selectorFunction?: SelectorFunction<S, T>,
+    selectorFunction?: SelectorFunction<S, T>
   ): (updateFunction: UpdateFunction<T>) => void {
-    const selector = selectorFunction ? selectorFunction : identifySelectorFunction
+    const selector = selectorFunction
+      ? selectorFunction
+      : identifySelectorFunction
     const store = useContext(provider)
     const state$ = store.state$
     const patches$ = store.patches$
@@ -31,15 +35,15 @@ export function createUseStoreUpdateHook<S extends object>(provider: CreateUseUp
         (patches, inversePatches) => {
           patches$.next(patches)
           inversePatches$.next(inversePatches)
-        },
+        }
       )
       state$.next(nextState)
 
       store.meta$.next({
-        type: '@RX/UPDATE_USE_UPDATE_HOOK',
+        type: "@RX/UPDATE_USE_UPDATE_HOOK",
         payload: {
-          func: updateFunction.toString(),
-        },
+          func: updateFunction.toString()
+        }
       })
     }
 
