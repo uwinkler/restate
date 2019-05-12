@@ -1,1 +1,0 @@
-{"version":3,"file":"create-use-message-bus-hook.d.ts","sourceRoot":"","sources":["../src/create-use-message-bus-hook.ts"],"names":[],"mappings":";AAAA,OAAO,EAAE,OAAO,EAAE,OAAO,EAAE,MAAM,YAAY,CAAA;AAG7C,aAAK,sCAAsC,CAAC,CAAC,IAAI,KAAK,CAAC,OAAO,CAAC,OAAO,CAAC,CAAC,CAAC,CAAC,CAAA;AAE1E,wBAAgB,uBAAuB,CAAC,CAAC,SAAS,MAAM,EAAE,QAAQ,EAAE,sCAAsC,CAAC,CAAC,CAAC;;;EAc5G"}
