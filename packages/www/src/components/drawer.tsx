@@ -2,27 +2,21 @@ import AppBar from "@material-ui/core/AppBar"
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft"
 import ChevronRightIcon from "@material-ui/icons/ChevronRight"
 import classNames from "classnames"
-import CssBaseline from "@material-ui/core/CssBaseline"
 import Divider from "@material-ui/core/Divider"
 import Drawer from "@material-ui/core/Drawer"
 import IconButton from "@material-ui/core/IconButton"
-import InboxIcon from "@material-ui/icons/MoveToInbox"
-import List from "@material-ui/core/List"
-import ListItem from "@material-ui/core/ListItem"
-import ListItemIcon from "@material-ui/core/ListItemIcon"
-import ListItemText from "@material-ui/core/ListItemText"
-import MailIcon from "@material-ui/icons/Mail"
 import MenuIcon from "@material-ui/icons/Menu"
 import React from "react"
 import Toolbar from "@material-ui/core/Toolbar"
 import Typography from "@material-ui/core/Typography"
 import { Logo } from "./logo"
-import { makeStyles, useTheme } from "@material-ui/styles"
+import { makeStyles } from "@material-ui/styles"
+import { Navigation } from "./navigation"
 import { theme } from "../layouts/theme"
 import { useAppState, useUpdateAppState } from "../state/state"
-import { Link } from "gatsby"
 
 const drawerWidth = 340
+const appBarHeight = 83
 
 const useClasses = makeStyles({
   root: {
@@ -32,7 +26,10 @@ const useClasses = makeStyles({
     transition: theme.transitions.create(["margin", "width"], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen
-    })
+    }),
+    height: appBarHeight,
+    display: "flex",
+    justifyContent: "center"
   },
   appBarShift: {
     width: `calc(100% - ${drawerWidth}px)`,
@@ -61,7 +58,8 @@ const useClasses = makeStyles({
   content: {
     flexGrow: 1,
     padding: 8 * 3,
-    marginLeft: -drawerWidth
+    marginLeft: -drawerWidth,
+    marginTop: 83
   },
   contentShift: {
     marginLeft: 0
@@ -69,57 +67,13 @@ const useClasses = makeStyles({
   logoContainer: {
     padding: 20,
     flexDirection: "column",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center"
-  },
-  activeLink: {
-    color: theme.palette.primary.main
-    // backgroundColor: "green"
-  },
-  listItem: {
-    "& a": {
-      color: theme.palette.text.primary + " !important"
-      // background: "red"
-    }
-  },
-
-  link: {
-    textDecoration: "none"
-    // color: theme.palette.text.primary
-    // "&:visited": {
-    // color: theme.palette.text.primary
-    // }
+    display: "flex"
   }
 })
 
-const PageLink: React.FC<{ to: string; title: string }> = props => {
-  const classes = useClasses()
-  return (
-    <ListItem className={classes.listItem}>
-      <Link
-        id={props.to}
-        className={classes.link}
-        to={props.to}
-        // activeStyle={{ color: theme.palette.primary.main }}
-      >
-        {props.title}
-      </Link>
-    </ListItem>
-  )
-}
-
-const Navigation: React.FC = () => {
-  return (
-    <List>
-      <PageLink to="/" title="Main" />
-      <PageLink to="/page-2/" title="Page 2" />
-    </List>
-  )
-}
-
 interface PersistentDrawerLeftProps {
   title: string
+  path: string
 }
 
 export const PersistentDrawerLeft: React.FC<
@@ -146,6 +100,8 @@ export const PersistentDrawerLeft: React.FC<
   return (
     <nav className={classes.root}>
       <AppBar
+        elevation={0}
+        // style={{ background: "white" }}
         position="fixed"
         className={classNames(classes.appBar, {
           [classes.appBarShift]: open
@@ -186,15 +142,15 @@ export const PersistentDrawerLeft: React.FC<
             )}
           </IconButton>
         </div>
-        <Divider />
-        <Navigation />
+        {/* <Divider /> */}
+        <Navigation path={props.path} />
       </Drawer>
+
       <main
         className={classNames(classes.content, {
           [classes.contentShift]: open
         })}
       >
-        <div className={classes.drawerHeader} />
         {props.children}
       </main>
     </nav>

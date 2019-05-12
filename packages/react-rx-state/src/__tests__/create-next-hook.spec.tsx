@@ -4,8 +4,8 @@ import React from "react"
 import { configure, mount } from "enzyme"
 import { createProvider } from "../create-provider"
 import { createStore } from "../create-store"
-import { createUseStoreStateHook } from "../create-use-store-state-hook"
-import { createUseStoreUpdateHook } from "../create-use-store-update-hook"
+import { createStateHook } from "../create-state-hook"
+import { createNextHook } from "../create-next-hook"
 
 configure({ adapter: new Adapter() })
 
@@ -13,16 +13,16 @@ it("should update a state", () => {
   const state = { value: 1 }
   const store = createStore({ state })
   const AppStoreProvider = createProvider(store)
-  const useAppStore = createUseStoreStateHook(AppStoreProvider)
-  const useAppStoreUpdate = createUseStoreUpdateHook(AppStoreProvider)
+  const useAppState = createStateHook(AppStoreProvider)
+  const useNextAppState = createNextHook(AppStoreProvider)
 
   const TestComponent: React.FC = () => {
-    const x = useAppStore(s => s)
+    const x = useAppState(s => s)
 
-    const nextStore = useAppStoreUpdate(s => s)
+    const nextAppState = useNextAppState(s => s)
 
     function increment() {
-      nextStore(s => {
+      nextAppState(s => {
         s.value = s.value + 1
       })
     }
@@ -57,8 +57,8 @@ it("should update selected properties", () => {
   const state = { value: 1 }
   const store = createStore({ state })
   const AppStoreProvider = createProvider(store)
-  const useAppStore = createUseStoreStateHook(AppStoreProvider)
-  const useAppStoreUpdate = createUseStoreUpdateHook(AppStoreProvider)
+  const useAppStore = createStateHook(AppStoreProvider)
+  const useAppStoreUpdate = createNextHook(AppStoreProvider)
 
   const TestComponent: React.FC = () => {
     const value = useAppStore(s => s.value)

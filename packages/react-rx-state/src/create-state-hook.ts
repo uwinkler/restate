@@ -20,11 +20,11 @@ export type UseStoreHookWithoutSelectorFunction<S> = () => S
 
 export type UseStoreStateHook<S> = UseStoreHookWithSelectorFunction<S>
 
-export function createUseStoreStateHook<S>(
+export function createStateHook<S>(
   context: React.Context<RxStore<S>>
 ): UseStoreHookWithSelectorFunction<S>
 
-export function createUseStoreStateHook<S, SUB_STATE>(
+export function createStateHook<S, SUB_STATE>(
   context: React.Context<RxStore<S>>,
   outerSelector: SelectorFunction<S, SUB_STATE>
 ): UseStoreStateHook<SUB_STATE>
@@ -32,11 +32,13 @@ export function createUseStoreStateHook<S, SUB_STATE>(
 //
 // Implementation
 
-export function createUseStoreStateHook<S, SUB_STATE>(
+export function createStateHook<S, SUB_STATE>(
   context: RxStoreContext<S>,
   outerSelector: SelectorFunction<S, SUB_STATE> = identifySelectorFunction
 ) {
-  function useStore<T>(selectorFunction?: SelectorFunction<SUB_STATE, T>): T {
+  function useAppState<T>(
+    selectorFunction?: SelectorFunction<SUB_STATE, T>
+  ): T {
     const _store = useContext(context)
     const selector = selectorFunction
       ? selectorFunction
@@ -68,9 +70,5 @@ export function createUseStoreStateHook<S, SUB_STATE>(
     return value
   }
 
-  return useStore
+  return useAppState
 }
-
-// export function createUseStoreStateHook<S>(
-//   context: RxStoreContext<S>
-// ): CreateUseStoreStateHook

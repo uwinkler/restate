@@ -9,10 +9,10 @@ type UpdateFunction<T> = (subState: T) => void
 type IdentifySelectorFunction<S> = (state: S) => S
 const identifySelectorFunction: IdentifySelectorFunction<any> = state => state
 
-export function createUseStoreUpdateHook<S extends object>(
+export function createNextHook<S extends object>(
   provider: CreateUseUpdateHookInput<S>
 ) {
-  function useUpdateStoreHook<T extends object>(
+  function useNextHook<T extends object>(
     selectorFunction?: SelectorFunction<S, T>
   ): (updateFunction: UpdateFunction<T>) => void {
     const selector = selectorFunction
@@ -50,5 +50,5 @@ export function createUseStoreUpdateHook<S extends object>(
     return updateState
   }
 
-  return useUpdateStoreHook
+  return useNextHook
 }

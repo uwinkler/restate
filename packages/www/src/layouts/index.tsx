@@ -8,6 +8,7 @@ import { ButtonAppBar } from "../components/header"
 import { install } from "@material-ui/styles"
 import "./index.css"
 import { AppTheme } from "./theme"
+import { Footer } from "../components/footer"
 
 install()
 
@@ -32,10 +33,16 @@ export const DefaultLayout: React.FC<DefaultLayoutProps> = props => {
             rel="stylesheet"
             href="https://fonts.googleapis.com/css?family=Roboto:300,400,500"
           />
+
+          <link
+            href="https://fonts.googleapis.com/css?family=Signika+Negative"
+            rel="stylesheet"
+          />
         </Helmet>
-        <PersistentDrawerLeft title={props.title}>
+        <PersistentDrawerLeft path={props.path} title={props.title}>
           {props.children}
         </PersistentDrawerLeft>
+        <Footer />
       </AppTheme>
     </AppStateProvider>
   )

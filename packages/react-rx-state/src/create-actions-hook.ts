@@ -6,7 +6,7 @@ import {
   ActionFactoryConnectFunction
 } from "./connect-actions"
 
-export function createUseActionsHook<
+export function createActionsHook<
   STATE extends object,
   SUB_STATE extends object,
   ACTIONS
