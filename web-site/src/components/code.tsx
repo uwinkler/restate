@@ -18,7 +18,7 @@ const useClasses = makeStyles({
     color: theme.palette.grey[300]
   },
   card: {
-    borderRadius: 10
+    borderRadius: 12
   }
 })
 

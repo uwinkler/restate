@@ -126,7 +126,7 @@ export const Navigation: React.FC<NavigationProps> = props => {
         <PageLink
           path={props.path}
           variant="inset"
-          to="/quick-start/"
+          to="/middleware/"
           title="Middleware"
         />
         <PageLink
