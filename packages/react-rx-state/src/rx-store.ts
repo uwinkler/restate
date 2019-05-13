@@ -1,8 +1,5 @@
-import isEqual from "lodash/isEqual"
-import produce, { Patch } from "immer"
 import { BehaviorSubject } from "rxjs"
-import { distinctUntilChanged, map } from "rxjs/operators"
-import { SelectorFunction } from "./subscribe"
+import { createDraft, finishDraft, Patch } from "immer"
 
 export type UpdateFunction<S> = (subState: S) => void
 
@@ -25,6 +22,20 @@ export const INIT_MESSAGAE: Message = {
   type: "@RX/INIT"
 }
 
+interface MiddlewareProps<S> {
+  state: S
+  metaInfo: MetaInfo
+  next(): any
+}
+
+export interface NextErrorMessage<STATE> {
+  error: Error
+  state: STATE
+  metaInfo: MetaInfo
+}
+
+export type Middleware<S> = (props: MiddlewareProps<S>) => any
+
 export interface RxStoreOptions {
   freeze: boolean
   storeName: string
@@ -42,7 +53,13 @@ export class RxStore<STATE> {
   protected _messageBus$: BehaviorSubject<Message> = new BehaviorSubject(
     INIT_MESSAGAE
   )
+  protected _error$: BehaviorSubject<NextErrorMessage<
+    STATE
+  > | null> = new BehaviorSubject(null as any)
+
   protected _options: RxStoreOptions
+
+  protected _middlewares: Middleware<STATE>[] = []
 
   constructor(x: BehaviorSubject<STATE>, options: RxStoreOptions) {
     this._state$ = x
@@ -53,74 +70,34 @@ export class RxStore<STATE> {
     return new RxStore(state, options)
   }
 
-  subStore<T extends object>(selector: SelectorFunction<STATE, T>): RxStore<T> {
-    const initalState = selector(this.state$.value)
-    const subStoreObservable$ = new BehaviorSubject<T>(initalState)
-    const subStore = RxStore.of<T>(subStoreObservable$, this._options)
-
-    //
-    //  Upstream subscription
-    //
-    subStore.state$.subscribe(nextSubState => {
-      const currentState = this._state$.value
-      const nextState = produce(currentState, draft => {
-        const subState = selector(draft as STATE)
-        Object.assign(subState, nextSubState)
-      })
-
-      if (!isEqual(currentState, nextState)) {
-        this.next(_ => nextState)
-      }
-    })
-
-    //
-    // Downstream
-    //
-    this.state$
-      .pipe(
-        map(selector),
-        distinctUntilChanged()
-      )
-      .subscribe(nextSubState => {
-        const currentSubStoreState = subStore.state
-        if (!isEqual(nextSubState, currentSubStoreState)) {
-          subStore.next(_ => nextSubState)
-        }
-      })
-
-    //
-    // Meta
-    //
-    // we only upstram meta information, not downstream.
-    subStore.meta$
-      .pipe(distinctUntilChanged())
-      .subscribe(meta => this.meta$.next(meta))
-
-    // Message Bus
-    //
-    // down-stream and up-stream messages, we simply share the messageBus Subject
-    subStore._messageBus$ = this._messageBus$
-
-    return subStore
-  }
-
-  next(
+  async next(
     updateFunction: UpdateFunction<STATE>,
     metaInfo: MetaInfo = defaultMetaInfo
   ) {
-    const currentState = this.state$.value
-    const nextState = produce<STATE>(
-      currentState,
-      draftState => {
-        return updateFunction(draftState as STATE)
-      },
-      (patches, inversePatches) => {
+    try {
+      const currentState = this.state$.value
+      const draft = createDraft(currentState) as STATE
+      const draftMetaInfos = createDraft(metaInfo)
+
+      await updateFunction(draft)
+      await recursiveMiddleareHandler(this._middlewares, draft, draftMetaInfos)
+
+      const nextState = finishDraft(draft, (patches, inversePatches) => {
         this.patches$.next(patches)
         this.inversePatches$.next(inversePatches)
-      }
-    )
-    this.state$.next(nextState)
-    this.meta$.next(metaInfo)
+      }) as STATE
+
+      const nextMetaInfo = finishDraft(draftMetaInfos)
+
+      this.state$.next(nextState)
+      this.meta$.next(nextMetaInfo)
+      this.error$.next(null as any)
+
+      return { state: nextState, metaInfo: nextMetaInfo }
+    } catch (e) {
+      this._error$.next({ error: e, state: this.state$.value, metaInfo })
+      return e
+    }
   }
 
   dispatch(message: Message) {
@@ -151,7 +128,40 @@ export class RxStore<STATE> {
     return this._messageBus$
   }
 
+  get error$() {
+    return this._error$
+  }
+
   get options() {
     return this._options
   }
+
+  get middlewares() {
+    return this._middlewares
+  }
+}
+
+async function recursiveMiddleareHandler<STATE>(
+  middlewares: Middleware<STATE>[],
+  state: STATE,
+  metaInfo: MetaInfo
+) {
+  if (middlewares.length === 0) {
+    return {
+      state,
+      metaInfo
+    }
+  }
+
+  const nextCall = middlewares[0]
+  const rest = middlewares.slice(1, middlewares.length)
+  const nextFunction = async () => {
+    await recursiveMiddleareHandler(rest, state, metaInfo)
+  }
+
+  return await nextCall({
+    state,
+    metaInfo,
+    next: nextFunction
+  })
 }

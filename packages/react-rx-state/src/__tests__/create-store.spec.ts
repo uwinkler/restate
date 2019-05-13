@@ -8,21 +8,7 @@ it("should create a simple store", () => {
   expect(store.state).toEqual(state) // but state should look equal
 })
 
-it("should be able to set a next state", () => {
-  const orgState = { a: 1 }
-
-  const store = createStore({ state: orgState })
-  store.next(s => {
-    s.a = 2
-  })
-
-  const nextStaet = store.state
-
-  expect(orgState).toEqual({ a: 1 })
-  expect(nextStaet).toEqual({ a: 2 })
-})
-
-it("should be able to freeze non-plain objects", () => {
+it("should be able to freeze non-plain objects", async () => {
   class State {
     [immerable] = true
     a = 1
@@ -31,7 +17,7 @@ it("should be able to freeze non-plain objects", () => {
 
   const store = createStore({ state })
 
-  store.next(s => {
+  await store.next(s => {
     s.a = 2
   })
 
@@ -41,21 +27,14 @@ it("should be able to freeze non-plain objects", () => {
   expect(nextState.a).toBe(2)
 })
 
-it("state should be alter after calling next", () => {
+it("state should be alter after calling next", async () => {
   const state = { a: 1 }
   const store = createStore({ state })
-  store.next(s => {
+  await store.next(s => {
     s.a = 2
   })
   expect(store.state.a).toBe(2)
   expect(Object.isFrozen(store.state)).toBe(true)
-})
-
-it("state should not be mutated", () => {
-  const state = { a: 1 }
-  const store = createStore({ state })
-  expect(store.state.a).toBe(1)
-  // expect(Object.isFrozen(store.state)).toBe(true)
 })
 
 export default {}

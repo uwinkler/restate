@@ -1,138 +1,235 @@
-import { createStore } from '../create-store'
-import { immerable } from 'immer'
-import { connectMessageBus } from '../connect-message-bus'
-import { Message, INIT_MESSAGAE } from '../rx-store'
+import { createStore } from "../create-store"
+import { immerable } from "immer"
+import { Middleware } from "../rx-store"
 
-it('should be able to set a next state', () => {
+it("should be able to set a next state", async () => {
   const orgState = { a: 1 }
 
   const store = createStore({ state: orgState })
-  store.next(s => {
+
+  await store.next(s => {
     s.a = 2
   })
 
-  const nextStaet = store.state
+  const nextState = store.state
 
   expect(orgState).toEqual({ a: 1 })
-  expect(nextStaet).toEqual({ a: 2 })
+  expect(nextState).toEqual({ a: 2 })
   expect(Object.isFrozen(store.state)).toBe(true)
 })
 
-it('should be able to use non-plain objects (immer style)', () => {
+it("should be able to use non-plain objects (immer style)", async () => {
   class State {
     [immerable] = true
     a = 1
+    aPlusOne() {
+      return this.a + 1
+    }
   }
   const state = new State()
 
   const store = createStore({ state })
 
-  store.next(s => {
+  await store.next(s => {
     s.a = 2
   })
 
   const nextState = store.state
 
   expect(state.a).toBe(1)
+  expect(state.aPlusOne()).toEqual(2)
   expect(nextState.a).toBe(2)
+  expect(nextState.aPlusOne()).toEqual(3)
 })
 
-it('should be able to use sub-stores: upstream updates', () => {
-  const orgState = { a: 1, sub: { b: 2 } }
-
-  const store = createStore({ state: orgState })
-  const subscriberStore = jest.fn()
-  store.state$.subscribe(subscriberStore)
-  expect(subscriberStore).toHaveBeenCalledTimes(1) // First subscribtion
-
-  const subStore = store.subStore(s => s.sub)
-  const subscriberSubStore = jest.fn()
-  store.state$.subscribe(subscriberSubStore)
-  expect(subscriberSubStore).toHaveBeenCalledTimes(1) // First subscribtion
-
-  //
-  // New state
-  //
-  subStore.next(subState => {
-    subState.b = 3
+it("should use middleware", async () => {
+  interface State {
+    a: number
+  }
+  const store = createStore<State>({
+    state: {
+      a: 1
+    }
   })
 
-  expect(store.state).toEqual({
-    a: 1,
-    sub: { b: 3 },
-  })
-  expect(subscriberStore).toHaveBeenCalledTimes(2)
+  const plusOne: Middleware<State> = ({ state, next }) => {
+    state.a = state.a + 1
+    next()
+  }
 
-  expect(subStore.state).toEqual({ b: 3 })
-  expect(subscriberSubStore).toHaveBeenCalledTimes(2)
-})
+  store.middlewares.push(plusOne)
 
-it('should be able to use sub-stores: upstream updates', () => {
-  const orgState = { a: 1, sub: { b: 2 } }
-
-  const store = createStore({ state: orgState })
-  const subStore = store.subStore(s => s.sub)
-
-  store.next(s => {
-    s.sub.b = 3
-  })
-
-  expect(subStore.state).toEqual({ b: 3 })
-  expect(store.state).toEqual({
-    a: 1,
-    sub: { b: 3 },
-  })
-})
-
-it('substore should NOT be notified, if we change a value outside of the sub-stores realm', () => {
-  const orgState = { a: 1, sub: { b: 2 } }
-
-  const store = createStore({ state: orgState })
-  const subStore = store.subStore(s => s.sub)
-
-  // SubState
-  const subscriberSubStateMock = jest.fn()
-  subStore.state$.subscribe(subscriberSubStateMock)
-  expect(subscriberSubStateMock).toHaveBeenCalledTimes(1) // inital subscription
-
-  // Meta
-  const subscriberSubMetaMock = jest.fn()
-  subStore.meta$.subscribe(subscriberSubMetaMock)
-  expect(subscriberSubMetaMock).toHaveBeenCalledTimes(1) // inital subscription
-
-  // Next state
-  store.next(s => {
+  await store.next(s => {
     s.a = 2
   })
 
-  expect(subscriberSubStateMock).toHaveBeenCalledTimes(1) // still have been called only once
-  expect(subscriberSubMetaMock).toHaveBeenCalledTimes(1) // still have been called only once
+  expect(store.state.a).toEqual(3)
 })
 
-it('messages should be shared by the the parent store and sub-stores', () => {
-  const orgState = { a: 1, sub: { b: 2 } }
-  const rootStore = createStore({ state: orgState })
-  const subStore = rootStore.subStore(s => s.sub)
+it("should not call subsequent middlewares if next() is not called", async () => {
+  interface State {
+    a: number
+  }
+  const store = createStore<State>({
+    state: {
+      a: 1
+    }
+  })
 
-  const rootStoreListener = jest.fn()
-  connectMessageBus(rootStore, rootStoreListener)
-  expect(rootStoreListener).toBeCalledWith({ message: INIT_MESSAGAE, store: rootStore })
+  const doNotCallNext: Middleware<State> = () => {
+    // Do not call next
+  }
 
-  const subStoreListener = jest.fn()
-  connectMessageBus(subStore, subStoreListener)
-  expect(subStoreListener).toBeCalledWith({ message: INIT_MESSAGAE, store: subStore })
+  const setToThree: Middleware<State> = ({ state, next }) => {
+    state.a = 3
+    next()
+  }
 
-  const messageRoot: Message = { type: 'TEST_FROM_ROOT' }
-  rootStore.dispatch(messageRoot)
+  store.middlewares.push(doNotCallNext, setToThree)
 
-  expect(rootStoreListener).toHaveBeenCalledWith({ message: messageRoot, store: rootStore })
-  expect(subStoreListener).toHaveBeenCalledWith({ message: messageRoot, store: subStore })
+  await store.next(s => {
+    s.a = 2
+  })
 
-  const messageSubStore: Message = { type: 'TEST_SUB_STORE' }
-  subStore.dispatch(messageSubStore)
+  expect(store.state.a).toEqual(2)
+})
 
-  expect(rootStoreListener).toHaveBeenCalledWith({ message: messageSubStore, store: rootStore })
-  expect(subStoreListener).toHaveBeenCalledWith({ message: messageSubStore, store: subStore })
+it("should not call subsequent middlewares if next() is not called", async () => {
+  interface State {
+    a: number
+  }
+  const store = createStore<State>({
+    state: {
+      a: 1
+    }
+  })
+
+  const doNotCallNext: Middleware<State> = () => {
+    // Do not call next
+  }
+
+  const setToThree: Middleware<State> = ({ state, next }) => {
+    state.a = 3
+    next()
+  }
+
+  store.middlewares.push(doNotCallNext, setToThree)
+
+  await store.next(s => {
+    s.a = 2
+  })
+
+  expect(store.state.a).toEqual(2)
+})
+
+it("should use multiple middleware", async () => {
+  interface State {
+    a: number
+  }
+  const store = createStore<State>({
+    state: {
+      a: 1
+    }
+  })
+
+  const plusOne: Middleware<State> = ({ state, next }) => {
+    state.a = state.a + 1
+    next()
+  }
+
+  store.middlewares.push(plusOne, plusOne)
+
+  await store.next(s => {
+    s.a = 2
+  })
+
+  expect(store.state.a).toEqual(4)
+})
+
+it("should use async middleware", async () => {
+  interface State {
+    a: number
+  }
+  const store = createStore<State>({
+    state: {
+      a: 1
+    }
+  })
+
+  const plusOne: Middleware<State> = ({ state, next }) => {
+    return new Promise(resolve => {
+      setTimeout(() => {
+        state.a = state.a + 1
+        next()
+        resolve()
+      }, 10)
+    })
+  }
+
+  store.middlewares.push(plusOne)
+
+  await store.next(s => {
+    s.a = 2
+  })
+
+  expect(store.state.a).toEqual(3)
+})
+
+it("should be able to use middleware in reverse order", async () => {
+  interface State {
+    a: number
+  }
+  const store = createStore<State>({
+    state: {
+      a: 1
+    }
+  })
+
+  const plusOne: Middleware<State> = ({ state, next }) => {
+    state.a = state.a + 1
+    next()
+  }
+
+  const logMiddleware: Middleware<State> = async ({ state, next }) => {
+    const start = state.a
+    await next()
+    const end = state.a
+    expect(start).toEqual(2) // first we get a 2
+    expect(end).toEqual(3) // then plusOne should have been called
+  }
+
+  store.middlewares.push(logMiddleware, plusOne)
+
+  await store.next(s => {
+    s.a = 2
+  })
+})
+
+it("should be able to throw", async () => {
+  interface State {
+    a: number
+  }
+  const store = createStore<State>({
+    state: {
+      a: 1
+    }
+  })
+
+  const errorMiddleware: Middleware<State> = () => {
+    throw Error("error!")
+  }
+
+  store.middlewares.push(errorMiddleware)
+
+  await store.next(s => {
+    s.a = 2
+  })
+
+  expect(store.state.a).toEqual(1) // no update
+  expect(store.error$.value!.error).toBeDefined()
+  expect(store.error$.value!.state).toEqual({
+    a: 1
+  })
 })
 
 export default {}
