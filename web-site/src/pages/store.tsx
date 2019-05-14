@@ -3,22 +3,25 @@ import Link from "gatsby-link"
 import { DefaultLayout } from "../layouts"
 import { Code } from "../components/code"
 import { Divider, Button } from "@material-ui/core"
-import { TT } from "../components/tt"
+import { TT } from "../components/TT"
 
 interface IndexPageProps {
   location: any
 }
 
-// https://stackblitz.com/edit/react-rx-state-middleware-logger?file=index.tsx
+// hTTps://stackblitz.com/edit/react-rx-state-middleware-logger?file=index.tsx
 
 const logger = `// Simple logger middleware
 //
 function connectLogger(store: RxStore<any>) {
-  store.state$.pipe(pairwise()).subscribe( props => {
-    const [oldState,newState] = props;
-    console.log('Old state', JSON.stringify(oldState));
-    console.log('New state', JSON.stringify(newState));
-  })
+  store.state$
+       .pipe(pairwise())
+       .subscribe( props => {
+          const [oldState, newState] = props;
+          console.log('State changed: ', 
+            JSON.stringify(oldState), ' -> ', JSON.stringify(newState)
+          );
+        })
 }
 
 connectLogger(store);
@@ -28,50 +31,45 @@ store.next(s => {
 })
 
 // Console output will be:
-// Old state {"name":"John Snow"}
-// New state {"name":"John Targaryen"}
-`
+// State changed: {"name":"John Snow"} -> {"name":"John Targaryen"}`
 
 const nextDemo = `store.next(s => {
   s.name = "John Targaryen"
 })`
 
+const createStore = `interface State {
+  name: string
+}
+
+const store = createStore<State>({
+  state: {
+    name: 'John Snow',
+  }, 
+  // options are optional 
+  options: {
+    storeName: 'AppStore', // usefull if multiple stores are used
+    freeze: process.env.NODE_ENV !== 'production' // freezes the state 
+  }
+})`
+
 export default (props: IndexPageProps) => {
   return (
-    <DefaultLayout title="Middleware" path={props.location.pathname}>
+    <DefaultLayout title="Store" path={props.location.pathname}>
       <p>
-        Middleware (or Gluecode) is the code, that glues your state to other
-        parts of your systems, for example a logger, remote server or local
-        storage.
+        The store is the central instance and keeps the state in a{" "}
+        <TT>RxJS.BehaviourSubject</TT>.
       </p>
-      <p>
-        There are three types of middleware:
-        <ul>
-          <li>
-            <i>Read:</i> middleware, that reads the reads the state. A logging
-            middlware would be good exmaple.
-          </li>
-          <li>
-            <i>Write:</i> middleware, that writes to your state, e.g. to update
-            the application state with data from a server.
-          </li>
-          <li>
-            <i>Read/Write:</i> a middleware, that reacts to changes of the
-            application state and alters the state accordingly. An e-mail
-            validator, for example, could validate the e-mail field and sets an
-            error flag if the e-mail is not valid.
-          </li>
-        </ul>
-      </p>
+      <h2> Create</h2>
+      Create a store with the <TT>createStore()</TT> function:
+      <Code code={createStore} />
       <h2>Read Access</h2>
-      <p>You have five ways to access and observe the state.</p>
-      <p>Outside of react you can access the state via the:</p>
+      <p>Outside of a react component you can access the state via:</p>
       <ul>
         <li>
           <TT>RxStore.state</TT> property,
         </li>
         <li>
-          <TT>RxStore.state$</TT> observable
+          or the <TT>RxStore.state$</TT> observable
         </li>
       </ul>
       <h3>
@@ -79,7 +77,8 @@ export default (props: IndexPageProps) => {
       </h3>
       <p>
         The <TT>store.state</TT> property gives you the current state. It is a
-        shorthand version of <TT>store.state$.value</TT>
+        shorthand version of <TT>store.state$.value</TT> and mainly used in
+        tests.
       </p>
       <Code
         code={`console.log('Name is: ', store.state.name)`} // Output: "Name is: John Snow"
@@ -88,14 +87,14 @@ export default (props: IndexPageProps) => {
         <TT>RxStore.state$</TT> observable
       </h3>
       <p>
-        The state is stored in a <TT>RxJS.BehaviourSubject</TT>. You can always
-        acccess the state using the value attribute:
+        The state is stored in a <TT>RxJS.BehaviourSubject</TT>. You can acccess
+        the state using the value attribute:
       </p>
       <Code code={`console.log('Name is: ', store.state$.value.name)`} />
       <p>
         Since it is an <TT>RxJS.BehaviourSubject</TT> you can use all the
-        <TT>RxJS</TT> goodies as well. For example you could write a simple
-        logging middleware like this:
+        <TT>RxJS</TT> goodies as well. For example, you could write a simple
+        logging middleware, that loggs the old and the new state, like this:
       </p>
       <Code code={logger} />
       <p />
@@ -107,13 +106,13 @@ export default (props: IndexPageProps) => {
       <p>
         Internaly, <a href="https://github.com/immerjs/immer">immer.js</a> is
         used and allows you to work with immutable state in a more convenient
-        way. Therefore, you should NOT use <TT>RxStore.state$.next</TT>, since
-        this will by-pass some features, such as immutable state management,
-        meta-infos, etc.
+        way. Therefore, you should NOT use the internal{" "}
+        <TT>RxStore.state$.next</TT> method, since this will by-pass some
+        features to the internal state management, such as middleware,
+        meta-infos, patches, etc.
       </p>
-
       <p>
-        However, the immer rules to modify the state apply as well. For example,{" "}
+        However, the immer rules to modify the state apply. For example,{" "}
         <TT> store.next(s => s.name = "John Targaryen") </TT> will throw an
         error:
         <blockquote>
@@ -128,7 +127,6 @@ export default (props: IndexPageProps) => {
 store.next( () => { name: 'John Targaryen'})`}
         />
       </p>
-
       <p />
       <Divider style={{ marginTop: 30 }} />
       <p>

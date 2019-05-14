@@ -8,6 +8,7 @@ h1,
 h2,
 h3,
 h4 {
+  margin-top: 3rem;
   font-family: "Signika Negative", sans-serif;
   /* font-style: italic; */
 }
@@ -29,4 +30,12 @@ tt {
   color: rgba(0, 0, 0, 0.8);
   padding-left: 3px;
   padding-right: 3px;
+}
+
+blockquote {
+  background-color: white;
+  padding: 20px;
+  font-weight: 400;
+  font-family: monospace;
+  border-left: 3px solid darkgray;
 }

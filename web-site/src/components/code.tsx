@@ -4,7 +4,7 @@ import { Card, CardContent } from "@material-ui/core"
 // import "prismjs/themes/prism.css"
 import "prismjs/themes/prism-okaidia.css"
 
-import { makeStyles } from "@material-ui/styles"
+import { makeStyles, ThemeProvider } from "@material-ui/styles"
 import { theme } from "../layouts/theme"
 
 require("prismjs/components/prism-typescript")
@@ -18,7 +18,9 @@ const useClasses = makeStyles({
     color: theme.palette.grey[300]
   },
   card: {
-    borderRadius: 12
+    borderRadius: 12,
+    marginTop: 3 * theme.spacing.unit,
+    marginBottom: 8 * theme.spacing.unit
   }
 })
 
