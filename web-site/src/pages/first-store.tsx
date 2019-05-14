@@ -71,12 +71,6 @@ const createStore = `const store = createStore({
 })
 `
 
-const helloWorldImg = require("./hello-world-error.png")
-
-const createProvider = `const AppStateProvider = createProvider(store);`
-const createStateHook = `const useAppState = createStateHook(AppStateProvider);`
-const createNextHook = `const useNextAppState = createNextHook(AppStateProvider);`
-
 export default (props: IndexPageProps) => {
   return (
     <DefaultLayout title="First Store" path={props.location.pathname}>

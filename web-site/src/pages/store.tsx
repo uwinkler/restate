@@ -3,7 +3,7 @@ import Link from "gatsby-link"
 import { DefaultLayout } from "../layouts"
 import { Code } from "../components/code"
 import { Divider, Button } from "@material-ui/core"
-import { TT } from "../components/TT"
+import { TT } from "../components/tt"
 
 interface IndexPageProps {
   location: any
