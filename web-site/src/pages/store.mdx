@@ -126,11 +126,11 @@ and takes the states in pairs (`pairwaise()`). This makes it very easy to log th
 
 ## Observable `store.messageBus$`
 
-Sometimes it is better to send a message (or action) and let glue-code handle all state changes.
-This is particular true with long running operations, async operations or if several parts of the application have to react to a specific event.
-A good example would be the log-in/log-out of a user.
+Sometimes it is better to send a message (or action in redux terms) and let glue-code do all the hard work.
+This is particular true with long running operations, async operations or in case where several different parts
+of the application have to react to a specific event. For those use-cases the `store.messageBus$` observable comes in handy.
 
-For those use-cases the `store.messageBus$` observable comes in handy:
+A good example would be the log-in/log-out of a user.
 
 ```code src=https://stackblitz.com/edit/react-rx-state-messagebus
 
