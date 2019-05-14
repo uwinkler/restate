@@ -13,11 +13,6 @@ export function createMessageBusHook<S extends object>(
       store.dispatch(message)
     }
 
-    function dispatchAsync(message: Message) {
-      setTimeout(() => store.dispatch(message), 0)
-    }
-
-    return { dispatch, dispatchAsync }
+    return dispatch
   }
 }
-//
