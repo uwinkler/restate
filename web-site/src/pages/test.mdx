@@ -1,0 +1,26 @@
+---
+title: Hello, world!
+path: /test
+---
+
+import { MdxLayout } from "../layouts/mdx-layout"
+
+# Here’s a chart
+
+The chart is rendered inside our MDX document.
+
+Some text with `code`?
+
+- _Emph:_ List?
+- a
+
+```code variant=warn title="Will not compile!" src=https://stackblitz.com/edit/react-rx-state-hello-world
+const NameForm = () => {
+const name = useAppState(state => state.name)
+const next = useNextAppState(state => state)
+
+return <input value={name} onChange={e => next(state => state.name = e.target.value)} />
+
+```
+
+export default MdxLayout

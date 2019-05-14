@@ -1,0 +1,66 @@
+---
+title: Hello, world!
+path: /test
+---
+
+import { Code } from "../components/code"
+import { MdxLayout } from "../layouts/mdx-layout"
+
+Here a `hello-world` app with `react-rx-state`:
+
+```code src=https://stackblitz.com/edit/react-rx-state-hello-world
+import React from 'react';
+import { render } from 'react-dom';
+import {
+  createStore,
+  createProvider,
+  createStateHook,
+  createNextHook
+} from 'react-rx-state'
+
+const store = createStore({
+  state: {
+    name: 'John Snow',
+    age: 32,
+  }
+})
+
+const AppStoreProvider = createProvider(store);  // to provide the store to react
+const useAppState = createStateHook(AppStoreProvider); // to select properties from the store
+const useNextAppState = createNextHook(AppStoreProvider); // to update our store
+
+const Age = () => {
+  const age = useAppState(state => state.age)
+  return <div>{age} years old</div>
+}
+
+const Hello = () => {
+  const name = useAppState(state => state.name)
+  return <h1>Hello {name}</h1>
+}
+
+const NameForm = () => {
+  const name = useAppState(state => state.name)
+  const next = useNextAppState(state => state)
+
+  return <input value={name} onChange={e => next(state => state.name = e.target.value)} />
+}
+
+const App: React.FC = () => (
+  <AppStoreProvider.Provider value={store}>
+    <Hello />
+    <Age />
+    <NameForm />
+  </AppStoreProvider.Provider>
+);
+
+
+render(<App />, document.getElementById('root'));
+```
+
+All examples - like this one - are available on StackBlitz. Click the blue Stackblitz icon in the lower right corner to edit it!
+And see, how Typescript awesome type inference helps
+you with code completion and gives you nice error messages - if you make any
+mistakes.
+
+export default MdxLayout

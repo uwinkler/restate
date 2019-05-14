@@ -1,0 +1,217 @@
+---
+title: Store
+path: /store/
+---
+
+import { MdxLayout } from "../layouts/mdx-layout"
+import { Link } from "gatsby"
+export default MdxLayout
+
+# Store
+
+The store is the central instance and keeps the immutable state in a `RxJS.BehaviourSubject`.
+
+You can have more than one state in your application. See the chapter <Link to="/multiple-stores">Multiple Stores</Link>.
+
+## Create a store
+
+You create a store with the `createStore()` function:
+
+      interface State {
+        name: string
+      }
+
+      const store = createStore<State>({
+        state: {
+          name: 'John Snow',
+        },
+        middleware: [
+          loggerMiddleware
+        ],
+        options: {
+          storeName: 'AppStore',
+          freeze: true,
+        }
+      })
+
+The `createStore()` function takes a property object, with
+
+- `state`: The inital state to make sure that every store is propper initalized. The inital state is required.
+- `middleware` (optional): a set of <Link to="middleware">middleware</Link> functions.
+- `options` (optional):
+  - `storeName`: A name for the store. Usefull to identify a store if you use <Link to="/multiple-stores">multiple stores</Link>.
+  - `freeze`: If set to `true` this protects against accidental modifications of the state. However, this comes with a performance impact. It is recommended to set this option to `false` in production.
+
+## Store.state
+
+You can read the state of the store (outside of a react component) with the `store.state` property:
+
+```code src=https://stackblitz.com/edit/react-rx-state-create-store
+const store = createStore<State>({
+  state: {
+    name: 'John Snow',
+  },
+})
+console.log(store.state) // logs 'John snow'
+```
+
+## Store.next()
+
+Use the `store.next()` function to updat the store.
+
+```code src=https://stackblitz.com/edit/react-rx-state-create-store
+store.next(state => {
+  state.name = "John Targaryen"
+})
+```
+
+The `Store.next()` provides the current state, which you can modify.
+
+Internaly, <a href="https://github.com/immerjs/immer">immer.js</a> is
+used and allows you to work with the immutable state in a more convenient
+way. The immer rules to modify the state apply. For example, this will
+throw an error:
+
+```code variant=warn title="This will throw an exception"
+store.next(s => s.name = "John Targaryen")`
+
+```
+
+<blockquote>
+  An immer producer returned a new value *and* modified its draft.
+  Either return a new value *or* modify the draft.
+</blockquote>
+To avoid such an error, wrap your code in currly braces as shown above or return a new
+state object:
+
+```code src=https://stackblitz.com/edit/react-rx-state-create-store
+// Provide a new state
+store.next(() => {
+  name: "John Targaryen"
+})
+```
+
+## Observable `store.state$`
+
+The state is hold by an <a href="http://reactivex.io/rxjs/manual/overview.html#behaviorsubject">`RxJS.BehaviourSubject`</a>
+
+This make it very easy for glue-code functions to observe and react to state changes:
+
+```code src=https://stackblitz.com/edit/react-rx-state-middleware-logger
+// Simple logger glue-code
+function connectLogger(store: RxStore<any>) {
+  store
+    .state$
+    .pipe(
+      pairwise()
+    )
+    .subscribe(props => {
+      const [oldState, newState] = props;
+      console.log('State:', JSON.stringify(oldState), ' -> ', JSON.stringify(newState));
+    })
+}
+
+connectLogger(store);
+
+store.next(s => { s.name = "John Targaryen" })
+store.next(s => { s.name = "Bran Stark" })
+
+// Console output:
+// State: {"name":"John Snow"} -> {"name":"John Targaryen"}
+// State: {"name":"John Targaryen"} -> {"name":"Bran Stark"}
+```
+
+In this example the `connectLogger` glue-code subscribes to the `state$` observable
+and takes the states in pairs (`pairwaise()`). This makes it very easy to log the previous and current state.
+
+## Observable `store.messageBus$`
+
+Sometimes it is better to send a message (or action) and let glue-code handle all state changes.
+This is particular true with long running operations, async operations or if several parts of the application have to react to a specific event.
+A good example would be the log-in/log-out of a user.
+
+For those use-cases the `store.messageBus$` observable comes in handy:
+
+```code src=https://stackblitz.com/edit/react-rx-state-messagebus
+
+const useDispatch = createMessageBusHook(AppStoreProvider);
+
+// Glue-code to perform a login
+function connectLoginAction(store: RxStore<State>) {
+  store.messageBus$.subscribe(async msg => {
+    if (msg.type === 'LOGIN') {
+      // Note: this is an an async function and updates the state twice
+
+      // Activate busy indicator
+      store.next(state => { state.waiting = true })
+
+      // Login the user. This is async operation and will take a second..
+      const { user, password } = msg.payload;.
+      await apiLoginUser(user, password)
+
+      // Login done. Deactivate busy indicator and set the current user
+      store.next(state => {
+        state.waiting = false;
+        state.user = user
+      })
+    }
+  })
+}
+
+connectLoginAction(store)
+
+
+const LoginForm = () => {
+  ...
+  const dispatch = useDispatch();
+
+  const logIn = () => dispatch({ type: 'LOGIN', payload: { user: id, password } })
+
+  return (
+    <div>
+      ...
+      <button onClick={logIn} >Log-In</button>
+    </div>)
+}
+
+```
+
+## Observable `store.meta$`
+
+Every store has a `meta$` observable. The `meta$` observable can be utilized to publish
+additional meta information along every state change.
+
+In the following example, we aim to send the state to
+the server (`console.log()` it) after a short delay of 500ms,
+but only if the state has been updated with the `SEND_TO_SERVER` meta information.
+
+```code src=https://stackblitz.com/edit/react-rx-state-glue-meta
+function connectToServer(store: RxStore<any>) {
+  combineLatest(store.state$, store.meta$) // Take the lates changes
+    .pipe(
+      // Let only state changes with the tag 'SEND_TO_SERVER' through
+      filter( ( [ _, meta] ) => meta.type === 'SEND_TO_SERVER'),
+      // Debounce by 500ms, so we don't flood the server with messages
+      debounceTime(500)
+    )
+    .subscribe(props => {
+      const [state] = props;
+      console.log('Send to server:', state)
+    })
+}
+
+connectToServer(store);
+
+store.next(s => { s.name = "John Targaryen" }) // no meta infos
+store.next(s => { s.name = "Sansa Stark" }, { type: 'SEND_TO_SERVER' }) // will be bounced
+store.next(s => { s.name = "Bran Stark" }, { type: 'SEND_TO_SERVER' }) // will be send
+
+// Console output:
+// Send to server: {name: "Bran Stark"}
+```
+
+## Observable `store.patches$` and `store.inversePatches`
+
+```
+console.log('To be written...')
+```

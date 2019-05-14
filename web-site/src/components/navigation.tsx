@@ -90,7 +90,7 @@ export const Navigation: React.FC<NavigationProps> = props => {
           path={props.path}
           variant="inset"
           to="/first-store/"
-          title="First store"
+          title="Hello World"
         />
         <PageLink
           path={props.path}
@@ -162,7 +162,7 @@ export const Navigation: React.FC<NavigationProps> = props => {
         <PageLink
           path={props.path}
           variant="inset"
-          to="/quick-start/"
+          to="/test/"
           title="Testing"
         />
       </List>
