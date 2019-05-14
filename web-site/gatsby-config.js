@@ -9,6 +9,7 @@ module.exports = {
     // Add typescript stack into webpack
     `gatsby-plugin-typescript`,
     `gatsby-plugin-offline`,
+    `gatsby-mdx`,
     {
       resolve: `gatsby-plugin-manifest`,
       options: {
