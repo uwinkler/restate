@@ -1,49 +1,43 @@
-import produce from "immer"
 import { RxStore } from "./rx-store"
 import { useContext } from "react"
 
-type CreateUseUpdateHookInput<S> = React.Context<RxStore<S>>
+type AppStoreProvider<S> = React.Context<RxStore<S>>
 type SelectorFunction<S, T extends object> = (state: S) => T
-type UpdateFunction<T> = (subState: T) => void
+type UpdateFunction<S> = (state: S) => void
 
-type IdentifySelectorFunction<S> = (state: S) => S
-const identifySelectorFunction: IdentifySelectorFunction<any> = state => state
+//
+// useNextHook Definitions
+//
 
+type CreateNextHookRet<S> = <T extends object>(
+  selector: SelectorFunction<S, T>
+) => (updateFunction: UpdateFunction<T>) => void
+
+// not-scoped
 export function createNextHook<S extends object>(
-  provider: CreateUseUpdateHookInput<S>
+  provider: AppStoreProvider<S>
+): CreateNextHookRet<S>
+
+// scoped
+export function createNextHook<S extends object, T extends object>(
+  provider: AppStoreProvider<S>,
+  scope: SelectorFunction<S, T>
+): CreateNextHookRet<T>
+
+export function createNextHook<S extends object, T extends object>(
+  provider: AppStoreProvider<S>,
+  scope?: SelectorFunction<S, T>
 ) {
   function useNextHook<T extends object>(
-    selectorFunction?: SelectorFunction<S, T>
+    selector: SelectorFunction<S, T>
   ): (updateFunction: UpdateFunction<T>) => void {
-    const selector = selectorFunction
-      ? selectorFunction
-      : identifySelectorFunction
     const store = useContext(provider)
-    const state$ = store.state$
-    const patches$ = store.patches$
-    const inversePatches$ = store.inversePatches$
+    const outterSelector = scope ? scope : (state: S) => state
 
-    function updateState(updateFunction: UpdateFunction<T>) {
-      const currentState = state$.value
-      const nextState = produce<S>(
-        currentState,
-        draftState => {
-          const subState = selector(draftState as any)
-          updateFunction(subState)
-          return draftState
-        },
-        (patches, inversePatches) => {
-          patches$.next(patches)
-          inversePatches$.next(inversePatches)
-        }
-      )
-      state$.next(nextState)
-
-      store.meta$.next({
-        type: "@RX/UPDATE_USE_UPDATE_HOOK",
-        payload: {
-          func: updateFunction.toString()
-        }
+    async function updateState(updateFunction: UpdateFunction<T>) {
+      return store.next(currentState => {
+        const subState = selector(outterSelector(currentState as any) as any)
+        updateFunction(subState)
       })
     }
 
