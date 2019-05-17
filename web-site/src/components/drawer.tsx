@@ -100,8 +100,13 @@ export const PersistentDrawerLeft: React.FC<
   return (
     <nav className={classes.root}>
       <AppBar
-        elevation={0}
-        // style={{ background: "white" }}
+        elevation={1}
+        style={{
+          background: "white",
+          color: theme.palette.primary.dark,
+          fontWeight: "bolder"
+          // textShadow: "1px 0px 5px rgba(244,0,0,.24)"
+        }}
         position="fixed"
         className={classNames(classes.appBar, {
           [classes.appBarShift]: open

@@ -22,6 +22,12 @@ const useClasses = makeStyles({
     width: 10,
     borderRadius: "50px",
     backgroundColor: theme.palette.primary.main
+  },
+  active: {
+    color: theme.palette.primary.main
+  },
+  inActive: {
+    color: "black"
   }
 })
 
@@ -30,6 +36,8 @@ const Dot: React.FC = () => {
   return <div className={dot} />
 }
 
+const DotPlaceHolder = () => <div style={{ width: 10, height: 10 }} />
+
 export const PageLink: React.FC<{
   to: string
   title: string
@@ -37,23 +45,20 @@ export const PageLink: React.FC<{
   path: string
 }> = props => {
   const classes = useClasses()
+  const active = props.to === props.path
+  const secondary = props.variant === "inset"
   return (
-    <Link
-      id={props.to}
-      className={classes.link}
-      to={props.to}
-      // activeStyle={{ color: theme.palette.primary.main }}
-    >
-      <ListItem className={classes.listItem}>
-        <ListItemIcon>
-          {props.to === props.path ? (
-            <Dot />
-          ) : (
-            <div style={{ width: 10, height: 10 }} />
-          )}
-        </ListItemIcon>
-        <ListItemText inset={props.variant === "inset"}>
-          {props.title}
+    <Link id={props.to} className={classes.link} to={props.to}>
+      <ListItem className={active ? classes.active : classes.inActive}>
+        <ListItemIcon>{active ? <Dot /> : <DotPlaceHolder />}</ListItemIcon>
+        <ListItemText
+          // primaryTypographyProps={{ color: "inherit" }}
+          // secondaryTypographyProps={{ color: "inherit" }}
+          primary={secondary ? null : props.title}
+          secondary={secondary ? props.title : null}
+          inset={secondary}
+        >
+          {/* {props.title} */}
         </ListItemText>
       </ListItem>
     </Link>

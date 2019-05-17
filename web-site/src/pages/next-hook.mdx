@@ -3,6 +3,7 @@ title: NextHook
 path: /next-hook/
 ---
 
+import { Link } from "gatsby"
 import { MdxLayout } from "../layouts/mdx-layout"
 export default MdxLayout
 
@@ -12,17 +13,15 @@ NextHooks are hooks to update the state.
 
 ## Basic Usage
 
-```code lines=6,9,13
+```code lines=5,8,11
 const store = createStore({
   state: { name: 'John Doe' }
 });
 
-const useAppState = createStateHook(AppStoreProvider);
 const useNextAppState = createNextHook(AppStoreProvider);
 
 const Hello:React.FC = () => {
   const next = useNextAppState(state => state);
-  const name = useAppState(state => state.name);
 
   function setName(e) {
     next(state => { state.name = e.target.value});
@@ -32,7 +31,11 @@ const Hello:React.FC = () => {
 }
 ```
 
-If you want to simplify and unify the access to portion of your states you utilize a **scoped next state hook**:
+If you want to simplify and unify the access to portion of your states you utilize a **scoped next state hook**.
+
+#### Scoped NextState Hook
+
+State hooks can be scoped in the same way as <Link to="/state-hook/">state-hooks</Link>.
 
 ```code lines=3-5,12,19
 const store = createStore({

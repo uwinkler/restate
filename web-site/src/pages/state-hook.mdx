@@ -6,16 +6,22 @@ path: /state-hook/
 import { MdxLayout } from "../layouts/mdx-layout"
 export default MdxLayout
 
-## AppStateHooks
+## App State Hooks
 
-AppStateHooks are functions used to:
+App-State-Hooks (or just state hooks for short) are functions used to:
 
 - select values from the app state and provide them to a `React.FunctionComponent`
-- performe some basic transformations and calculations
+- performe some basic transformations and calculations using `Selector Functions`
 
 ## Basic Usage
 
-```code lines=1,4-5
+```code lines=7,10,11
+const store = createStore({
+  state: {
+    user: { name: 'John Doe', age: 32 },
+    todos: []
+});
+
 const useAppState = createStateHook(AppStoreProvider);
 
 const Hello = () => {
@@ -24,7 +30,15 @@ const Hello = () => {
 }
 ```
 
-or, if you want to simplify and unify the access to portion of your states you utilize a _scope app state hook_:
+- First, we create a state-hook named `useAppState` using the `createStateHook` factory function.
+- This `useAppState` hook than can be used in all react components to pick properties from the state using a `selector function`, for example `state => state.user.name`. More about _selector functions_
+  in the section Selector Function.
+
+## Scoped State Hook
+
+To simplify and organise the access to various sub-states you may utilize a _scoped app state hook_.
+
+The `createStateHook` function takes a second parameter, a `scope function`, that narrows the state to the selected object.
 
 ```code lines=1,4
 const useUserState = createStateHook(AppStoreProvider, state => state.user);
@@ -34,11 +48,12 @@ const Hello = () => {
 }
 ```
 
-The app state hook created with `createStateHook` (e.g, the `useAppState` hook) takes a **selector function** (`state => state.name`) as parameter.
+In this example, the scope is narrowed to the user object of our app state.
 
 ## Selector Function
 
-Selector functions are used to select "portions" of your application state.
+Selector functions are used to select "portions" of your application state and - if needed - apply some basic transformations or computations.
+
 Depending on your needs you can choose between various selector function types:
 
 - State selector
