@@ -284,5 +284,3 @@ it("freeze: should not freeze the state if the freeze options is set to false", 
   }
   expect(shouldNotThrow).not.toThrow()
 })
-
-export default {}
