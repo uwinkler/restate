@@ -18,6 +18,36 @@ interface DefaultLayoutProps {
   pageContext: any
 }
 
+export const MDXWrapper: React.FC = props => (
+  <MDXProvider
+    components={{
+      inlineCode: (props: any) => <code>{props.children}</code>,
+      code: (props: any) => {
+        const metastring = props.metastring || ""
+        let title = ""
+        // console.log(props)
+        if (metastring.indexOf('title="') > -1) {
+          const splits = metastring.split('"')
+          title = splits[1]
+          // console.log(splits)
+        }
+        return (
+          <Code
+            title={title}
+            variant={props.variant}
+            src={props.src}
+            lines={props.lines}
+          >
+            {props.children}
+          </Code>
+        )
+      }
+    }}
+  >
+    {props.children}
+  </MDXProvider>
+)
+
 export const MdxLayout: React.FC<DefaultLayoutProps> = props => {
   return (
     <AppStateProvider>
@@ -45,33 +75,7 @@ export const MdxLayout: React.FC<DefaultLayoutProps> = props => {
           title={props.pageContext.frontmatter.title}
         >
           <>
-            <MDXProvider
-              components={{
-                code: (props: any) => {
-                  const metastring = props.metastring || ""
-                  let title = ""
-                  // console.log(props)
-                  if (metastring.indexOf('title="') > -1) {
-                    const splits = metastring.split('"')
-                    title = splits[1]
-                    // console.log(splits)
-                  }
-                  return (
-                    <Code
-                      title={title}
-                      variant={props.variant}
-                      src={props.src}
-                      lines={props.lines}
-                    >
-                      {props.children}
-                    </Code>
-                  )
-                }
-              }}
-            >
-              {props.children}
-            </MDXProvider>
-            {/* {JSON.stringify(props.pageContext)} */}
+            <MDXWrapper {...props} />
           </>
         </PersistentDrawerLeft>
         <Footer />

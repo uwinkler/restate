@@ -78,3 +78,14 @@ span.token.comment {
     hsla(26, 20%, 50%, 0)
   ) !important;
 }
+
+hr {
+  border: 0;
+  width: 100%;
+
+  background-color: rgb(223, 223, 235);
+  margin-top: 50px;
+  margin-bottom: 30px;
+
+  height: 1px;
+}

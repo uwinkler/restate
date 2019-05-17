@@ -93,6 +93,8 @@ store.next(() => {
 })
 ```
 
+---
+
 ## Observable `store.state$`
 
 The state is hold by an <a href="http://reactivex.io/rxjs/manual/overview.html#behaviorsubject">`RxJS.BehaviourSubject`</a>
@@ -125,6 +127,8 @@ store.next(s => { s.name = "Bran Stark" })
 
 In this example the `connectLogger` glue-code subscribes to the `state$` observable
 and takes the states in pairs (old and new) using <a href="https://rxjs-dev.firebaseapp.com/api/operators/pairwise" target="rxjs_pairwise">RxJS's pairwise operator</a>.
+
+---
 
 ## Observable `store.messageBus$`
 

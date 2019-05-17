@@ -1,9 +1,9 @@
 import Prism from "prismjs"
-import React, { useEffect, useReducer, useRef, useLayoutEffect } from "react"
-import { Card, CardContent, Tooltip } from "@material-ui/core"
-
+import React, { useRef, useLayoutEffect } from "react"
+import { Card, Tooltip } from "@material-ui/core"
+import { makeStyles } from "@material-ui/styles"
 import WarningIcon from "@material-ui/icons/Warning"
-import { makeStyles, ThemeProvider } from "@material-ui/styles"
+import CheckIcon from "@material-ui/icons/Check"
 import { theme } from "../layouts/theme"
 
 import "prismjs/plugins/line-highlight/prism-line-highlight"
@@ -11,6 +11,7 @@ import "prismjs/plugins/line-highlight/prism-line-highlight.css"
 
 // import "prismjs/plugins/line-numbers/prism-line-numbers.css"
 import "prismjs/themes/prism-tomorrow.css"
+import { yellow, green } from "@material-ui/core/colors"
 // import "prismjs/themes/prism-coy.css"
 // import "prismjs/themes/prism-dark.css"
 // import "prismjs/themes/prism-funky.css"
@@ -41,8 +42,18 @@ const useClasses = makeStyles({
   },
   warn: {
     padding: theme.spacing.unit,
-    color: theme.palette.error.dark,
+    color: yellow[900],
+    // backgroundColor: "rgb(40, 44, 52, 0.9)",
     display: "flex",
+    flexGrow: 1,
+    alignItems: "center"
+  },
+  info: {
+    padding: theme.spacing.unit,
+    color: green[900],
+    // backgroundColor: "rgb(40, 44, 52, 0.9)",
+    display: "flex",
+    flexGrow: 1,
     alignItems: "center"
   },
   cardHeader: {
@@ -69,7 +80,7 @@ type Language = "typescript" | "javascript" | "bash"
 interface CodeProps {
   code?: string
   lang?: Language
-  variant?: "default" | "warn" | "err"
+  variant?: "default" | "warn" | "err" | "ok"
   title?: string
   src?: string
   lines?: string
@@ -80,6 +91,26 @@ const Warn: React.FC<{ title: string }> = props => {
   return (
     <div className={classes.warn}>
       <WarningIcon style={{ marginRight: 8 }} />
+      {props.title}
+    </div>
+  )
+}
+
+const Err: React.FC<{ title: string }> = props => {
+  const classes = useClasses()
+  return (
+    <div className={classes.warn}>
+      <WarningIcon style={{ marginRight: 8 }} />
+      {props.title}
+    </div>
+  )
+}
+
+const Info: React.FC<{ title: string }> = props => {
+  const classes = useClasses()
+  return (
+    <div className={classes.info}>
+      <CheckIcon style={{ marginRight: 8 }} />
       {props.title}
     </div>
   )
@@ -124,6 +155,8 @@ export const Code: React.FC<CodeProps> = props => {
     <Card elevation={13} className={classes.card}>
       <div className={classes.cardHeader}>
         {variant === "warn" ? <Warn title={title} /> : null}
+        {variant === "err" ? <Err title={title} /> : null}
+        {variant === "ok" ? <Info title={title} /> : null}
       </div>
       <div className={classes.codeContent}>
         <pre
