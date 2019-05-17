@@ -1,8 +1,12 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var rxjs_1 = require("rxjs");
 var operators_1 = require("rxjs/operators");
 var react_1 = require("react");
+var isEqual_1 = __importDefault(require("lodash/isEqual"));
 var identifySelectorFunction = function (state) { return state; };
 //
 // createStateHook implementation
@@ -26,7 +30,7 @@ function createStateHook(context, outerSelector) {
                 output$.next(nextSubValue);
             });
             output$
-                .pipe(operators_1.distinctUntilChanged())
+                .pipe(operators_1.distinctUntilChanged(isEqual_1.default))
                 .subscribe(function (nextStateValue) { return setValue(nextStateValue); });
             return function cleanup() {
                 subscription.unsubscribe();
