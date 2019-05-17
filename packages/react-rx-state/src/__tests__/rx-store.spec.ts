@@ -232,4 +232,57 @@ it("should be able to throw", async () => {
   })
 })
 
+it("should return default options", () => {
+  const store = createStore({
+    state: { value: 1 }
+  })
+
+  expect(store.options.freeze).toBeTruthy()
+  expect(store.options.storeName).toEqual("STORE")
+})
+
+it("should return options", () => {
+  const store = createStore({
+    state: { value: 1 },
+    options: { freeze: true, storeName: "TEST" }
+  })
+
+  expect(store.options.freeze).toBeTruthy()
+  expect(store.options.storeName).toEqual("TEST")
+})
+
+it("freeze: should freeze the state if the freeze options is set to true", async () => {
+  const store = createStore({
+    state: { value: 1 },
+    options: { freeze: true }
+  })
+
+  await store.next(s => {
+    s.value = 2
+  })
+
+  function shouldThrow() {
+    const state = store.state$.value as any
+    state.value = 3
+  }
+  expect(shouldThrow).toThrow()
+})
+
+it("freeze: should not freeze the state if the freeze options is set to false", async () => {
+  const store = createStore({
+    state: { value: 1 },
+    options: { freeze: false }
+  })
+
+  await store.next(s => {
+    s.value = 2
+  })
+
+  function shouldNotThrow() {
+    const state = store.state$.value as any
+    state.value = 3
+  }
+  expect(shouldNotThrow).not.toThrow()
+})
+
 export default {}
