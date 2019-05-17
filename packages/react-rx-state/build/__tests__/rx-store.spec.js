@@ -365,5 +365,4 @@ it("freeze: should not freeze the state if the freeze options is set to false", 
         }
     });
 }); });
-exports.default = {};
 //# sourceMappingURL=rx-store.spec.js.map
