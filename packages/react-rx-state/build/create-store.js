@@ -10,11 +10,7 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-var cloneDeep_1 = __importDefault(require("lodash/cloneDeep"));
 var immer_1 = require("immer");
 var rxjs_1 = require("rxjs");
 var rx_store_1 = require("./rx-store");
@@ -26,8 +22,7 @@ function createStore(_a) {
     var state = _a.state, _b = _a.options, options = _b === void 0 ? defaultOptions : _b;
     var opts = __assign({}, defaultOptions, options);
     immer_1.setAutoFreeze(opts.freeze);
-    var clone = cloneDeep_1.default(state);
-    var state$ = new rxjs_1.BehaviorSubject(clone);
+    var state$ = new rxjs_1.BehaviorSubject(state);
     return rx_store_1.RxStore.of(state$, opts);
 }
 exports.createStore = createStore;

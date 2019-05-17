@@ -5,7 +5,8 @@ var operators_1 = require("rxjs/operators");
 var react_1 = require("react");
 var identifySelectorFunction = function (state) { return state; };
 //
-// Implementation
+// createStateHook implementation
+//
 function createStateHook(context, outerSelector) {
     if (outerSelector === void 0) { outerSelector = identifySelectorFunction; }
     function useAppState(selectorFunction) {
