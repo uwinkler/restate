@@ -1,0 +1,151 @@
+---
+title: StateHook
+path: /state-hook/
+---
+
+import { MdxLayout } from "../layouts/mdx-layout"
+export default MdxLayout
+
+## AppStateHooks
+
+AppStateHooks are functions used to:
+
+- select values from the app state and provide them to a `React.FunctionComponent`
+- performe some basic transformations and calculations
+
+## Basic Usage
+
+```
+const useAppState = createStateHook(AppStoreProvider);
+
+const Hello = () => {
+  const name = useAppState(state => state.user.name)
+  const todos = useAppState(state => state.todos)
+}
+```
+
+or, if you want to simplify and unify the access to portion of your states you utilize a _scope app state hook_:
+
+```
+const useUserState = createStateHook(AppStoreProvider, state => state.user);
+
+const Hello = () => {
+  const name = useUserState(state => state.name)
+}
+```
+
+The app state hook created with `createStateHook` (e.g, the `useAppState` hook) takes a **selector function** (`state => state.name`) as parameter.
+
+## Selector Function
+
+Selector functions are used to select "portions" of your application state.
+Depending on your needs you can choose between various selector function types:
+
+- State selector
+- Sub-State selector
+- Property selector
+- Transforming selector
+- Computing selector
+- Transforming + computing selectors
+
+### State Selector
+
+The state selector function (identity selector) gives you access to the whole state object.
+
+```
+const appState = useAppState(state => state)
+```
+
+Use it wisley. The component will be re-rendered if the state changes,
+no matter what properties you are actually need to render your component.
+
+### Sub-State Selector
+
+Sometime it is handy to select an object from the application state if you plan to consume all of it's properties in your component.
+
+```
+const user = useAppState(state => state.user)
+// or
+const { name, age } = useAppState(state => state.user)
+```
+
+Warning: the component will re-render if any property of the selected sub-state changes - which is what you don't want unless you really need all those properties.
+Consider to use scoped `createStateHook` function instead:
+
+```
+const useUserState = createStateHook(AppStoreProvider, state => state.user)
+...
+const name  = useUserState(userState => userState.name);
+const age  = useUserState(userState => userState.age);
+```
+
+### Property Selector
+
+Property selector select a single property (e.g the `name` property) from the app state. They are efficient,
+as they only trigger a re-rendering of the component if the property changes.
+
+```
+const name = useAppState(state => state.name)
+```
+
+### Transforming Selector
+
+Sometime your want to transform the app-state or combine various app-state properties into a single object. You can do so with a simple
+_transforming selector function_, which is a fancy name for a simple function that takes the app-state and returns the desired object.
+
+```
+const compState = useAppState(state => ({
+    userName: state.user.name
+    todos: state.todos
+  })
+)
+
+```
+
+### Computing Selector
+
+Similar to Transforming Selectors, you can do basic computations as well:
+
+```
+const todosCount = useAppState(state => state.todos.length)
+const todosDone = useAppState(state => state.todos.filter( todo => todo.done ))
+const todosOpen = useAppState(state => state.todos.filter( todo => !todo.done ))
+```
+
+or with a scoped app state hook:
+
+```
+const useTodos = createStateHook(AppStoreProvider, state => state.todos);
+...
+const todosCount = useTodos(todos => todos.length)
+const todosDone = useAppState(todos => todos.filter( todo => todo.done ))
+const todosOpen = useAppState(todos => todos.filter( todo => !todo.done ))
+```
+
+Computing selectors are efficient, as your component will re-render ony if the result of the selector changes.
+
+Take for example following snippet:
+
+```
+const todos = useAppState(state => state.todos)
+const aLotOfWork = todos.length > 10;
+```
+
+Your compoennt will render every time `state.todos[]` changes.
+
+The next snippet using a computing selector is efficient as react renders the component only if the value of `aLotOfWork` toggles.
+
+```
+const aLotOfWork = useAppState(state => state.todos.length > 10)
+```
+
+### Transforming + Computing Selector
+
+Of course you can also combine computing and transforming selectors:
+
+```
+const compState = useAppState(state => ({
+  userName: state.user.name,
+  openTodos: state.todos.filter( todo => !todo.done ))
+)}
+```

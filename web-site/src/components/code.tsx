@@ -1,28 +1,39 @@
 import Prism from "prismjs"
 import React from "react"
 import { Card, CardContent, Tooltip } from "@material-ui/core"
-// import "prismjs/themes/prism.css"
-import "prismjs/themes/prism-okaidia.css"
+
 import WarningIcon from "@material-ui/icons/Warning"
 import { makeStyles, ThemeProvider } from "@material-ui/styles"
 import { theme } from "../layouts/theme"
+
+// import "prismjs/themes/prism-coy.css"
+// import "prismjs/themes/prism-dark.css"
+// import "prismjs/themes/prism-funky.css"
+// import "prismjs/themes/prism-okaidia.css"
+// import "prismjs/themes/prism-solarizedlight.css"
+import "prismjs/themes/prism-tomorrow.css"
+// import "prismjs/themes/prism-twilight.css"
+// import "prismjs/themes/prism.css"
 
 require("prismjs/components/prism-typescript")
 require("prismjs/components/prism-bash")
 
 const stackBlitzLogo = require("./stack-blitz.jpg")
 
-const cobald = "#002240"
+const cobald = "rgb(40, 44, 52)"
 
 const useClasses = makeStyles({
   codeContent: {
+    padding: 16,
     backgroundColor: cobald,
     color: theme.palette.grey[300]
   },
   card: {
-    borderRadius: 12,
+    borderRadius: 8,
+    // padding: 20,
+    // backgroundColor: cobald,
     marginTop: 3 * theme.spacing.unit,
-    marginBottom: 8 * theme.spacing.unit
+    marginBottom: 3 * theme.spacing.unit
   },
   warn: {
     padding: theme.spacing.unit,
@@ -36,12 +47,15 @@ const useClasses = makeStyles({
   },
   stackBlitzImg: {
     height: 24,
-    widht: 24
+    widht: 24,
+    position: "relative",
+    top: -24,
+    borderRadius: 2
   },
   stackblitz: {
     display: "flex",
     flexDirection: "row-reverse",
-    height: 10,
+    height: 0,
     widht: "100%"
   }
 })
@@ -92,12 +106,13 @@ export const Code: React.FC<CodeProps> = props => {
     Prism.languages[lang], //[props.lang],
     lang
   )
+
   return (
-    <Card elevation={8} className={classes.card}>
+    <Card elevation={13} className={classes.card}>
       <div className={classes.cardHeader}>
         {variant === "warn" ? <Warn title={title} /> : null}
       </div>
-      <CardContent className={classes.codeContent}>
+      <div className={classes.codeContent}>
         <pre>
           <code
             className="content"
@@ -105,7 +120,7 @@ export const Code: React.FC<CodeProps> = props => {
           />
         </pre>
         {props.src ? <Stackblitz src={props.src} /> : null}
-      </CardContent>
+      </div>
     </Card>
   )
 }

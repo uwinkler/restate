@@ -12,18 +12,16 @@
   "types": "build/index.d.ts",
   "dependencies": {
     "immer": "^3.1.1",
-    "lodash": "^4.17.11",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
-    "rxjs": "^6.5.1",
-    "utility-types": "^3.7.0"
+    "rxjs": "^6.5.1"
   },
   "devDependencies": {
+    "utility-types": "^3.7.0",
     "@types/enzyme": "^3.9.1",
     "@types/enzyme-adapter-react-16": "^1.0.5",
     "@types/history": "^4.7.2",
     "@types/jest": "^24.0.12",
-    "@types/lodash": "^4.14.124",
     "@types/react": "^16.8.17",
     "@types/react-dom": "^16.8.4",
     "@types/react-test-renderer": "^16.8.1",

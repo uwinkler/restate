@@ -25,11 +25,6 @@ a:hover {
   color: #ff4322;
 }
 
-.content {
-  color: rgb(233, 233, 233);
-  background-color: "transparent";
-}
-
 code {
   background-color: rgba(0, 0, 0, 0.08);
   color: rgba(0, 0, 0, 0.8);
@@ -39,10 +34,39 @@ code {
   border-radius: 8px;
 }
 
+code.content {
+  font-family: "Roboto Mono", monospace;
+  font-size: 15px;
+  font-weight: 500;
+  padding: 0;
+  color: rgb(228, 226, 226);
+  background-color: transparent;
+  line-height: 0rem;
+  padding: 0;
+}
+
 blockquote {
   background-color: white;
   padding: 20px;
   font-weight: 400;
   font-family: monospace;
   border-left: 3px solid darkgray;
+}
+
+span.token.operator {
+  background-color: transparent;
+}
+
+span.token.operator {
+  font-weight: bold;
+}
+
+/* span.token.parameter {
+  color: rgb(0, 0, 82);
+} */
+/*  */
+
+span.token.comment {
+  background-color: rgba(1, 1, 1, 0.2);
+  color: darkcyan;
 }

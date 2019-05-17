@@ -104,7 +104,7 @@ export class RxStore<STATE> {
     this.messageBus$.next(message)
   }
 
-  get state(): STATE {
+  get state(): Readonly<STATE> {
     return this._state$.value
   }
 

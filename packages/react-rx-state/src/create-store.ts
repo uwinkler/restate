@@ -1,4 +1,3 @@
-import cloneDeep from "lodash/cloneDeep"
 import { setAutoFreeze } from "immer"
 import { BehaviorSubject } from "rxjs"
 import { RxStore, RxStoreOptions } from "./rx-store"
@@ -19,7 +18,6 @@ export function createStore<STATE>({
 }: CreateStoreProps<STATE>) {
   const opts = { ...defaultOptions, ...options }
   setAutoFreeze(opts.freeze)
-  const clone = (cloneDeep(state) as any) as STATE
-  const state$ = new BehaviorSubject(clone)
+  const state$ = new BehaviorSubject(state)
   return RxStore.of(state$, opts)
 }

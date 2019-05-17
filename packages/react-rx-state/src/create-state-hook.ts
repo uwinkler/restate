@@ -12,26 +12,27 @@ type SelectorFunction<S, T> = (state: S) => T
 
 const identifySelectorFunction: SelectorFunction<any, any> = state => state
 
-export type UseStoreHookWithSelectorFunction<S> = <T>(
+export type UseStoreHook<S> = <T>(
   selectorFunction?: SelectorFunction<S, T>
 ) => T
 
-export type UseStoreHookWithoutSelectorFunction<S> = () => S
+export type UseStoreHookScoped<S> = UseStoreHook<S>
 
-export type UseStoreStateHook<S> = UseStoreHookWithSelectorFunction<S>
-
+//
+// createStateHook definition
+//
 export function createStateHook<S>(
   context: React.Context<RxStore<S>>
-): UseStoreHookWithSelectorFunction<S>
+): UseStoreHook<S>
 
 export function createStateHook<S, SUB_STATE>(
   context: React.Context<RxStore<S>>,
   outerSelector: SelectorFunction<S, SUB_STATE>
-): UseStoreStateHook<SUB_STATE>
+): UseStoreHookScoped<SUB_STATE>
 
 //
-// Implementation
-
+// createStateHook implementation
+//
 export function createStateHook<S, SUB_STATE>(
   context: RxStoreContext<S>,
   outerSelector: SelectorFunction<S, SUB_STATE> = identifySelectorFunction

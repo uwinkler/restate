@@ -4,6 +4,7 @@ path: /test
 ---
 
 import { MdxLayout } from "../layouts/mdx-layout"
+export default MdxLayout
 
 # Here’s a chart
 
@@ -22,5 +23,3 @@ const next = useNextAppState(state => state)
 return <input value={name} onChange={e => next(state => state.name = e.target.value)} />
 
 ```
-
-export default MdxLayout

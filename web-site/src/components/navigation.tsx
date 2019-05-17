@@ -120,7 +120,7 @@ export const Navigation: React.FC<NavigationProps> = props => {
         path={props.path}
         variant="default"
         to="/page-2/"
-        title="Guides"
+        title="API Guide"
       />
       <List dense>
         <PageLink
@@ -132,14 +132,26 @@ export const Navigation: React.FC<NavigationProps> = props => {
         <PageLink
           path={props.path}
           variant="inset"
-          to="/middleware/"
-          title="Middleware"
+          to="/state-hook/"
+          title="StateHook"
         />
         <PageLink
           path={props.path}
           variant="inset"
-          to="/quick-start/"
-          title="Async Actions"
+          to="/next-hook/"
+          title="NextHook"
+        />
+        <PageLink
+          path={props.path}
+          variant="inset"
+          to="/message-bus-hook/"
+          title="MessageBusHook"
+        />
+        <PageLink
+          path={props.path}
+          variant="inset"
+          to="/observable-hook/"
+          title="ObservableHook"
         />
         <PageLink
           path={props.path}
@@ -153,12 +165,7 @@ export const Navigation: React.FC<NavigationProps> = props => {
           to="/quick-start/"
           title="Multiple Stores"
         />
-        <PageLink
-          path={props.path}
-          variant="inset"
-          to="/quick-start/"
-          title="Sub-Stores"
-        />
+
         <PageLink
           path={props.path}
           variant="inset"
@@ -214,6 +221,19 @@ export const Navigation: React.FC<NavigationProps> = props => {
           variant="inset"
           to="/quick-start/"
           title="Storybook"
+        />
+
+        <PageLink
+          path={props.path}
+          variant="inset"
+          to="/firebase/"
+          title="Firebase Database"
+        />
+        <PageLink
+          path={props.path}
+          variant="inset"
+          to="/firebase/"
+          title="PouchDB"
         />
       </List>
     </List>
