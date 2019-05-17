@@ -1,17 +1,21 @@
 import Prism from "prismjs"
-import React from "react"
+import React, { useEffect, useReducer, useRef, useLayoutEffect } from "react"
 import { Card, CardContent, Tooltip } from "@material-ui/core"
 
 import WarningIcon from "@material-ui/icons/Warning"
 import { makeStyles, ThemeProvider } from "@material-ui/styles"
 import { theme } from "../layouts/theme"
 
+import "prismjs/plugins/line-highlight/prism-line-highlight"
+import "prismjs/plugins/line-highlight/prism-line-highlight.css"
+
+// import "prismjs/plugins/line-numbers/prism-line-numbers.css"
+import "prismjs/themes/prism-tomorrow.css"
 // import "prismjs/themes/prism-coy.css"
 // import "prismjs/themes/prism-dark.css"
 // import "prismjs/themes/prism-funky.css"
 // import "prismjs/themes/prism-okaidia.css"
 // import "prismjs/themes/prism-solarizedlight.css"
-import "prismjs/themes/prism-tomorrow.css"
 // import "prismjs/themes/prism-twilight.css"
 // import "prismjs/themes/prism.css"
 
@@ -68,6 +72,7 @@ interface CodeProps {
   variant?: "default" | "warn" | "err"
   title?: string
   src?: string
+  lines?: string
 }
 
 const Warn: React.FC<{ title: string }> = props => {
@@ -99,13 +104,21 @@ export const Code: React.FC<CodeProps> = props => {
   const lang = props.lang ? props.lang : "typescript"
   const variant = props.variant || "default"
   const title = props.title || ""
+  const lines = props.lines || ""
+
+  const inputEl = useRef(null)
 
   const classes = useClasses()
+
   const html = Prism.highlight(
     code,
     Prism.languages[lang], //[props.lang],
     lang
   )
+
+  useLayoutEffect(() => {
+    Prism.hooks.run("complete", { element: inputEl.current, code })
+  })
 
   return (
     <Card elevation={13} className={classes.card}>
@@ -113,8 +126,13 @@ export const Code: React.FC<CodeProps> = props => {
         {variant === "warn" ? <Warn title={title} /> : null}
       </div>
       <div className={classes.codeContent}>
-        <pre>
+        <pre
+          className="line-numbers language-typescript"
+          style={{ position: "relative" }}
+          data-line={lines}
+        >
           <code
+            ref={inputEl}
             className="content"
             dangerouslySetInnerHTML={{ __html: html }}
           />

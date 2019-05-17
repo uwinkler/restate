@@ -67,6 +67,14 @@ span.token.operator {
 /*  */
 
 span.token.comment {
-  background-color: rgba(1, 1, 1, 0.2);
+  background-color: rgba(1, 1, 1, 0);
   color: darkcyan;
+}
+
+.line-highlight {
+  background: linear-gradient(
+    to right,
+    hsla(26, 15%, 91%, 0.104) 20%,
+    hsla(26, 20%, 50%, 0)
+  ) !important;
 }

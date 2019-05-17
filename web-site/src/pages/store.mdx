@@ -17,22 +17,24 @@ You can have more than one state in your application. See the chapter <Link to="
 
 You create a store with the `createStore()` function:
 
-      interface State {
-        name: string
-      }
+```code lines=5-16
+interface State {
+  name: string
+}
 
-      const store = createStore<State>({
-        state: {
-          name: 'John Snow',
-        },
-        middleware: [
-          loggerMiddleware
-        ],
-        options: {
-          storeName: 'AppStore',
-          freeze: true,
-        }
-      })
+const store = createStore<State>({
+  state: {
+    name: 'John Snow',
+  },
+  middleware: [
+    loggerMiddleware
+  ],
+  options: {
+    storeName: 'AppStore',
+    freeze: true,
+  }
+})
+```
 
 The `createStore()` function takes a property object, with
 
@@ -46,13 +48,13 @@ The `createStore()` function takes a property object, with
 
 You can read the state of the store (outside of a react component) with the `store.state` property:
 
-```code src=https://stackblitz.com/edit/react-rx-state-create-store
+```code lines=6 src=https://stackblitz.com/edit/react-rx-state-create-store
 const store = createStore<State>({
   state: {
     name: 'John Snow',
   },
 })
-console.log(store.state) // logs 'John Snow'
+console.log(store.state.name) // logs 'John Snow'
 ```
 
 ## Store.next()
@@ -97,7 +99,7 @@ The state is hold by an <a href="http://reactivex.io/rxjs/manual/overview.html#b
 
 This make it very easy for glue-code functions to observe and react to state changes:
 
-```code src=https://stackblitz.com/edit/react-rx-state-middleware-logger
+```code lines=3-11 src=https://stackblitz.com/edit/react-rx-state-middleware-logger
 // Simple logger glue-code
 function connectLogger(store: RxStore<any>) {
   store
@@ -132,7 +134,7 @@ of the application have to react to a specific event. For those use-cases the `s
 
 A good example would be the log-in/log-out of a user.
 
-```code src=https://stackblitz.com/edit/react-rx-state-messagebus
+```code lines=5-22 src=https://stackblitz.com/edit/react-rx-state-messagebus
 
 const useDispatch = createMessageBusHook(AppStoreProvider);
 
@@ -161,7 +163,7 @@ function connectLoginAction(store: RxStore<State>) {
 connectLoginAction(store)
 
 
-const LoginForm = () => {
+const LoginForm:React.FC = () => {
   ...
   const dispatch = useDispatch();
 
@@ -170,7 +172,7 @@ const LoginForm = () => {
   return (
     <div>
       ...
-      <button onClick={logIn} >Log-In</button>
+      <button onClick={logIn}>Log-In</button>
     </div>)
 }
 
@@ -185,7 +187,7 @@ In the following example, we aim to send the state to
 the server (`console.log()` it) after a short delay of 500ms,
 but only if the state has been updated with the `SEND_TO_SERVER` meta information.
 
-```code src=https://stackblitz.com/edit/react-rx-state-glue-meta
+```code lines=2-12 src=https://stackblitz.com/edit/react-rx-state-glue-meta
 function connectToServer(store: RxStore<any>) {
   combineLatest(store.state$, store.meta$) // Take the lates changes
     .pipe(
@@ -202,9 +204,12 @@ function connectToServer(store: RxStore<any>) {
 
 connectToServer(store);
 
-store.next(s => { s.name = "John Targaryen" }) // no meta infos
-store.next(s => { s.name = "Sansa Stark" }, { type: 'SEND_TO_SERVER' }) // will be bounced
-store.next(s => { s.name = "Bran Stark" }, { type: 'SEND_TO_SERVER' }) // will be send
+store.next(s => { s.name = "John Targaryen" })                          // ignored: no meta infos
+
+store.next(s => { s.name = "Sansa Stark" }, { type: 'SEND_TO_SERVER' }) // will be bounced because we send
+                                                                        // the next message right away
+
+store.next(s => { s.name = "Bran Stark" }, { type: 'SEND_TO_SERVER' })  // this message goes through
 
 // Console output:
 // Send to server: {name: "Bran Stark"}

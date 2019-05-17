@@ -57,7 +57,12 @@ export const MdxLayout: React.FC<DefaultLayoutProps> = props => {
                     // console.log(splits)
                   }
                   return (
-                    <Code title={title} variant={props.variant} src={props.src}>
+                    <Code
+                      title={title}
+                      variant={props.variant}
+                      src={props.src}
+                      lines={props.lines}
+                    >
                       {props.children}
                     </Code>
                   )
