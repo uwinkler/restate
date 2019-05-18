@@ -1,0 +1,51 @@
+---
+title: Middleware
+path: /quick-middleware/
+---
+
+import { MdxLayout } from "../layouts/mdx-layout"
+import { Link } from "gatsby"
+import { InfoPanel, WarningPanel } from "../components/panel"
+export default MdxLayout
+
+# Glue Code
+
+Glue code is code that "glues" your store to other parts of the application, for example to your server, database, ...
+
+Glue code can also receive message from the application to trigger some long running asynchronous tasks.
+
+#### Read
+
+Here is an very simple logger example, that observes the state and logs all state changes:
+
+```code src=https://stackblitz.com/edit/react-rx-state-hello-quick-glue?file=index.tsx
+function connectLogger(store:RxStore<any>) {
+  store.state$.subscribe( nextState => {
+    console.log('STATE:', JSON.stringify(nextState, null, 2));
+  })
+}
+
+connectLogger(store);
+```
+
+#### Update
+
+Another example of glue code could be a <a href="https://socket.io">socket.io</a> adapter, that updates chat messages from a server:
+
+```
+function connectSocket(store:RxStore<any>) {
+ socket.on('chat message', msg => {
+    store.next(state => {state.messages.push(msg)});
+ });
+}
+
+connectSocket(store)
+```
+
+#### Messages
+
+Besides observing the `store.state$`, glue-code can also receive messages from the application:
+
+<hr />
+
+To learn more about glue code read the <Link to="/glue-code">Glue Code Guide</Link>
