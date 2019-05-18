@@ -1,0 +1,1 @@
+{"version":3,"file":"create-store-hook.js","sourceRoot":"","sources":["../src/create-store-hook.ts"],"names":[],"mappings":";;AACA,+BAAkC;AAElC,SAAgB,kBAAkB,CAAI,QAAmC;IACvE,OAAO,SAAS,QAAQ;QACtB,IAAM,KAAK,GAAG,kBAAU,CAAC,QAAQ,CAAC,CAAA;QAClC,OAAO,KAAK,CAAA;IACd,CAAC,CAAA;AACH,CAAC;AALD,gDAKC"}
