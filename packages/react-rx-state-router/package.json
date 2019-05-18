@@ -1,6 +1,6 @@
 {
   "name": "react-rx-state-router",
-  "version": "0.6.2",
+  "version": "0.6.3",
   "license": "MIT",
   "scripts": {
     "clean": "rm -rf build",
@@ -12,7 +12,7 @@
   "types": "build/index.d.ts",
   "dependencies": {
     "history": "^4.9.0",
-    "react-rx-state": "^0.6.2"
+    "react-rx-state": "^0.6.3"
   },
   "devDependencies": {
     "@types/history": "^4.7.2",
