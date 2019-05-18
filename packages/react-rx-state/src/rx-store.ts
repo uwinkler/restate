@@ -151,27 +151,27 @@ export class RxStore<STATE> {
   }
 }
 
-async function recursiveMiddlewareHandler<STATE>(
-  middlewares: Middleware<STATE>[],
-  state: STATE,
-  metaInfo: MetaInfo
-) {
-  if (middlewares.length === 0) {
-    return {
-      state,
-      metaInfo
-    }
-  }
+// async function recursiveMiddlewareHandler<STATE>(
+//   middlewares: Middleware<STATE>[],
+//   state: STATE,
+//   metaInfo: MetaInfo
+// ) {
+//   if (middlewares.length === 0) {
+//     return {
+//       state,
+//       metaInfo
+//     }
+//   }
 
-  const nextCall = middlewares[0]
-  const rest = middlewares.slice(1, middlewares.length)
-  const nextFunction = async () => {
-    await recursiveMiddlewareHandler(rest, state, metaInfo)
-  }
+//   const nextCall = middlewares[0]
+//   const rest = middlewares.slice(1, middlewares.length)
+//   const nextFunction = async () => {
+//     await recursiveMiddlewareHandler(rest, state, metaInfo)
+//   }
 
-  return await nextCall({
-    state,
-    metaInfo,
-    next: nextFunction
-  })
-}
+//   return await nextCall({
+//     state,
+//     metaInfo,
+//     next: nextFunction
+//   })
+// }
