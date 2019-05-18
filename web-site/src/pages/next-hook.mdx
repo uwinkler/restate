@@ -5,11 +5,12 @@ path: /next-hook/
 
 import { Link } from "gatsby"
 import { MdxLayout } from "../layouts/mdx-layout"
+import { InfoPanel, WarningPanel } from "../components/panel"
 export default MdxLayout
 
 ## NextHook
 
-NextHooks are hooks to update the state.
+NextHooks are hooks to change the state within React components.
 
 ## Basic Usage
 
@@ -24,7 +25,7 @@ const Hello:React.FC = () => {
   const next = useNextAppState(state => state);
 
   function setName(e) {
-    next(state => { state.name = e.target.value});
+    next(state => state.name = e.target.value);
   }
 
   return <input value={name} onChange={setName}/>
@@ -37,11 +38,27 @@ If you want to simplify and unify the access to portion of your states you utili
 
 State hooks can be scoped in the same way as <Link to="/state-hook/">state-hooks</Link>.
 
-```code lines=3-5,12,19
+<InfoPanel>
+
+The main purpose of _scoped next hoooks_ and _next hooks selector functions_ are to help you to
+organise and simplify the access to your application state.
+
+There are no performance considerations - selector functions of next hooks are always efficient.
+
+Unlike <Link to="/state-hook/">state-hooks</Link> selector functions, next hook selector functions
+are not used to do some basic computations or transformations.
+
+</InfoPanel>
+
+```code lines=16,19,21
 const store = createStore({
   state: {
     user: {
-      name: 'John Doe'
+      name: 'John Doe',
+      address: {
+        street: 'Main Street',
+        city: 'London'
+      }
     }
   }
 });
@@ -49,15 +66,21 @@ const store = createStore({
 ...
 
 // scoped next hook
-const useNextUserState  = createNextHook(AppStoreProvider, state => state.user);
+const useNextUser  = createNextHook(AppStoreProvider, state => state.user);
 
 const Hello = () => {
-  const nextUserState = useNextUserState(state => state);
+  // it is OK to select the complete state / sub-state
+  const nextUser = useNextUser(user => user);
+  // for your convinces, selector functions may further scope your next hook
+  const nextAddress = useNextUser(user => user.address);
 
   function setName(e) {
-    // nextUserState provides the `user` object
-    nextUserState(user => { user.name = e.target.value});
+    // nextUser provides the `user` object
+    nextUser(user => user.name = e.target.value);
   }
-  ...
+
+  function setStreet(e) {
+    nextAddress(address => address.street = e.target.value)
+  }
 }
 ```

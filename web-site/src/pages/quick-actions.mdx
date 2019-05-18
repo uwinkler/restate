@@ -1,0 +1,55 @@
+---
+title: Actions
+path: /quick-actions/
+---
+
+import { MdxLayout } from "../layouts/mdx-layout"
+import { Link } from "gatsby"
+import { InfoPanel, WarningPanel } from "../components/panel"
+export default MdxLayout
+
+## Actions
+
+Another way to modify your state are **Actions**.
+
+<hr />
+
+Actions are forged in an _ActionFactory_. The _ActionFactory_ is a function that
+receives - among other things - the `next()` function to update the store.
+
+```code src=https://stackblitz.com/edit/react-rx-state-actions?file=index.tsx
+const store = createStore({
+  state: {
+    user: { name: 'John Snow', age: 32 },
+    todos: 0
+  }
+})
+...
+// Actions factory
+const userActionsFactory = ( {next}:ActionFactoryProps<User>) => ({
+  incrementAge() {
+    next(user => user.age++)
+  },
+  decrementAge() {
+    next(user => user.age--)
+  }
+})
+```
+
+The _ActionFactory_ is than hooked into `React` using the `createActionsHook`:
+
+```code src=https://stackblitz.com/edit/react-rx-state-actions?file=index.tsx
+const useUserActions = createActionsHook(AppStoreProvider, state => state.user, userActionsFactory);
+
+const Age = () => {
+  const userActions = useUserActions();
+  return (
+    <div>
+      <button onClick={userActions.incrementAge}>+</button>
+      <button onClick={userActions.decrementAge}>-</button>
+    </div>
+  )
+}
+```
+
+Learn more about <Link to="/actions">Actions.</Link>

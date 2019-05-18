@@ -9,8 +9,6 @@ const defaultMetaInfo: MetaInfo = {
 
 export type ActionFactorySelectorFunction<S, T extends object> = (state: S) => T
 type UpdateFunction<T> = (subState: T) => void
-type IdentitySelectorFunction<S> = (state: S) => S
-const identitySelectorFunction: IdentitySelectorFunction<any> = state => state
 
 export interface ActionPropsState<STATE> {
   store: RxStore<STATE>
@@ -19,7 +17,7 @@ export interface ActionPropsState<STATE> {
 
 export interface ActionFactoryProps<SUB_STATE> {
   state$: Observable<SUB_STATE>
-  meta$: Observable<MetaInfo>
+  // meta$: Observable<MetaInfo>
   messageBus$: Observable<MetaInfo>
   next: (updateFunction: UpdateFunction<SUB_STATE>) => void
 }
@@ -35,10 +33,6 @@ function createPropsForForges<S, T extends Object>(
   store: RxStore<S>,
   selectorFunction: ActionFactorySelectorFunction<S, T>
 ): ActionFactoryConnectProps<S, T> {
-  const selector = selectorFunction
-    ? selectorFunction
-    : identitySelectorFunction
-
   const state$ = store.state$
   const subState$ = new BehaviorSubject<T>(selectorFunction(store.state$.value))
 
@@ -57,7 +51,7 @@ function createPropsForForges<S, T extends Object>(
     const nextState = produce<S>(
       currentState,
       draftState => {
-        const subState = selector(draftState as any)
+        const subState = selectorFunction(draftState as any)
         updateFunction(subState)
         return draftState
       },
@@ -70,11 +64,9 @@ function createPropsForForges<S, T extends Object>(
     store.meta$.next(metaInfo)
   }
 
-  store.messageBus$
-
   return {
     state$: subState$,
-    meta$: store.meta$,
+    // meta$: store.meta$,
     messageBus$: store.messageBus$,
     next,
     store,
@@ -88,8 +80,8 @@ export type ActionFactoryConnectFunction<STATE, SUB_STATE, ACTIONS> = (
 
 export function connectActions<STATE, SUB_STATE extends Object, ACTIONS>(
   store: RxStore<STATE>,
-  selectorFunction: ActionFactorySelectorFunction<STATE, SUB_STATE>,
-  actionFactory: ActionFactoryConnectFunction<STATE, SUB_STATE, ACTIONS>
+  actionFactory: ActionFactoryConnectFunction<STATE, SUB_STATE, ACTIONS>,
+  selectorFunction: ActionFactorySelectorFunction<STATE, SUB_STATE>
 ) {
   const props = createPropsForForges(store, selectorFunction)
   return actionFactory(props)

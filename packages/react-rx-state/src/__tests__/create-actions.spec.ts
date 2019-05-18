@@ -22,23 +22,23 @@ const defaultAppState: AppState = {
 const store = Rx.createStore({ state: defaultAppState })
 const myOtherStore = Rx.createStore({ state: defaultAppState })
 
-const forgeAppState = ({ next }: ActionFactoryProps<MainView>) => ({
-  hello(greetings: string) {
-    next(state => {
-      state.hello = greetings
-    })
-  }
+function hello(greetings: string, { next }: ActionFactoryProps<MainView>) {
+  next(state => (state.hello = greetings))
+}
+
+const mainViewActionsFactory = (props: ActionFactoryProps<MainView>) => ({
+  hello: (greetings: string) => hello(greetings, props)
 })
 
-const toolboxAppState = Rx.connectActions(
+const mainViewActions = Rx.connectActions(
   store,
-  state => state.view.main,
-  forgeAppState
+  mainViewActionsFactory,
+  state => state.view.main
 )
 
 it("should update store", () => {
   expect(store.state.view.main.hello).toEqual("world")
-  toolboxAppState.hello("rx-state")
+  mainViewActions.hello("rx-state")
   expect(store.state.view.main.hello).toEqual("rx-state")
   expect(myOtherStore.state.view.main.hello).toEqual("world")
 })

@@ -94,19 +94,19 @@ export const Navigation: React.FC<NavigationProps> = props => {
         <PageLink
           path={props.path}
           variant="inset"
-          to="/first-store/"
+          to="/hello-world/"
           title="Hello World"
         />
         <PageLink
           path={props.path}
           variant="inset"
-          to="/quick-start/"
+          to="/quick-hooks/"
           title="Hooks"
         />
         <PageLink
           path={props.path}
           variant="inset"
-          to="/quick-start/"
+          to="/quick-actions/"
           title="Actions"
         />
         <PageLink

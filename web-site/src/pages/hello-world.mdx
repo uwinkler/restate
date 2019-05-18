@@ -1,12 +1,12 @@
 ---
 title: Hello, world!
-path: /test
+path: /hello-world/
 ---
 
 import { Code } from "../components/code"
 import { MdxLayout } from "../layouts/mdx-layout"
 
-Here a `hello-world` app with `react-rx-state`:
+Here is a `hello-world` app with `react-rx-state`:
 
 ```code src=https://stackblitz.com/edit/react-rx-state-hello-world
 import React from 'react';
@@ -29,14 +29,16 @@ const AppStoreProvider = createProvider(store);  // to provide the store to reac
 const useAppState = createStateHook(AppStoreProvider); // to select properties from the store
 const useNextAppState = createNextHook(AppStoreProvider); // to update our store
 
-const Age = () => {
-  const age = useAppState(state => state.age)
-  return <div>{age} years old</div>
-}
-
 const Hello = () => {
+  // select a property from the state
   const name = useAppState(state => state.name)
   return <h1>Hello {name}</h1>
+}
+
+const Age = () => {
+  // do some basic computations/tranformations
+  const days = useAppState(state => state.age * 365)
+  return <div>{days} days old</div>
 }
 
 const NameForm = () => {
@@ -53,7 +55,6 @@ const App: React.FC = () => (
     <NameForm />
   </AppStoreProvider.Provider>
 );
-
 
 render(<App />, document.getElementById('root'));
 ```
