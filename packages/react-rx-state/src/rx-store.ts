@@ -70,7 +70,7 @@ export class RxStore<STATE> {
     return new RxStore(state, options)
   }
 
-  async next(
+  next(
     updateFunctionOrNextState: UpdateFunction<STATE> | STATE,
     metaInfo: MetaInfo = defaultMetaInfo
   ) {
@@ -85,10 +85,10 @@ export class RxStore<STATE> {
       const draftMetaInfos = createDraft(metaInfo)
 
       if (updateFunctionOrNextState instanceof Function) {
-        await updateFunctionOrNextState(draft)
+        updateFunctionOrNextState(draft)
       }
 
-      await recursiveMiddlewareHandler(this._middlewares, draft, draftMetaInfos)
+      // await recursiveMiddlewareHandler(this._middlewares, draft, draftMetaInfos)
 
       const nextState = finishDraft(draft, (patches, inversePatches) => {
         this.patches$.next(patches)
