@@ -1,6 +1,6 @@
 import { connectMessageBus, MessagebusListener } from "../connect-message-bus"
 import { createStore } from "../create-store"
-import { Message, INIT_MESSAGAE } from "../index"
+import { Message, INIT_MESSAGE } from "../index"
 
 it("should be able to create a message bus connector listener", () => {
   const state = { a: 1, sub: { b: 1 } }
@@ -35,7 +35,7 @@ it("should be able to create a message bus listener (curried version)", () => {
   store.dispatch(message)
 
   expect(handlerMock).toHaveBeenCalledTimes(2)
-  expect(handlerMock).toHaveBeenCalledWith(INIT_MESSAGAE, store)
+  expect(handlerMock).toHaveBeenCalledWith(INIT_MESSAGE, store)
   expect(handlerMock).toHaveBeenLastCalledWith(message, store)
 })
 

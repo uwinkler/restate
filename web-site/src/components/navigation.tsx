@@ -115,6 +115,12 @@ export const Navigation: React.FC<NavigationProps> = props => {
           to="/quick-views/"
           title="Views"
         />
+        <PageLink
+          path={props.path}
+          variant="inset"
+          to="/quick-glue/"
+          title="Glue Code"
+        />
       </List>
 
       {/* ------------ */}

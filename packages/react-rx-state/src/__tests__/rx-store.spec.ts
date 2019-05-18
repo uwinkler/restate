@@ -284,3 +284,22 @@ it("freeze: should not freeze the state if the freeze options is set to false", 
   }
   expect(shouldNotThrow).not.toThrow()
 })
+
+fit("should be able to set the state as object, not using immer's imperative way", async () => {
+  const store = createStore({
+    state: { value: 1 },
+    options: { freeze: false }
+  })
+  await store.next({ value: 12 })
+  expect(store.state).toEqual({ value: 12 })
+})
+
+fit("should be able to set the state as object, not using immer's imperative way", async () => {
+  const store = createStore({
+    state: { value: 1 },
+    options: { freeze: false }
+  })
+
+  await store.next({ value: 12 })
+  expect(store.state).toEqual({ value: 12 })
+})
