@@ -9,7 +9,7 @@ __export(require("./connect-message-bus"));
 __export(require("./create-actions-hook"));
 __export(require("./create-message-bus-hook"));
 __export(require("./create-next-hook"));
-__export(require("./create-observable-hook"));
+__export(require("./create-store-hook"));
 __export(require("./create-provider"));
 __export(require("./create-state-hook"));
 __export(require("./create-store"));

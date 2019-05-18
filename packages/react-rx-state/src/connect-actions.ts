@@ -80,8 +80,8 @@ export type ActionFactoryConnectFunction<STATE, SUB_STATE, ACTIONS> = (
 
 export function connectActions<STATE, SUB_STATE extends Object, ACTIONS>(
   store: RxStore<STATE>,
-  actionFactory: ActionFactoryConnectFunction<STATE, SUB_STATE, ACTIONS>,
-  selectorFunction: ActionFactorySelectorFunction<STATE, SUB_STATE>
+  selectorFunction: ActionFactorySelectorFunction<STATE, SUB_STATE>,
+  actionFactory: ActionFactoryConnectFunction<STATE, SUB_STATE, ACTIONS>
 ) {
   const props = createPropsForForges(store, selectorFunction)
   return actionFactory(props)

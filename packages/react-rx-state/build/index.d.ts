@@ -4,7 +4,7 @@ export * from "./connect-message-bus";
 export * from "./create-actions-hook";
 export * from "./create-message-bus-hook";
 export * from "./create-next-hook";
-export * from "./create-observable-hook";
+export * from "./create-store-hook";
 export * from "./create-provider";
 export * from "./create-state-hook";
 export * from "./create-store";

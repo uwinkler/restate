@@ -1,1 +1,0 @@
-{"version":3,"file":"create-observable-hook.js","sourceRoot":"","sources":["../src/create-observable-hook.ts"],"names":[],"mappings":";;AACA,+BAAkC;AAIlC,SAAgB,uBAAuB,CAAmB,QAAoC;IAC5F,SAAS,aAAa;QACpB,IAAM,KAAK,GAAG,kBAAU,CAAC,QAAQ,CAAC,CAAA;QAClC,OAAO,KAAK,CAAC,MAAM,CAAA;IACrB,CAAC;IACD,OAAO,aAAa,CAAA;AACtB,CAAC;AAND,0DAMC"}

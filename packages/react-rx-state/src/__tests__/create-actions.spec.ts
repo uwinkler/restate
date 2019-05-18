@@ -32,8 +32,8 @@ const mainViewActionsFactory = (props: ActionFactoryProps<MainView>) => ({
 
 const mainViewActions = Rx.connectActions(
   store,
-  mainViewActionsFactory,
-  state => state.view.main
+  state => state.view.main,
+  mainViewActionsFactory
 )
 
 it("should update store", () => {

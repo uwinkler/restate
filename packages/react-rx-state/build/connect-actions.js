@@ -9,11 +9,7 @@ var operators_1 = require("rxjs/operators");
 var defaultMetaInfo = {
     type: "@RX/ACTIONS"
 };
-var identitySelectorFunction = function (state) { return state; };
 function createPropsForForges(store, selectorFunction) {
-    var selector = selectorFunction
-        ? selectorFunction
-        : identitySelectorFunction;
     var state$ = store.state$;
     var subState$ = new rxjs_1.BehaviorSubject(selectorFunction(store.state$.value));
     var subscription = store.state$
@@ -23,7 +19,7 @@ function createPropsForForges(store, selectorFunction) {
         if (metaInfo === void 0) { metaInfo = defaultMetaInfo; }
         var currentState = state$.value;
         var nextState = immer_1.default(currentState, function (draftState) {
-            var subState = selector(draftState);
+            var subState = selectorFunction(draftState);
             updateFunction(subState);
             return draftState;
         }, function (patches, inversePatches) {
@@ -33,10 +29,9 @@ function createPropsForForges(store, selectorFunction) {
         state$.next(nextState);
         store.meta$.next(metaInfo);
     }
-    store.messageBus$;
     return {
         state$: subState$,
-        meta$: store.meta$,
+        // meta$: store.meta$,
         messageBus$: store.messageBus$,
         next: next,
         store: store,

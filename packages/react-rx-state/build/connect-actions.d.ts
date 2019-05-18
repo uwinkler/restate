@@ -8,7 +8,6 @@ export interface ActionPropsState<STATE> {
 }
 export interface ActionFactoryProps<SUB_STATE> {
     state$: Observable<SUB_STATE>;
-    meta$: Observable<MetaInfo>;
     messageBus$: Observable<MetaInfo>;
     next: (updateFunction: UpdateFunction<SUB_STATE>) => void;
 }

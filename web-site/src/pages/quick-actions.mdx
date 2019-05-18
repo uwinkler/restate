@@ -36,7 +36,7 @@ const userActionsFactory = ( {next}:ActionFactoryProps<User>) => ({
 })
 ```
 
-The _ActionFactory_ is than hooked into `React` using the `createActionsHook`:
+The _ActionFactory_ is hooked into `React` using the `createActionsHook`:
 
 ```code src=https://stackblitz.com/edit/react-rx-state-actions?file=index.tsx
 const useUserActions = createActionsHook(AppStoreProvider, state => state.user, userActionsFactory);
