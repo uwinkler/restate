@@ -2,7 +2,6 @@ import { BehaviorSubject } from "rxjs"
 import { distinctUntilChanged } from "rxjs/operators"
 import { RxStore } from "./rx-store"
 import { useContext, useEffect, useMemo, useState } from "react"
-import isEqual from "lodash/isEqual"
 
 //
 // Types
@@ -61,7 +60,7 @@ export function createStateHook<S, SUB_STATE>(
       })
 
       output$
-        .pipe(distinctUntilChanged(isEqual))
+        .pipe(distinctUntilChanged())
         .subscribe(nextStateValue => setValue(nextStateValue))
 
       return function cleanup() {
