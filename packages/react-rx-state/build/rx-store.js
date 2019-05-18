@@ -41,15 +41,15 @@ exports.UPDATE = "@RX/UPDATE";
 var defaultMetaInfo = {
     type: exports.UPDATE
 };
-exports.INIT_MESSAGAE = {
+exports.INIT_MESSAGE = {
     type: "@RX/INIT"
 };
 var RxStore = /** @class */ (function () {
     function RxStore(x, options) {
-        this._meta$ = new rxjs_1.BehaviorSubject(exports.INIT_MESSAGAE);
+        this._meta$ = new rxjs_1.BehaviorSubject(exports.INIT_MESSAGE);
         this._patches$ = new rxjs_1.BehaviorSubject([]);
         this._inversePatches$ = new rxjs_1.BehaviorSubject([]);
-        this._messageBus$ = new rxjs_1.BehaviorSubject(exports.INIT_MESSAGAE);
+        this._messageBus$ = new rxjs_1.BehaviorSubject(exports.INIT_MESSAGE);
         this._error$ = new rxjs_1.BehaviorSubject(null);
         this._middlewares = [];
         this._state$ = x;
@@ -58,38 +58,44 @@ var RxStore = /** @class */ (function () {
     RxStore.of = function (state, options) {
         return new RxStore(state, options);
     };
-    RxStore.prototype.next = function (updateFunction, metaInfo) {
+    RxStore.prototype.next = function (updateFunctionOrNextState, metaInfo) {
         if (metaInfo === void 0) { metaInfo = defaultMetaInfo; }
         return __awaiter(this, void 0, void 0, function () {
-            var currentState, draft, draftMetaInfos, nextState, nextMetaInfo, e_1;
+            var currentState, isUpdateFunction, draft, draftMetaInfos, nextState, nextMetaInfo, e_1;
             var _this = this;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 3, , 4]);
+                        _a.trys.push([0, 4, , 5]);
                         currentState = this.state$.value;
-                        draft = immer_1.createDraft(currentState);
+                        isUpdateFunction = updateFunctionOrNextState instanceof Function;
+                        draft = isUpdateFunction
+                            ? immer_1.createDraft(currentState)
+                            : immer_1.createDraft(updateFunctionOrNextState);
                         draftMetaInfos = immer_1.createDraft(metaInfo);
-                        return [4 /*yield*/, updateFunction(draft)];
+                        if (!(updateFunctionOrNextState instanceof Function)) return [3 /*break*/, 2];
+                        return [4 /*yield*/, updateFunctionOrNextState(draft)];
                     case 1:
                         _a.sent();
-                        return [4 /*yield*/, recursiveMiddleareHandler(this._middlewares, draft, draftMetaInfos)];
-                    case 2:
+                        _a.label = 2;
+                    case 2: return [4 /*yield*/, recursiveMiddlewareHandler(this._middlewares, draft, draftMetaInfos)];
+                    case 3:
                         _a.sent();
                         nextState = immer_1.finishDraft(draft, function (patches, inversePatches) {
                             _this.patches$.next(patches);
                             _this.inversePatches$.next(inversePatches);
                         });
+                        console.log("NEXT", nextState);
                         nextMetaInfo = immer_1.finishDraft(draftMetaInfos);
                         this.state$.next(nextState);
                         this.meta$.next(nextMetaInfo);
                         this.error$.next(null);
                         return [2 /*return*/, { state: nextState, metaInfo: nextMetaInfo }];
-                    case 3:
+                    case 4:
                         e_1 = _a.sent();
                         this._error$.next({ error: e_1, state: this.state$.value, metaInfo: metaInfo });
                         return [2 /*return*/, e_1];
-                    case 4: return [2 /*return*/];
+                    case 5: return [2 /*return*/];
                 }
             });
         });
@@ -163,7 +169,7 @@ var RxStore = /** @class */ (function () {
     return RxStore;
 }());
 exports.RxStore = RxStore;
-function recursiveMiddleareHandler(middlewares, state, metaInfo) {
+function recursiveMiddlewareHandler(middlewares, state, metaInfo) {
     return __awaiter(this, void 0, void 0, function () {
         var nextCall, rest, nextFunction;
         var _this = this;
@@ -181,7 +187,7 @@ function recursiveMiddleareHandler(middlewares, state, metaInfo) {
                     nextFunction = function () { return __awaiter(_this, void 0, void 0, function () {
                         return __generator(this, function (_a) {
                             switch (_a.label) {
-                                case 0: return [4 /*yield*/, recursiveMiddleareHandler(rest, state, metaInfo)];
+                                case 0: return [4 /*yield*/, recursiveMiddlewareHandler(rest, state, metaInfo)];
                                 case 1:
                                     _a.sent();
                                     return [2 /*return*/];

@@ -365,4 +365,38 @@ it("freeze: should not freeze the state if the freeze options is set to false", 
         }
     });
 }); });
+fit("should be able to set the state as object, not using immer's imperative way", function () { return __awaiter(_this, void 0, void 0, function () {
+    var store;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                store = create_store_1.createStore({
+                    state: { value: 1 },
+                    options: { freeze: false }
+                });
+                return [4 /*yield*/, store.next({ value: 12 })];
+            case 1:
+                _a.sent();
+                expect(store.state).toEqual({ value: 12 });
+                return [2 /*return*/];
+        }
+    });
+}); });
+fit("should be able to set the state as object, not using immer's imperative way", function () { return __awaiter(_this, void 0, void 0, function () {
+    var store;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                store = create_store_1.createStore({
+                    state: { value: 1 },
+                    options: { freeze: false }
+                });
+                return [4 /*yield*/, store.next({ value: 12 })];
+            case 1:
+                _a.sent();
+                expect(store.state).toEqual({ value: 12 });
+                return [2 /*return*/];
+        }
+    });
+}); });
 //# sourceMappingURL=rx-store.spec.js.map

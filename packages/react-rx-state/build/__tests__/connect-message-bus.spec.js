@@ -29,7 +29,7 @@ it("should be able to create a message bus listener (curried version)", function
     var message = { type: "TEST_MESSAGE", payload: "PAYLOAD" };
     store.dispatch(message);
     expect(handlerMock).toHaveBeenCalledTimes(2);
-    expect(handlerMock).toHaveBeenCalledWith(index_1.INIT_MESSAGAE, store);
+    expect(handlerMock).toHaveBeenCalledWith(index_1.INIT_MESSAGE, store);
     expect(handlerMock).toHaveBeenLastCalledWith(message, store);
 });
 exports.default = {};

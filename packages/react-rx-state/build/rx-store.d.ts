@@ -8,7 +8,7 @@ export interface Message {
 export interface MetaInfo extends Message {
 }
 export declare const UPDATE = "@RX/UPDATE";
-export declare const INIT_MESSAGAE: Message;
+export declare const INIT_MESSAGE: Message;
 interface MiddlewareProps<S> {
     state: S;
     metaInfo: MetaInfo;
@@ -35,7 +35,7 @@ export declare class RxStore<STATE> {
     protected _middlewares: Middleware<STATE>[];
     constructor(x: BehaviorSubject<STATE>, options: RxStoreOptions);
     static of<S>(state: BehaviorSubject<S>, options: RxStoreOptions): RxStore<S>;
-    next(updateFunction: UpdateFunction<STATE>, metaInfo?: MetaInfo): Promise<any>;
+    next(updateFunctionOrNextState: UpdateFunction<STATE> | STATE, metaInfo?: MetaInfo): Promise<any>;
     dispatch(message: Message): void;
     readonly state: Readonly<STATE>;
     readonly state$: BehaviorSubject<STATE>;
