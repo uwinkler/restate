@@ -44,7 +44,41 @@ connectSocket(store)
 
 #### Messages
 
-Besides observing the `store.state$`, glue-code can also receive messages from the application:
+Besides observing the `store.state$`, glue-code can also receive messages from the application.
+
+Here is a simple UNDO example. The glue-code listens to `UNDO` events using the `store.messageBus$` and records the history of the state.
+If it receives the `UNDO` event, it rewinds the state history by on step.
+
+```code src=https://stackblitz.com/edit/react-rx-state-glue-undo?file=index.tsx
+function connectUndo(store:RxStore<any>) {
+  const history = []
+
+  store.state$.subscribe(nextState => {
+    history.push(nextState);
+  })
+
+  store.messageBus$.subscribe( msg => {
+    if(msg.type === 'UNDO' && history.length > 1) {
+      history.pop()  // remove current state
+      const prevState = history.pop();
+      store.next(prevState);
+    }
+  })
+}
+
+connectUndo(store);
+```
+
+The application can use the `createMessageBusHook(AppStoreProvider)` to create the `useDispatch` hook. With this hook, a component can dispatch an `UNDO` event.
+
+```code src=https://stackblitz.com/edit/react-rx-state-glue-undo?file=index.tsx
+const useDispatch = createMessageBusHook(AppStoreProvider)
+
+const UndoButton = () => {
+  const dispatch = useDispatch();
+  return <button onClick={() => dispatch({type:'UNDO'})} >UNDO</button>
+}
+```
 
 <hr />
 
