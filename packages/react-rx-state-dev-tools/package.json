@@ -1,0 +1,32 @@
+{
+  "name": "react-rx-dev-tools",
+  "version": "0.7.0",
+  "license": "MIT",
+  "scripts": {
+    "clean": "rm -rf build",
+    "start": "tsc --watch",
+    "build": "tsc",
+    "test": "jest"
+  },
+  "main": "build/index.js",
+  "types": "build/index.d.ts",
+  "dependencies": {
+    "@types/redux-devtools": "^3.0.46",
+    "react-rx-state": "^0.7.0",
+    "redux": "^4.0.1",
+    "redux-devtools-extension": "^2.13.8"
+  },
+  "devDependencies": {
+    "@types/jest": "^24.0.12",
+    "@types/react-test-renderer": "^16.8.1",
+    "jest": "^24.8.0",
+    "prettier": "^1.17.0",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "react-test-renderer": "^16.8.6",
+    "rxjs": "^6.5.1",
+    "ts-jest": "^24.0.2",
+    "typescript": "^3.4.5"
+  },
+  "gitHead": "6fc58748b1a2f0f97895a674499d717018d7ae92"
+}
