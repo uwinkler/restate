@@ -1,4 +1,4 @@
-import { connectMessageBus, MessagebusListener } from "../connect-message-bus"
+import { connectMessageBus, MessagesListener } from "../connect-message-bus"
 import { createStore } from "../create-store"
 import { Message, INIT_MESSAGE } from "../index"
 
@@ -8,7 +8,7 @@ it("should be able to create a message bus connector listener", () => {
 
   const handlerMock = jest.fn()
 
-  const listener: MessagebusListener<typeof state> = ({ message, store }) =>
+  const listener: MessagesListener<typeof state> = ({ message, store }) =>
     handlerMock(message, store)
 
   connectMessageBus(store, listener)
@@ -25,7 +25,7 @@ it("should be able to create a message bus listener (curried version)", () => {
 
   const handlerMock = jest.fn()
 
-  const listener: MessagebusListener<typeof state> = ({ message, store }) =>
+  const listener: MessagesListener<typeof state> = ({ message, store }) =>
     handlerMock(message, store)
 
   const conenctAppStoreMessageBus = connectMessageBus(store)

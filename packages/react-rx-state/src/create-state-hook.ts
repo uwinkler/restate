@@ -45,7 +45,7 @@ export function createStateHook<S, SUB_STATE>(
       ? selectorFunction
       : identifySelectorFunction
     const state$ = _store.state$
-    const startValue = selector(outerSelector(state$.value))
+    const startValue = selector(outerSelector(state$.value.payload))
 
     const [value, setValue] = useState<T>(startValue)
 
@@ -55,7 +55,7 @@ export function createStateHook<S, SUB_STATE>(
 
     useEffect(() => {
       const subscription = state$.subscribe(nextStateValue => {
-        const nextSubValue = selector(outerSelector(nextStateValue))
+        const nextSubValue = selector(outerSelector(nextStateValue.payload))
         output$.next(nextSubValue)
       })
 

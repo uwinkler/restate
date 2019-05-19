@@ -1,27 +1,18 @@
-import { distinctUntilChanged, pairwise } from "rxjs/operators"
+import { distinctUntilChanged } from "rxjs/operators"
 import { Patch } from "immer"
 import { RxStore } from "./rx-store"
-import { zip } from "rxjs"
 
 export function connectLogger(appStore: RxStore<any>) {
   const name =
     appStore.options.storeName === "" ? "RxState" : appStore.options.storeName
 
-  zip(appStore.state$, appStore.meta$, appStore.patches$)
-    .pipe(
-      distinctUntilChanged(),
-      pairwise()
-    )
-    .subscribe(update => {
-      const [prevUpdate, currentUpdate] = update
-      const [currentState, meta, patches] = currentUpdate
-      const [prevState] = prevUpdate
-      console.groupCollapsed(`[${name}]: ` + meta.type)
-      formatPatches(patches, prevState, currentState)
-      console.log("State:", currentState)
-      console.log("Meta:", meta)
-      console.groupEnd()
-    })
+  appStore.state$.pipe(distinctUntilChanged()).subscribe(update => {
+    console.groupCollapsed(`[${name}]: ` + update.type)
+    formatPatches(update.patches || [])
+    console.log("State:", update.payload)
+    console.log("Meta:", update.meta)
+    console.groupEnd()
+  })
 
   appStore.messageBus$.subscribe(message => {
     console.groupCollapsed(
@@ -33,11 +24,7 @@ export function connectLogger(appStore: RxStore<any>) {
   })
 }
 
-function formatPatches(
-  patches: Patch[],
-  _prevState: RxStore<any>,
-  _currentState: RxStore<any>
-) {
+function formatPatches(patches: Patch[]) {
   patches.forEach(patch => {
     const path = patch.path.join(".")
     switch (patch.op) {

@@ -24,7 +24,7 @@ export const INIT_MESSAGE: Message = {
 
 export interface NextErrorMessage<STATE> {
   error: Error
-  state: STATE
+  package: StatePackage<STATE>
   metaInfo: MetaInfo
 }
 
@@ -41,18 +41,16 @@ export interface RxStoreOptions {
   storeName: string
 }
 
+export interface StatePackage<STATE> {
+  type: string
+  payload: Readonly<STATE>
+  meta?: MetaInfo
+  patches?: Patch[] | null
+  inversePatches?: Patch[] | null
+}
+
 export class RxStore<STATE> {
-  protected _state$: BehaviorSubject<STATE>
-
-  protected _meta$: BehaviorSubject<MetaInfo> = new BehaviorSubject(
-    INIT_MESSAGE
-  )
-
-  protected _patches$: BehaviorSubject<Patch[]> = new BehaviorSubject([] as any)
-
-  protected _inversePatches$: BehaviorSubject<Patch[]> = new BehaviorSubject(
-    [] as any
-  )
+  protected _state$: BehaviorSubject<StatePackage<STATE>>
 
   protected _messageBus$: BehaviorSubject<Message> = new BehaviorSubject(
     INIT_MESSAGE
@@ -67,17 +65,17 @@ export class RxStore<STATE> {
   protected _middleware: Middleware<STATE>[] = []
 
   constructor(
-    x: BehaviorSubject<STATE>,
+    stateSubject: BehaviorSubject<StatePackage<STATE>>,
     middleware: Middleware<STATE>[],
     options: RxStoreOptions
   ) {
-    this._state$ = x
+    this._state$ = stateSubject
     this._options = options
     this._middleware = middleware
   }
 
   static of<S>(
-    state: BehaviorSubject<S>,
+    state: BehaviorSubject<StatePackage<S>>,
     middleware: Middleware<S>[],
     options: RxStoreOptions
   ) {
@@ -89,11 +87,11 @@ export class RxStore<STATE> {
     metaInfo: MetaInfo = defaultMetaInfo
   ) {
     try {
-      const currentState = this.state$.value
+      const currentStatePackage = this.state$.value
       const isUpdateFunction = updateFunctionOrNextState instanceof Function
 
       const draft = isUpdateFunction
-        ? (createDraft(currentState) as STATE)
+        ? (createDraft(currentStatePackage.payload) as STATE)
         : (createDraft(updateFunctionOrNextState) as STATE)
 
       const draftMetaInfo = createDraft(metaInfo)
@@ -109,20 +107,30 @@ export class RxStore<STATE> {
         metaInfo: draftMetaInfo
       })
 
+      let _patches: Patch[] | null = null
+      let _inversePatches: Patch[] | null = null
+
       const nextState = finishDraft(draft, (patches, inversePatches) => {
-        this.patches$.next(patches)
-        this.inversePatches$.next(inversePatches)
+        _patches = patches
+        _inversePatches = inversePatches
       }) as STATE
 
       const nextMetaInfo = finishDraft(draftMetaInfo)
 
-      this.state$.next(nextState)
-      this.meta$.next(nextMetaInfo)
+      const nextStatePackage: StatePackage<STATE> = {
+        type: nextMetaInfo.type,
+        payload: nextState,
+        meta: nextMetaInfo.payload,
+        patches: _patches,
+        inversePatches: _inversePatches
+      }
+
+      this.state$.next(nextStatePackage)
       this.error$.next(null as any)
 
       return { state: nextState, metaInfo: nextMetaInfo }
     } catch (e) {
-      this._error$.next({ error: e, state: this.state$.value, metaInfo })
+      this._error$.next({ error: e, package: this.state$.value, metaInfo })
       return e
     }
   }
@@ -132,23 +140,11 @@ export class RxStore<STATE> {
   }
 
   get state(): Readonly<STATE> {
-    return this._state$.value
+    return this._state$.value.payload
   }
 
   get state$() {
     return this._state$
-  }
-
-  get patches$() {
-    return this._patches$
-  }
-
-  get inversePatches$() {
-    return this._inversePatches$
-  }
-
-  get meta$() {
-    return this._meta$
   }
 
   get messageBus$() {

@@ -1,5 +1,5 @@
-import { RxStore, Message } from './rx-store'
-import { Subscription } from 'rxjs'
+import { RxStore, Message } from "./rx-store"
+import { Subscription } from "rxjs"
 
 /**
  * Usage:
@@ -7,16 +7,36 @@ import { Subscription } from 'rxjs'
  *
  */
 
-export type MessagebusListener<S> = (props: { message: Message; store: RxStore<S> }) => void
+export type MessagesListener<S> = (props: {
+  message: Message
+  store: RxStore<S>
+}) => void
 
-export function connectMessageBus<S>(store: RxStore<S>): (listener: MessagebusListener<S>) => Subscription
-export function connectMessageBus<S>(store: RxStore<S>, listener: MessagebusListener<S>): Subscription
-export function connectMessageBus<S>(store: RxStore<S>, listener?: MessagebusListener<S>) {
-  const subscribeListenerToMessageBus = (store: RxStore<S>, listener: MessagebusListener<S>) =>
-    store.messageBus$.subscribe(message => listener({ message, store }))
+//
+// Definition
+//
+export function connectMessageBus<S>(
+  store: RxStore<S>
+): (listener: MessagesListener<S>) => Subscription
+export function connectMessageBus<S>(
+  store: RxStore<S>,
+  listener: MessagesListener<S>
+): Subscription
+
+//
+// Implementation
+//
+export function connectMessageBus<S>(
+  store: RxStore<S>,
+  listener?: MessagesListener<S>
+) {
+  const subscribeListenerToMessageBus = (
+    store: RxStore<S>,
+    listener: MessagesListener<S>
+  ) => store.messageBus$.subscribe(message => listener({ message, store }))
 
   if (listener == null) {
-    return function(listener: MessagebusListener<S>) {
+    return function(listener: MessagesListener<S>) {
       return subscribeListenerToMessageBus(store, listener)
     }
   } else {

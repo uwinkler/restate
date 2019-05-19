@@ -4,7 +4,7 @@ import { immerable } from "immer"
 it("should create a simple store", () => {
   const state = { a: 1 }
   const store = createStore({ state })
-  expect(store.state).toBe(state) // Object.is equality - should be the same object. It freezes after the first next()
+  expect(store.state).toEqual(state) // Object.is equality - should be the same object. It freezes after the first next()
 })
 
 it("should be able to freeze non-plain objects", async () => {
@@ -12,8 +12,8 @@ it("should be able to freeze non-plain objects", async () => {
     [immerable] = true
     a = 1
   }
-  const state = new State()
 
+  const state = new State()
   const store = createStore({ state })
 
   await store.next(s => {

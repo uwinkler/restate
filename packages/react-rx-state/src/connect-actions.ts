@@ -1,4 +1,4 @@
-import produce from "immer"
+import { createDraft, finishDraft } from "immer"
 import { BehaviorSubject, Observable, Subscription } from "rxjs"
 import { distinctUntilChanged, map } from "rxjs/operators"
 import { MetaInfo, RxStore } from "./rx-store"
@@ -17,7 +17,6 @@ export interface ActionPropsState<STATE> {
 
 export interface ActionFactoryProps<SUB_STATE> {
   state$: Observable<SUB_STATE>
-  // meta$: Observable<MetaInfo>
   messageBus$: Observable<MetaInfo>
   next: (updateFunction: UpdateFunction<SUB_STATE>) => void
 }
@@ -34,10 +33,13 @@ function createPropsForForges<S, T extends Object>(
   selectorFunction: ActionFactorySelectorFunction<S, T>
 ): ActionFactoryConnectProps<S, T> {
   const state$ = store.state$
-  const subState$ = new BehaviorSubject<T>(selectorFunction(store.state$.value))
+  const subState$ = new BehaviorSubject<T>(
+    selectorFunction(store.state$.value.payload)
+  )
 
   const subscription = store.state$
     .pipe(
+      map(statePackage => statePackage.payload),
       map(selectorFunction),
       distinctUntilChanged()
     )
@@ -47,26 +49,16 @@ function createPropsForForges<S, T extends Object>(
     updateFunction: UpdateFunction<T>,
     metaInfo: MetaInfo = defaultMetaInfo
   ) {
-    const currentState = state$.value
-    const nextState = produce<S>(
-      currentState,
-      draftState => {
-        const subState = selectorFunction(draftState as any)
-        updateFunction(subState)
-        return draftState
-      },
-      (patches, inversePatches) => {
-        store.patches$.next(patches)
-        store.inversePatches$.next(inversePatches)
-      }
-    )
-    state$.next(nextState)
-    store.meta$.next(metaInfo)
+    const currentState = state$.value.payload
+    const draftState = createDraft(currentState)
+    const subState = selectorFunction(draftState as any)
+    updateFunction(subState)
+    const nextState = finishDraft(draftState) as S
+    store.next(nextState, metaInfo)
   }
 
   return {
     state$: subState$,
-    // meta$: store.meta$,
     messageBus$: store.messageBus$,
     next,
     store,
