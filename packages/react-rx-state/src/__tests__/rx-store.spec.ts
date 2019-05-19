@@ -52,9 +52,8 @@ it("should use middleware", () => {
     }
   })
 
-  const plusOne: Middleware<State> = ({ state, next }) => {
-    state.a = state.a + 1
-    next()
+  const plusOne: Middleware<State> = ({ nextState }) => {
+    nextState.a = nextState.a + 1
   }
 
   store.middleware.push(plusOne)
@@ -64,62 +63,6 @@ it("should use middleware", () => {
   })
 
   expect(store.state.a).toEqual(3)
-})
-
-it("should not call subsequent middlewares if next() is not called", () => {
-  interface State {
-    a: number
-  }
-  const store = createStore<State>({
-    state: {
-      a: 1
-    }
-  })
-
-  const doNotCallNext: Middleware<State> = () => {
-    // Do not call next
-  }
-
-  const setToThree: Middleware<State> = ({ state, next }) => {
-    state.a = 3
-    next()
-  }
-
-  store.middleware.push(doNotCallNext, setToThree)
-
-  store.next(s => {
-    s.a = 2
-  })
-
-  expect(store.state.a).toEqual(2)
-})
-
-it("should not call subsequent middlewares if next() is not called", () => {
-  interface State {
-    a: number
-  }
-  const store = createStore<State>({
-    state: {
-      a: 1
-    }
-  })
-
-  const doNotCallNext: Middleware<State> = () => {
-    // Do not call next
-  }
-
-  const setToThree: Middleware<State> = ({ state, next }) => {
-    state.a = 3
-    next()
-  }
-
-  store.middleware.push(doNotCallNext, setToThree)
-
-  store.next(s => {
-    s.a = 2
-  })
-
-  expect(store.state.a).toEqual(2)
 })
 
 it("should use multiple middleware", () => {
@@ -132,9 +75,8 @@ it("should use multiple middleware", () => {
     }
   })
 
-  const plusOne: Middleware<State> = ({ state, next }) => {
-    state.a = state.a + 1
-    next()
+  const plusOne: Middleware<State> = ({ nextState }) => {
+    nextState.a = nextState.a + 1
   }
 
   store.middleware.push(plusOne, plusOne)
@@ -146,37 +88,7 @@ it("should use multiple middleware", () => {
   expect(store.state.a).toEqual(4)
 })
 
-it("should be able to use middleware in reverse order", () => {
-  interface State {
-    a: number
-  }
-  const store = createStore<State>({
-    state: {
-      a: 1
-    }
-  })
-
-  const plusOne: Middleware<State> = ({ state, next }) => {
-    state.a = state.a + 1
-    next()
-  }
-
-  const logMiddleware: Middleware<State> = ({ state, next }) => {
-    const start = state.a
-    next()
-    const end = state.a
-    expect(start).toEqual(2) // first we get a 2
-    expect(end).toEqual(3) // then plusOne should have been called
-  }
-
-  store.middleware.push(logMiddleware, plusOne)
-
-  store.next(s => {
-    s.a = 2
-  })
-})
-
-it("should be able to throw", () => {
+it("should be able to throw within a middleware function", () => {
   interface State {
     a: number
   }

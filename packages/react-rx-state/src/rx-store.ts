@@ -22,15 +22,15 @@ export const INIT_MESSAGE: Message = {
   type: "@RX/INIT"
 }
 
-interface MiddlewareProps<S> {
-  state: S
-  metaInfo: MetaInfo
-  next(): any
-}
-
 export interface NextErrorMessage<STATE> {
   error: Error
   state: STATE
+  metaInfo: MetaInfo
+}
+
+interface MiddlewareProps<S> {
+  nextState: S
+  currentState: S
   metaInfo: MetaInfo
 }
 
@@ -96,20 +96,25 @@ export class RxStore<STATE> {
         ? (createDraft(currentState) as STATE)
         : (createDraft(updateFunctionOrNextState) as STATE)
 
-      const draftMetaInfos = createDraft(metaInfo)
+      const draftMetaInfo = createDraft(metaInfo)
 
       if (updateFunctionOrNextState instanceof Function) {
         updateFunctionOrNextState(draft)
       }
 
-      recursiveMiddlewareHandler(this._middleware, draft, draftMetaInfos)
+      recursiveMiddlewareHandler<STATE>({
+        middleware: this._middleware,
+        nextState: draft,
+        currentState: this.state,
+        metaInfo: draftMetaInfo
+      })
 
       const nextState = finishDraft(draft, (patches, inversePatches) => {
         this.patches$.next(patches)
         this.inversePatches$.next(inversePatches)
       }) as STATE
 
-      const nextMetaInfo = finishDraft(draftMetaInfos)
+      const nextMetaInfo = finishDraft(draftMetaInfo)
 
       this.state$.next(nextState)
       this.meta$.next(nextMetaInfo)
@@ -163,27 +168,36 @@ export class RxStore<STATE> {
   }
 }
 
-function recursiveMiddlewareHandler<STATE>(
-  middleware: Middleware<STATE>[],
-  state: STATE,
+interface RecursiveMiddlewareHandlerProps<STATE> {
+  middleware: Middleware<STATE>[]
+  nextState: STATE
+  currentState: STATE
   metaInfo: MetaInfo
-) {
+}
+
+function recursiveMiddlewareHandler<STATE>({
+  middleware,
+  nextState,
+  currentState,
+  metaInfo
+}: RecursiveMiddlewareHandlerProps<STATE>): any {
   if (middleware.length === 0) {
-    return {
-      state,
-      metaInfo
-    }
+    return
   }
 
-  const nextCall = middleware[0]
-  const rest = middleware.slice(1, middleware.length)
-  const nextFunction = async () => {
-    await recursiveMiddlewareHandler(rest, state, metaInfo)
-  }
+  const nextMiddleware = middleware[0]
+  nextMiddleware({
+    nextState,
+    currentState,
+    metaInfo
+  })
 
-  return nextCall({
-    state,
-    metaInfo,
-    next: nextFunction
+  const remainingMiddleware = middleware.slice(1, middleware.length)
+
+  return recursiveMiddlewareHandler({
+    middleware: remainingMiddleware,
+    nextState,
+    currentState,
+    metaInfo
   })
 }
