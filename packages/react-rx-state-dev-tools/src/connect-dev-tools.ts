@@ -17,7 +17,6 @@ export function connectDevTools(store: RxStore<any>): () => void {
   })
 
   devTools.subscribe((msg: any) => {
-    console.log(msg)
     if (
       msg.type === "DISPATCH" &&
       msg.state &&
