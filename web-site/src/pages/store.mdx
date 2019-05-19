@@ -83,14 +83,23 @@ store.next(s => s.name = "John Targaryen")`
   An immer producer returned a new value *and* modified its draft.
   Either return a new value *or* modify the draft.
 </blockquote>
-To avoid such an error, wrap your code in currly braces as shown above or return a new
+To avoid such an error, wrap your code in currly braces or return a new
 state object:
 
-```code src=https://stackblitz.com/edit/react-rx-state-create-store
-// Provide a new state
-store.next(() => {
-  name: "John Targaryen"
-})
+```code variant=ok title="Different ways to use store.next" src=https://stackblitz.com/edit/react-rx-state-create-store
+// immer style - imperative
+store.next( state => { state.name = "John Targaryen"} )
+
+// immer style - return an object (state will be replaced, not merged)
+store.next(() => ({name: "John Targaryen" , age: 32})
+
+// or using destructing
+store.next(state => ({ ...state, name: "John Targaryen"}))
+
+// next also takes an object as argument (state will be replaced, not merged)
+store.next({name: "John Targaryen", age: 32})
+
+
 ```
 
 ---

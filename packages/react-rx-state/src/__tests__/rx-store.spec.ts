@@ -2,12 +2,12 @@ import { createStore } from "../create-store"
 import { immerable } from "immer"
 import { Middleware } from "../rx-store"
 
-it("should be able to set a next state", async () => {
+it("should be able to set a next state", () => {
   const orgState = { a: 1 }
 
   const store = createStore({ state: orgState })
 
-  await store.next(s => {
+  store.next(s => {
     s.a = 2
   })
 
@@ -18,7 +18,7 @@ it("should be able to set a next state", async () => {
   expect(Object.isFrozen(store.state)).toBe(true)
 })
 
-it("should be able to use non-plain objects (immer style)", async () => {
+it("should be able to use non-plain objects (immer style)", () => {
   class State {
     [immerable] = true
     a = 1
@@ -30,7 +30,7 @@ it("should be able to use non-plain objects (immer style)", async () => {
 
   const store = createStore({ state })
 
-  await store.next(s => {
+  store.next(s => {
     s.a = 2
   })
 
@@ -42,7 +42,7 @@ it("should be able to use non-plain objects (immer style)", async () => {
   expect(nextState.aPlusOne()).toEqual(3)
 })
 
-it("should use middleware", async () => {
+it("should use middleware", () => {
   interface State {
     a: number
   }
@@ -57,16 +57,16 @@ it("should use middleware", async () => {
     next()
   }
 
-  store.middlewares.push(plusOne)
+  store.middleware.push(plusOne)
 
-  await store.next(s => {
+  store.next(s => {
     s.a = 2
   })
 
   expect(store.state.a).toEqual(3)
 })
 
-it("should not call subsequent middlewares if next() is not called", async () => {
+it("should not call subsequent middlewares if next() is not called", () => {
   interface State {
     a: number
   }
@@ -85,16 +85,16 @@ it("should not call subsequent middlewares if next() is not called", async () =>
     next()
   }
 
-  store.middlewares.push(doNotCallNext, setToThree)
+  store.middleware.push(doNotCallNext, setToThree)
 
-  await store.next(s => {
+  store.next(s => {
     s.a = 2
   })
 
   expect(store.state.a).toEqual(2)
 })
 
-it("should not call subsequent middlewares if next() is not called", async () => {
+it("should not call subsequent middlewares if next() is not called", () => {
   interface State {
     a: number
   }
@@ -113,16 +113,16 @@ it("should not call subsequent middlewares if next() is not called", async () =>
     next()
   }
 
-  store.middlewares.push(doNotCallNext, setToThree)
+  store.middleware.push(doNotCallNext, setToThree)
 
-  await store.next(s => {
+  store.next(s => {
     s.a = 2
   })
 
   expect(store.state.a).toEqual(2)
 })
 
-it("should use multiple middleware", async () => {
+it("should use multiple middleware", () => {
   interface State {
     a: number
   }
@@ -137,45 +137,16 @@ it("should use multiple middleware", async () => {
     next()
   }
 
-  store.middlewares.push(plusOne, plusOne)
+  store.middleware.push(plusOne, plusOne)
 
-  await store.next(s => {
+  store.next(s => {
     s.a = 2
   })
 
   expect(store.state.a).toEqual(4)
 })
 
-it("should use async middleware", async () => {
-  interface State {
-    a: number
-  }
-  const store = createStore<State>({
-    state: {
-      a: 1
-    }
-  })
-
-  const plusOne: Middleware<State> = ({ state, next }) => {
-    return new Promise(resolve => {
-      setTimeout(() => {
-        state.a = state.a + 1
-        next()
-        resolve()
-      }, 10)
-    })
-  }
-
-  store.middlewares.push(plusOne)
-
-  await store.next(s => {
-    s.a = 2
-  })
-
-  expect(store.state.a).toEqual(3)
-})
-
-it("should be able to use middleware in reverse order", async () => {
+it("should be able to use middleware in reverse order", () => {
   interface State {
     a: number
   }
@@ -190,22 +161,22 @@ it("should be able to use middleware in reverse order", async () => {
     next()
   }
 
-  const logMiddleware: Middleware<State> = async ({ state, next }) => {
+  const logMiddleware: Middleware<State> = ({ state, next }) => {
     const start = state.a
-    await next()
+    next()
     const end = state.a
     expect(start).toEqual(2) // first we get a 2
     expect(end).toEqual(3) // then plusOne should have been called
   }
 
-  store.middlewares.push(logMiddleware, plusOne)
+  store.middleware.push(logMiddleware, plusOne)
 
-  await store.next(s => {
+  store.next(s => {
     s.a = 2
   })
 })
 
-it("should be able to throw", async () => {
+it("should be able to throw", () => {
   interface State {
     a: number
   }
@@ -219,9 +190,9 @@ it("should be able to throw", async () => {
     throw Error("error!")
   }
 
-  store.middlewares.push(errorMiddleware)
+  store.middleware.push(errorMiddleware)
 
-  await store.next(s => {
+  store.next(s => {
     s.a = 2
   })
 
@@ -251,13 +222,13 @@ it("should return options", () => {
   expect(store.options.storeName).toEqual("TEST")
 })
 
-it("freeze: should freeze the state if the freeze options is set to true", async () => {
+it("freeze: should freeze the state if the freeze options is set to true", () => {
   const store = createStore({
     state: { value: 1 },
     options: { freeze: true }
   })
 
-  await store.next(s => {
+  store.next(s => {
     s.value = 2
   })
 
@@ -268,13 +239,13 @@ it("freeze: should freeze the state if the freeze options is set to true", async
   expect(shouldThrow).toThrow()
 })
 
-it("freeze: should not freeze the state if the freeze options is set to false", async () => {
+it("freeze: should not freeze the state if the freeze options is set to false", () => {
   const store = createStore({
     state: { value: 1 },
     options: { freeze: false }
   })
 
-  await store.next(s => {
+  store.next(s => {
     s.value = 2
   })
 
@@ -285,21 +256,23 @@ it("freeze: should not freeze the state if the freeze options is set to false", 
   expect(shouldNotThrow).not.toThrow()
 })
 
-fit("should be able to set the state as object, not using immer's imperative way", async () => {
+it("should be able to set the state as object, not using immer's imperative way", () => {
   const store = createStore({
     state: { value: 1 },
     options: { freeze: false }
   })
-  await store.next({ value: 12 })
+  store.next({ value: 12 })
+
   expect(store.state).toEqual({ value: 12 })
 })
 
-fit("should be able to set the state as object, not using immer's imperative way", async () => {
+it("should be able to set the state as object, not using immer's imperative way", () => {
   const store = createStore({
     state: { value: 1 },
     options: { freeze: false }
   })
 
-  await store.next({ value: 12 })
+  store.next({ value: 12 })
+
   expect(store.state).toEqual({ value: 12 })
 })

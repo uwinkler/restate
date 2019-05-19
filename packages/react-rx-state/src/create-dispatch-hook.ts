@@ -3,10 +3,10 @@ import { useContext } from "react"
 
 type CreateUseMessageBusObservableHookProps<S> = React.Context<RxStore<S>>
 
-export function createMessageBusHook<S extends object>(
+export function createDispatchHook<S extends object>(
   provider: CreateUseMessageBusObservableHookProps<S>
 ) {
-  return function useMessageBus() {
+  return function useDispatch() {
     const store = useContext(provider)
 
     function dispatch(message: Message) {

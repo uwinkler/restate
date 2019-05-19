@@ -1,4 +1,7 @@
-src 
-tsconfig.json
+build/__tests__
 coverage
 jest.config.js
+src 
+tsconfig.json
+yarn.lock
+.gitignore
