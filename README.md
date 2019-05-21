@@ -27,18 +27,21 @@ Futhermore, Rx-State
 
 <hr />
 
+The documentation is available on Netlify:[https://react-rx-state.netlify.com/](https://react-rx-state.netlify.com/).
+
+<hr />
 
 ## Installation
 
 With NPM:
 
-```code
+```bash
 npm install react-rx-state --save
 ```
 
 or with YARN:
 
-```code
+```bash
 yarn add react-rx-state
 ```
 
@@ -46,7 +49,7 @@ yarn add react-rx-state
 
 To get started, you need to create a store:
 
-```typescript 
+```ts 
 import { createStore } from 'react-rx-state'
 
 const store = createStore({
@@ -57,13 +60,13 @@ const store = createStore({
 })
 ```
 
-Try on [StackBlitz](https://stackblitz.com/edit/react-rx-state-hello-world)
+Try on [StackBlitz](https://stackblitz.com/edit/react-rx-state-hello-world)!
 
 ## Provider
 
 To connect our store to the React component tree we need a `Provider`:
 
-```code src=https://stackblitz.com/edit/react-rx-state-hello-world
+```ts
 import { createProvider } from 'react-rx-state'
 
 const AppStoreProvider = createProvider(store); // to provide the store to react
@@ -77,6 +80,9 @@ const App: React.FC = () => (
 );
 ```
 
+Try on [StackBlitz](https://stackblitz.com/edit/react-rx-state-hello-world)!
+
+
 ## Read from the state
 
 To read from the state RxState provides you _AppStateHooks_. 
@@ -86,7 +92,7 @@ AppStateHooks hooks are use to
 - select properties from your state
 - do some basic computations / transformations
 
-```
+```ts
 const store = createStore({
   state: {
     user: { name: 'John Doe', age: 32 },
@@ -94,7 +100,7 @@ const store = createStore({
   }
 })
 
-const AppStoreProvider = createProvider(store); // to provide the store to react
+const AppStoreProvider = createProvider(store); 
 
 // create a `scoped state hook` (we select the `user` object)
 const useUserState = createStateHook(AppStoreProvider, state => state.user);
@@ -102,18 +108,21 @@ const useUserState = createStateHook(AppStoreProvider, state => state.user);
 const Hello = () => {
   // select a property from the state
   const name = useUserState(user => user.name)
-  // do some basic computations
+  // do some basic views/computations/transformations
   const days = useUserState(user => user.age * 365)
 
   return <h1>Hello {name}, you are {days} days old</h1>
 }
 ```
 
+Try on [StackBlitz](https://stackblitz.com/edit/react-rx-state-hello-world)!
+
+
 ## Change the state - using hooks
 
 To change the state, we use a Next-Hook.
 
-```code lines=3 src=https://stackblitz.com/edit/react-rx-state-hello-world
+```ts
 import { createNextHook } from 'react-rx-state'
 
 // create a next-hook
@@ -126,7 +135,7 @@ the access to our state. In this example the scope is the `user` object.
 The `useNextAppState` returns a custom`next` function, which
 can be use to change the `user` object:
 
-```code lines=4-5,8-9 src=https://stackblitz.com/edit/react-rx-state-hello-world
+```ts
 const NameForm = () => {
   const name = useAppState(state => state.user.name)
 
@@ -142,6 +151,9 @@ const NameForm = () => {
 }
 ```
 
+Try on [StackBlitz](https://stackblitz.com/edit/react-rx-state-hello-world)!
+
+
 ## Change the state - using actions
 
 Another way to modify your state are **Actions**.
@@ -152,7 +164,7 @@ receives - among other things - the `next()` function to update the store.
 An _ActionFactory_ returns a object that holds
 the all the actions to change the state. Think about actions as "member functions" of your state.
 
-```code src=https://stackblitz.com/edit/react-rx-state-actions?file=index.tsx
+```ts
 
 // Action factory
 const userActionsFactory = ( {next}:ActionFactoryProps<User>) => ({
@@ -171,7 +183,7 @@ const userActionsFactory = ( {next}:ActionFactoryProps<User>) => ({
 
 The _ActionFactory_ is hooked into `React` using the `createActionsHook`:
 
-```code src=https://stackblitz.com/edit/react-rx-state-actions?file=index.tsx
+```ts
 const useUserActions = createActionsHook(AppStoreProvider, state => state.user, userActionsFactory);
 
 const Age = () => {
@@ -185,7 +197,16 @@ const Age = () => {
 }
 ```
 
-Try in [StackBlitz](https://stackblitz.com/edit/react-rx-state-actions?file=index.tsx)
+Try on [StackBlitz](https://stackblitz.com/edit/react-rx-state-actions?file=index.tsx)
+
+## Change the state - using `store.next()`
+
+Outside of your component tree, you can also change the store like this:
+
+```ts
+store.next( state => { state.user.name = "John"})
+```
+
 
 ## Middleware
 
@@ -195,7 +216,7 @@ They can change the `nextState`, if required. If a middleware throws an exceptio
 Take the `ageValidator` middleware for example.
 It ensures, that the `user.age` property never gets negative.
 
-```code src=https://stackblitz.com/edit/react-rx-state-middleware
+```ts
 // Ensures the age will never be < 0 or > 120
 const ageValidator: Middleware<State> = ({ nextState, currentState }) => {
   nextState.age = nextState.user.age < 0 ? currentState.user.age : nextState.user.age
@@ -210,10 +231,10 @@ const store = createStore({
 })
 
 
-store.next( s => s.user.age = -1); // will be intercepted by ageValidatorMin.
+store.next( s => s.user.age = -1); // will be intercepted by the ageValidator middleware.
 ```
 
-Try in [StackBlitz](https://stackblitz.com/edit/react-rx-state-middleware)
+Try on [StackBlitz](https://stackblitz.com/edit/react-rx-state-middleware)
 
 
 ## Glue-Code
@@ -226,7 +247,7 @@ Glue code can receive message from the React components, actions or other glue-c
 
 Here is an very simple logger example, that observes the state and logs all state changes:
 
-```
+```ts
 function connectLogger(store:RxStore<any>) {
   store.state$.subscribe( nextState => {
     console.log('STATE:', JSON.stringify(nextState.payload, null, 2));
@@ -236,14 +257,14 @@ function connectLogger(store:RxStore<any>) {
 connectLogger(store);
 ```
 
-Try in [StackBlitz](https://stackblitz.com/edit/react-rx-state-hello-quick-glue?file=index.tsx)
+Try on [StackBlitz](https://stackblitz.com/edit/react-rx-state-hello-quick-glue?file=index.tsx)
 
 #### Update
 
 Another example of glue code could be a <a href="https://socket.io">socket.io</a> adapter, that receives chat
 messages from a server and adds them to the application state:
 
-```
+```ts
 function connectSocket(store:RxStore<any>) {
  socket.on('chat message', msg => {
     store.next(state => {state.messages.push(msg)});
@@ -261,8 +282,7 @@ Here is a simple UNDO example. The glue-code records the history of the app stat
 The glue-code also listens to the `UNDO` events by subscribing the `store.messageBus$`.
 If it receives the `UNDO` event, it rewinds the state history by on step.
 
-```code src=https://stackblitz.com/edit/react-rx-state-glue-undo?file=index.tsx
-function connectUndo(store:RxStore<any>) {
+```ts
   const history = []
 
   // record state history
@@ -285,7 +305,7 @@ connectUndo(store);
 
 The application can use `createDispatchHook(AppStoreProvider)` to create a `useDispatch` hook. With this hook, a component can dispatch an `UNDO` event:
 
-```code src=https://stackblitz.com/edit/react-rx-state-glue-undo?file=index.tsx
+```ts
 const useDispatch = createMessageBusHook(AppStoreProvider)
 
 function useUndo() {
@@ -299,7 +319,7 @@ const UndoButton = () => {
 }
 ```
 
-<hr />
+Try the UNDO example on [StackBlitz!](https://stackblitz.com/edit/react-rx-state-glue-undo?file=index.tsx)
 
 ## DevTools
 
@@ -316,13 +336,13 @@ Go and get the ReduxDevTools for your browser:
 
 Then install the `react-rx-state-dev-tools`
 
-```
+```bash
 yarn install react-rx-state-dev-tools
 ```
 
 #### Usage
 
-```
+```ts
 import {connectDevTools} from 'react-rx-state-dev-tools'
 
 const store = createStore({
