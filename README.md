@@ -326,7 +326,7 @@ Try the UNDO example on [StackBlitz!](https://stackblitz.com/edit/react-rx-state
 `react-rx-state` uses the
 excellent <a href="https://github.com/zalmoxisus/redux-devtools-extension" target="https://github.com/zalmoxisus/redux-devtools-extension">ReduxDevTools</a> to provide power-ups for your development workflow.
 
-<img src={screenshot} width="100%" style={{ maxWidth: 1200 }} />
+![DevTools screenshot](https://raw.githubusercontent.com/uwinkler/react-rx-state/dev/web-site/src/pages/dev-tools-screenshot.png)
 
 #### Installation
 Go and get the ReduxDevTools for your browser:
