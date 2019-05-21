@@ -49,6 +49,12 @@ export const MDXWrapper: React.FC = props => (
 )
 
 export const MdxLayout: React.FC<DefaultLayoutProps> = props => {
+  const frontmatter = {
+    path: "/",
+    title: ""
+  }
+  const { path, title } = props.pageContext.frontmatter || frontmatter
+
   return (
     <AppStateProvider>
       <AppTheme>
@@ -70,10 +76,7 @@ export const MdxLayout: React.FC<DefaultLayoutProps> = props => {
             rel="stylesheet"
           />
         </Helmet>
-        <PersistentDrawerLeft
-          path={props.pageContext.frontmatter.path}
-          title={props.pageContext.frontmatter.title}
-        >
+        <PersistentDrawerLeft path={path} title={title}>
           <>
             <MDXWrapper {...props} />
           </>

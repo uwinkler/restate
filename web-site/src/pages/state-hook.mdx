@@ -1,5 +1,5 @@
 ---
-title: StateHook
+title: App State Hook
 path: /state-hook/
 ---
 
@@ -67,7 +67,7 @@ Depending on your needs you can choose between various selector function types:
 ### Property Selector
 
 Property selector select a single property (e.g the `name` property) from the app state. Property selectors are very
-fine grain selecotrs and therefore very efficient selectors. You should use them most of the time.
+fine grain selectors and therefore very efficient selectors. You should use them most of the time.
 
 ```code src=https://stackblitz.com/edit/react-rx-state-hello-selector-render?file=index.tsx
 const name = useAppState(state => state.name)

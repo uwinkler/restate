@@ -1,0 +1,33 @@
+---
+title: Introduction
+path: /
+---
+
+import { Link } from "gatsby"
+import { MdxLayout } from "../layouts/mdx-layout"
+import { InfoPanel, WarningPanel } from "../components/panel"
+export default MdxLayout
+
+# What is `react-rx-state`?
+
+**Rx-State** is a predictable, easy to use, easy to extend, typesafe state container for [React](https://reactjs.org/) applications.
+
+<hr />
+
+Rx-State follows the [three principles of Redux](https://redux.js.org/introduction/three-principles):
+
+- Single source of truth
+- State is read only,
+- Changes are of the immutable state are made in a convenient way (using [immer.js](https://github.com/immerjs/immer))
+
+Futhermore, Rx-State
+
+- provides a nice React-Hook based API to read and update the state
+- is using Typescript to make your application more robust and your development experience more enjoyable
+- provide means to develop asynchronous state changes without the drama
+- makes it easy integrate other components (server, logger, database, router,...) as
+  the state is [reactive](https://github.com/ReactiveX/rxjs).
+- dev-tools
+- easy to learn and easy to test
+
+<hr />

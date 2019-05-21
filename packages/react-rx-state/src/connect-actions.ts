@@ -18,6 +18,7 @@ export interface ActionPropsState<STATE> {
 export interface ActionFactoryProps<SUB_STATE> {
   state$: Observable<SUB_STATE>
   messageBus$: Observable<MetaInfo>
+  state: () => SUB_STATE
   next: (updateFunction: UpdateFunction<SUB_STATE>) => void
 }
 
@@ -36,6 +37,8 @@ function createPropsForForges<S, T extends Object>(
   const subState$ = new BehaviorSubject<T>(
     selectorFunction(store.state$.value.payload)
   )
+
+  const state = () => selectorFunction(state$.value.payload)
 
   const subscription = store.state$
     .pipe(
@@ -61,6 +64,7 @@ function createPropsForForges<S, T extends Object>(
     state$: subState$,
     messageBus$: store.messageBus$,
     next,
+    state,
     store,
     subscription
   }

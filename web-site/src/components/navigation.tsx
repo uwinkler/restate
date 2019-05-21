@@ -100,8 +100,26 @@ export const Navigation: React.FC<NavigationProps> = props => {
         <PageLink
           path={props.path}
           variant="inset"
-          to="/quick-hooks/"
-          title="Hooks"
+          to="/quick-store/"
+          title="Store"
+        />
+        <PageLink
+          path={props.path}
+          variant="inset"
+          to="/quick-provider/"
+          title="Provider"
+        />
+        <PageLink
+          path={props.path}
+          variant="inset"
+          to="/quick-state-hook/"
+          title="State Hook"
+        />
+        <PageLink
+          path={props.path}
+          variant="inset"
+          to="/quick-next-hook/"
+          title="Next Hook"
         />
         <PageLink
           path={props.path}
@@ -112,14 +130,20 @@ export const Navigation: React.FC<NavigationProps> = props => {
         <PageLink
           path={props.path}
           variant="inset"
-          to="/quick-views/"
-          title="Views"
+          to="/quick-glue/"
+          title="Glue Code"
         />
         <PageLink
           path={props.path}
           variant="inset"
-          to="/quick-glue/"
-          title="Glue Code"
+          to="/quick-middleware/"
+          title="Middleware"
+        />
+        <PageLink
+          path={props.path}
+          variant="inset"
+          to="/quick-dev-tools/"
+          title="DevTools"
         />
       </List>
 

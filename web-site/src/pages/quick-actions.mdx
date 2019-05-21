@@ -8,30 +8,27 @@ import { Link } from "gatsby"
 import { InfoPanel, WarningPanel } from "../components/panel"
 export default MdxLayout
 
-## Actions
-
 Another way to modify your state are **Actions**.
-
-<hr />
 
 Actions are forged in an _ActionFactory_. The _ActionFactory_ is a function that
 receives - among other things - the `next()` function to update the store.
 
+An _ActionFactory_ returns a object that holds
+the all the actions to change the state. Think about actions as "member functions" of your state.
+
 ```code src=https://stackblitz.com/edit/react-rx-state-actions?file=index.tsx
-const store = createStore({
-  state: {
-    user: { name: 'John Snow', age: 32 },
-    todos: 0
-  }
-})
-...
-// Actions factory
+
+// Action factory
 const userActionsFactory = ( {next}:ActionFactoryProps<User>) => ({
   incrementAge() {
     next(user => user.age++)
   },
   decrementAge() {
     next(user => user.age--)
+  },
+  async fetchData(userId:string) {
+    const data = await serverFetchUserData(userId)
+    next(user => user.data = data)
   }
 })
 ```
@@ -52,4 +49,16 @@ const Age = () => {
 }
 ```
 
+<InfoPanel>
+
+Keep in mind:
+
+- Think about actions as "member functions" of your state.
+- Actions keeps your React code clean and side-effect free.
+- Actions can be asynchronously
+- Actions can be used outside of React components as well
+- Actions simplifies testing: actions can be tested outside of a React component. Action-hooks can be easily mocked.
+
 Learn more about <Link to="/actions">Actions.</Link>
+
+</InfoPanel>

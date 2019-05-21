@@ -1,0 +1,48 @@
+---
+title: Dev Tools
+path: /quick-dev-tools/
+---
+
+import { MdxLayout } from "../layouts/mdx-layout"
+import { Link } from "gatsby"
+import { InfoPanel, WarningPanel } from "../components/panel"
+const screenshot = require("./dev-tools-screenshot.png")
+export default MdxLayout
+
+## DevTools
+
+`react-rx-state` uses the
+excellent <a href="https://github.com/zalmoxisus/redux-devtools-extension" target="https://github.com/zalmoxisus/redux-devtools-extension">ReduxDevTools</a> to provide power-ups for your development workflow.
+
+<img src={screenshot} width="100%" style={{ maxWidth: 1200 }} />
+
+## Installation
+
+Go and get the ReduxDevTools for your browser:
+
+- <a href="https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd">Google Chrome</a>
+- <a href="https://addons.mozilla.org/en-US/firefox/addon/reduxdevtools/">Firefox</a>
+
+Then install the `react-rx-state-dev-tools`
+
+```
+yarn install react-rx-state-dev-tools
+```
+
+## Usage
+
+```code src=https://stackblitz.com/edit/react-rx-state-dev-tools?file=index.tsx
+import {connectDevTools} from 'react-rx-state-dev-tools'
+
+const store = createStore({
+  state: {
+    name: 'John Snow',
+    age: 32,
+  },
+  options: {
+    storeName: "MY APP STORE" // <-- will show up in the instance selector
+  }
+})
+
+connectDevTools(store);
+```

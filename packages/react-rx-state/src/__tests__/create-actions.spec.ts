@@ -26,8 +26,14 @@ function hello(greetings: string, { next }: ActionFactoryProps<MainView>) {
   next(state => (state.hello = greetings))
 }
 
+function upperCase({ next, state }: ActionFactoryProps<MainView>) {
+  const nextGreetings = state().hello.toUpperCase()
+  next(state => (state.hello = nextGreetings))
+}
+
 const mainViewActionsFactory = (props: ActionFactoryProps<MainView>) => ({
-  hello: (greetings: string) => hello(greetings, props)
+  hello: (greetings: string) => hello(greetings, props),
+  upperCase: () => upperCase(props)
 })
 
 const mainViewActions = Rx.connectActions(
@@ -40,7 +46,7 @@ it("should update store", () => {
   expect(store.state.view.main.hello).toEqual("world")
   mainViewActions.hello("rx-state")
   expect(store.state.view.main.hello).toEqual("rx-state")
+  mainViewActions.upperCase()
+  expect(store.state.view.main.hello).toEqual("RX-STATE")
   expect(myOtherStore.state.view.main.hello).toEqual("world")
 })
-
-export default {}

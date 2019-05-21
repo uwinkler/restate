@@ -59,7 +59,7 @@ console.log(store.state.name) // logs 'John Snow'
 
 ## Store.next()
 
-Use the `store.next()` function to updat the store.
+Use the `store.next()` function to update the store.
 
 ```code src=https://stackblitz.com/edit/react-rx-state-create-store
 store.next(state => {
@@ -98,8 +98,6 @@ store.next(state => ({ ...state, name: "John Targaryen"}))
 
 // next also takes an object as argument (state will be replaced, not merged)
 store.next({name: "John Targaryen", age: 32})
-
-
 ```
 
 ---
@@ -120,7 +118,7 @@ function connectLogger(store: RxStore<any>) {
     )
     .subscribe(props => {
       const [oldState, newState] = props;
-      console.log('State:', JSON.stringify(oldState), ' -> ', JSON.stringify(newState));
+      console.log('State:', JSON.stringify(oldState.payload), ' -> ', JSON.stringify(newState.payload));
     })
 }
 
@@ -141,22 +139,21 @@ and takes the states in pairs (old and new) using <a href="https://rxjs-dev.fire
 
 ## Observable `store.messageBus$`
 
-Sometimes it is better to send a message (or action in redux terms) and let glue-code do all the hard work.
+Sometimes it is convenient to send a message (or action in redux terms) to the glue-code and let glue-code do all the hard work.
+
 This is particular true with long running or complex operations, async operations or in case where several different parts
-of the application have to react to a specific event. For those use-cases the `store.messageBus$` observable comes in handy.
+of the application have to react to a specific event.
+
+For those use-cases the `store.messageBus$` observable comes in handy.
 
 A good example would be the log-in/log-out of a user.
 
-```code lines=5-22 src=https://stackblitz.com/edit/react-rx-state-messagebus
-
-const useDispatch = createMessageBusHook(AppStoreProvider);
-
+```code lines=5-18 src=https://stackblitz.com/edit/react-rx-state-messagebus
 // Glue-code to perform a login
 function connectLoginAction(store: RxStore<State>) {
   store.messageBus$.subscribe(async msg => {
-    if (msg.type === 'LOGIN') {
       // Note: this is an an async function and updates the state twice
-
+    if (msg.type === 'LOGIN') {
       // Activate busy indicator
       store.next(state => { state.waiting = true })
 
@@ -175,61 +172,20 @@ function connectLoginAction(store: RxStore<State>) {
 
 connectLoginAction(store)
 
+const useDispatch = createDispatchHook(AppStoreProvider);
 
-const LoginForm:React.FC = () => {
-  ...
+const Login = () => {
+  const [id, setId] = React.useState('')
+  const [password, setPassword] = React.useState('')
   const dispatch = useDispatch();
 
-  const logIn = () => dispatch({ type: 'LOGIN', payload: { user: id, password } })
+  function login() {
+    dispatch({ type: 'LOGIN', payload: { user: id, password } })
+  }
 
-  return (
-    <div>
-      ...
-      <button onClick={logIn}>Log-In</button>
-    </div>)
-}
+  return(
+    ...
+    <button onClick={login} >Log-In</button>
+  )
 
-```
-
-## Observable `store.meta$`
-
-Every store has a `meta$` observable. The `meta$` observable can be utilized to publish
-additional meta information along every state change.
-
-In the following example, we aim to send the state to
-the server (`console.log()` it) after a short delay of 500ms,
-but only if the state has been updated with the `SEND_TO_SERVER` meta information.
-
-```code lines=2-12 src=https://stackblitz.com/edit/react-rx-state-glue-meta
-function connectToServer(store: RxStore<any>) {
-  combineLatest(store.state$, store.meta$) // Take the lates changes
-    .pipe(
-      // Let only state changes with the tag 'SEND_TO_SERVER' through
-      filter( ( [ _, meta] ) => meta.type === 'SEND_TO_SERVER'),
-      // Debounce by 500ms, so we don't flood the server with messages
-      debounceTime(500)
-    )
-    .subscribe(props => {
-      const [state] = props;
-      console.log('Send to server:', state)
-    })
-}
-
-connectToServer(store);
-
-store.next(s => { s.name = "John Targaryen" })                          // ignored: no meta infos
-
-store.next(s => { s.name = "Sansa Stark" }, { type: 'SEND_TO_SERVER' }) // will be bounced because we send
-                                                                        // the next message right away
-
-store.next(s => { s.name = "Bran Stark" }, { type: 'SEND_TO_SERVER' })  // this message goes through
-
-// Console output:
-// Send to server: {name: "Bran Stark"}
-```
-
-## Observable `store.patches$` and `store.inversePatches`
-
-```
-console.log('To be written...')
 ```

@@ -8,11 +8,9 @@ import { Link } from "gatsby"
 import { InfoPanel, WarningPanel } from "../components/panel"
 export default MdxLayout
 
-# Glue Code
-
 Glue code is code that "glues" your store to other parts of the application, for example to your server, database, ...
 
-Glue code can also receive message from the application to trigger some long running asynchronous tasks.
+Glue code can receive message from the React components, actions or other glue-code.
 
 #### Read
 
@@ -30,7 +28,8 @@ connectLogger(store);
 
 #### Update
 
-Another example of glue code could be a <a href="https://socket.io">socket.io</a> adapter, that updates chat messages from a server:
+Another example of glue code could be a <a href="https://socket.io">socket.io</a> adapter, that receives chat
+messages from a server and adds them to the application state:
 
 ```
 function connectSocket(store:RxStore<any>) {
@@ -72,14 +71,19 @@ function connectUndo(store:RxStore<any>) {
 connectUndo(store);
 ```
 
-The application can use the `createMessageBusHook(AppStoreProvider)` to create the `useDispatch` hook. With this hook, a component can dispatch an `UNDO` event.
+The application can use `createDispatchHook(AppStoreProvider)` to create a `useDispatch` hook. With this hook, a component can dispatch an `UNDO` event:
 
 ```code src=https://stackblitz.com/edit/react-rx-state-glue-undo?file=index.tsx
 const useDispatch = createMessageBusHook(AppStoreProvider)
 
-const UndoButton = () => {
+function useUndo() {
   const dispatch = useDispatch();
-  return <button onClick={() => dispatch({type:'UNDO'})} >UNDO</button>
+  return () => dispatch({type:'UNDO'})
+}
+
+const UndoButton = () => {
+  const undo = useUndo();
+  return <button onClick={undo} >UNDO</button>
 }
 ```
 

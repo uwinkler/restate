@@ -1,6 +1,6 @@
 ---
-title: Views
-path: /quick-views/
+title: State Hooks
+path: /quick-state-hook/
 ---
 
 import { MdxLayout } from "../layouts/mdx-layout"
@@ -8,39 +8,38 @@ import { Link } from "gatsby"
 import { InfoPanel, WarningPanel } from "../components/panel"
 export default MdxLayout
 
-# Views
+To select properties from our state, you use an **app state hook** (or state hooks for short)
 
-Views (or computed values) are values that can be derived from the existing state.
+First, we have to create an _app-state-hook_ using the `createStateHook` function.
 
-Most of the time you will use <Link to="state-hook">state hooks</Link> to select properties from the state. With <Link to="/state-hook">state hooks</Link>, you can do some basic view computations as well, e.g. to compute
-the age of John Snow in days:
-
-```
-  const days = useAppState(state => state.user.age * 365)
+```code lines=1 src=https://stackblitz.com/edit/react-rx-state-hello-world
+const useAppState = createStateHook(AppStoreProvider);
 ```
 
-To re-use selector functions, you could write custom hooks:
+The `useAppState` hook is a [React Hook](https://reactjs.org/docs/hooks-intro.html). The `useAppState` hook takes a _selector function_, to
+select the property from our state, like so:
 
-```
-// computes the age of the user in days
-function useAge() {
-  return useAppState(state => state.user.age * 365);
-}
+```code lines=2
+function Age() {
+  const age = useAppState(state => state.user.age) // select the user age from the store
 
-// counts the number of open todos
-function useCountOpenTodos() {
-  return useAppState(state => state.todos.filter( todo => todo.open).length);
-}
-
-const Age = () => {
-  const age = useAge();
-  const countOpenTodos = useCountOpenTodos()
-  return <div>You are {age} days old. You have {countOpenTodos} things to do.</div>
+  return <div>You are {age} years old.</div>
 }
 ```
+
+Selector function can do computations and transformations as well:
+
+```
+const ageInDays = useAppState(state => state.user.age * 365);
+```
+
+Learn more about app-state-hooks in the section <Link to="/state-hook">app state hooks</Link>.
+
+<!-- the age of John Snow in days:
 
 <hr />
 
+<!--
 ### Elaborated Views
 
 However, in some situations you may want to write more elaborated views, in particular if
@@ -83,4 +82,4 @@ function useStoreLastChanged() {
 
   return secs;
 }
-```
+``` -->

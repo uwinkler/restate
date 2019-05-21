@@ -8,78 +8,36 @@ import { Link } from "gatsby"
 import { InfoPanel, WarningPanel } from "../components/panel"
 export default MdxLayout
 
-# Glue Code
+Middleware are small functions which intercept state updates. Middleware functions receiving the `currentState` as well as the `nextState`.
+They can change the `nextState`, if required. If a middleware throws an exception, the state update will be canceled.
 
-Glue code is code that "glues" your store to other parts of the application, for example to your server, database, ...
+Take the `ageValidator` middleware for example.
+It ensures, that the `user.age` property never gets negative.
 
-Glue code can also receive message from the application to trigger some long running asynchronous tasks.
-
-#### Read
-
-Here is an very simple logger example, that observes the state and logs all state changes:
-
-```code src=https://stackblitz.com/edit/react-rx-state-hello-quick-glue?file=index.tsx
-function connectLogger(store:RxStore<any>) {
-  store.state$.subscribe( nextState => {
-    console.log('STATE:', JSON.stringify(nextState, null, 2));
-  })
+```code src=https://stackblitz.com/edit/react-rx-state-middleware
+// Ensures the age will never be < 0 or > 120
+const ageValidator: Middleware<State> = ({ nextState, currentState }) => {
+  nextState.age = nextState.user.age < 0 ? currentState.user.age : nextState.user.age
 }
 
-connectLogger(store);
+const store = createStore({
+  state: {
+    name: 'John Snow',
+    age: 32,
+  },
+  middleware: [ageValidator]
+})
+
+
+store.next( s => s.user.age = -1); // will be intercepted by ageValidatorMin.
 ```
 
-#### Update
+<InfoPanel>
 
-Another example of glue code could be a <a href="https://socket.io">socket.io</a> adapter, that updates chat messages from a server:
+Keep in mind:
 
-```
-function connectSocket(store:RxStore<any>) {
- socket.on('chat message', msg => {
-    store.next(state => {state.messages.push(msg)});
- });
-}
+- You should use middleware wisely. Error handling of user input should be done within React components.
+- Middleware state updates have to be done in a synchronously way.
+- "Traditional" middleware, like loggers, are better written using glue-code.
 
-connectSocket(store)
-```
-
-#### Messages
-
-Besides observing the `store.state$`, glue-code can also receive messages from the application.
-
-Here is a simple UNDO example. The glue-code listens to `UNDO` events using the `store.messageBus$` and records the history of the state.
-If it receives the `UNDO` event, it rewinds the state history by on step.
-
-```code src=https://stackblitz.com/edit/react-rx-state-glue-undo?file=index.tsx
-function connectUndo(store:RxStore<any>) {
-  const history = []
-
-  store.state$.subscribe(nextState => {
-    history.push(nextState);
-  })
-
-  store.messageBus$.subscribe( msg => {
-    if(msg.type === 'UNDO' && history.length > 1) {
-      history.pop()  // remove current state
-      const prevState = history.pop();
-      store.next(prevState);
-    }
-  })
-}
-
-connectUndo(store);
-```
-
-The application can use the `createMessageBusHook(AppStoreProvider)` to create the `useDispatch` hook. With this hook, a component can dispatch an `UNDO` event.
-
-```code src=https://stackblitz.com/edit/react-rx-state-glue-undo?file=index.tsx
-const useDispatch = createMessageBusHook(AppStoreProvider)
-
-const UndoButton = () => {
-  const dispatch = useDispatch();
-  return <button onClick={() => dispatch({type:'UNDO'})} >UNDO</button>
-}
-```
-
-<hr />
-
-To learn more about glue code read the <Link to="/glue-code">Glue Code Guide</Link>
+</InfoPanel>
