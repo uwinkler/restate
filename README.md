@@ -241,7 +241,7 @@ Try on [StackBlitz](https://stackblitz.com/edit/react-rx-state-middleware)
 
 Glue code is code that "glues" your store to other parts of the application, for example to your server, database, ...
 
-Glue code can receive message from the React components, actions or other glue-code.
+Glue code can receive messages from the React components, actions or other glue-code.
 
 #### Read
 
