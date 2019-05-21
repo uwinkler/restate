@@ -11,6 +11,12 @@ module.exports = {
     `gatsby-plugin-offline`,
     `gatsby-mdx`,
     {
+      resolve: `gatsby-plugin-google-analytics`,
+      options: {
+        trackingId: "UA-140616243-1"
+      }
+    },
+    {
       resolve: `gatsby-plugin-manifest`,
       options: {
         name: `GatsbyJS`,
