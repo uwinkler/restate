@@ -113,13 +113,13 @@ export const Navigation: React.FC<NavigationProps> = props => {
           path={props.path}
           variant="inset"
           to="/quick-state-hook/"
-          title="State Hook"
+          title="App State Hook"
         />
         <PageLink
           path={props.path}
           variant="inset"
           to="/quick-next-hook/"
-          title="Next Hook"
+          title="Next State Hook"
         />
         <PageLink
           path={props.path}
@@ -168,39 +168,26 @@ export const Navigation: React.FC<NavigationProps> = props => {
           path={props.path}
           variant="inset"
           to="/state-hook/"
-          title="StateHook"
+          title="App State Hook"
         />
         <PageLink
           path={props.path}
           variant="inset"
           to="/next-hook/"
-          title="NextHook"
+          title="Next State Hook"
         />
         <PageLink
           path={props.path}
           variant="inset"
-          to="/message-bus-hook/"
-          title="MessageBusHook"
+          to="/store-hook/"
+          title="Store Hook"
         />
         <PageLink
           path={props.path}
           variant="inset"
-          to="/observable-hook/"
-          title="ObservableHook"
-        />
-        <PageLink
-          path={props.path}
-          variant="inset"
-          to="/quick-start/"
-          title="Async Messages"
-        />
-        <PageLink
-          path={props.path}
-          variant="inset"
-          to="/quick-start/"
+          to="/multiple-stores/"
           title="Multiple Stores"
         />
-
         <PageLink
           path={props.path}
           variant="inset"

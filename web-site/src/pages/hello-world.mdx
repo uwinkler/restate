@@ -36,17 +36,22 @@ const Hello = () => {
 }
 
 const Age = () => {
-  // do some basic computations/tranformations
+  //  select a state property and do some basic computations/transformations
   const days = useAppState(state => state.age * 365)
   return <div>{days} days old</div>
 }
 
 const NameForm = () => {
-  const name = useAppState(state => state.name)
-  const next = useNextAppState(state => state)
+  const name = useAppState(state => state.user.name)
+  const next = useNextAppState(state => state.user)
 
-  return <input value={name} onChange={e => next(state => state.name = e.target.value)} />
+  function setName(nextName:string) {
+    next(user => user.name = nextName)
+  }
+
+  return <input value={name} onChange={e => setName(e.target.value)} />
 }
+
 
 const App: React.FC = () => (
   <AppStoreProvider.Provider value={store}>

@@ -139,6 +139,24 @@ const compState = useAppState(state => ({
 )}
 ```
 
+### Working with Arrays
+
+You select array entries as well:
+
+```
+function useTodoWithId(id:string) {
+  return useTodos( todos => todos.find( todo => todo.id === id))
+}
+```
+
+or
+
+```
+function useMyTodoAtIdx(idx:number) {
+ return useTodos( todos => todos[idx])
+}
+```
+
 ### Sub-State Selector
 
 Sometime it is handy to select an object from the application state if you plan to consume all of it's properties in your component.
