@@ -24,9 +24,9 @@ In the following example we want display the age of the app-state since the app-
 We use an observable `everySec` to count the seconds. We subscribe to the store using the `useStore()` hook
 and re-set the counter `lastUpdate` every time the state changes.
 
-Try it on [BlitzStack!](https://stackblitz.com/edit/react-rx-state-views?file=index.tsx)
+Try it on [BlitzStack!](https://stackblitz.com/edit/restate-views?file=index.tsx)
 
-```code lines=2,11-16,18-21 src=https://stackblitz.com/edit/react-rx-state-views?file=index.tsx
+```code lines=2,11-16,18-21 src=https://stackblitz.com/edit/restate-views?file=index.tsx
 const everySec$ = interval(1000)
 const useStore = createStoreHook(AppStoreProvider);
 

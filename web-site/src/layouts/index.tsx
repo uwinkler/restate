@@ -1,10 +1,8 @@
 import * as React from "react"
 import CssBaseline from "@material-ui/core/CssBaseline"
 import Helmet from "react-helmet"
-import Link from "gatsby-link"
 import { PersistentDrawerLeft } from "../components/drawer"
 import { AppStateProvider } from "../state/state"
-import { ButtonAppBar } from "../components/header"
 import { install } from "@material-ui/styles"
 import "./index.css"
 import { AppTheme } from "./theme"
@@ -23,10 +21,13 @@ export const DefaultLayout: React.FC<DefaultLayoutProps> = props => {
       <AppTheme>
         <CssBaseline />
         <Helmet
-          title="React Rx State"
+          title="ReState"
           meta={[
-            { name: "description", content: "react-rx-state" },
-            { name: "keywords", content: "react, state management" }
+            { name: "description", content: "restate" },
+            {
+              name: "keywords",
+              content: "react, state, management, manager, redux"
+            }
           ]}
         >
           <link

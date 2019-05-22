@@ -3,9 +3,9 @@ import {
   connectLogger,
   createProvider,
   createStore,
-  createUseStoreStateHook,
-  createUseStoreUpdateHook
-} from "react-rx-state"
+  createStateHook,
+  createNextHook
+} from "@restate/core"
 
 interface State {
   drawerOpen: boolean
@@ -17,8 +17,8 @@ const defaultState: State = {
 
 const store = createStore({ state: defaultState })
 export const Provider = createProvider(store)
-export const useAppState = createUseStoreStateHook(Provider)
-export const useUpdateAppState = createUseStoreUpdateHook(Provider)
+export const useAppState = createStateHook(Provider)
+export const useUpdateAppState = createNextHook(Provider)
 
 if (process.env.NODE_ENV === "dev") {
   connectLogger(store)

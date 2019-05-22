@@ -11,8 +11,7 @@ export default MdxLayout
 
 ## DevTools
 
-`react-rx-state` uses the
-excellent <a href="https://github.com/zalmoxisus/redux-devtools-extension" target="https://github.com/zalmoxisus/redux-devtools-extension">ReduxDevTools</a> to provide power-ups for your development workflow.
+_ReState_ uses the excellent <a href="https://github.com/zalmoxisus/redux-devtools-extension" target="https://github.com/zalmoxisus/redux-devtools-extension">ReduxDevTools</a> to provide power-ups for your development workflow.
 
 <img src={screenshot} width="100%" style={{ maxWidth: 1200 }} />
 
@@ -20,19 +19,19 @@ excellent <a href="https://github.com/zalmoxisus/redux-devtools-extension" targe
 
 Go and get the ReduxDevTools for your browser:
 
-- <a href="https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd">Google Chrome</a>
-- <a href="https://addons.mozilla.org/en-US/firefox/addon/reduxdevtools/">Firefox</a>
+- <a href="https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd" target="_blank">Google Chrome</a>
+- <a href="https://addons.mozilla.org/en-US/firefox/addon/reduxdevtools/" target="_blank">Firefox</a>
 
-Then install the `react-rx-state-dev-tools`
+Then install the `ReState` dev-tools:
 
 ```
-yarn install react-rx-state-dev-tools
+yarn install @restate/dev-tools
 ```
 
 ## Usage
 
-```code src=https://stackblitz.com/edit/react-rx-state-dev-tools?file=index.tsx
-import {connectDevTools} from 'react-rx-state-dev-tools'
+```code src=https://stackblitz.com/edit/restateols?file=index.tsx
+import {connectDevTools} from '@restate/dev-tools'
 
 const store = createStore({
   state: {

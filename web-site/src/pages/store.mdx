@@ -38,17 +38,17 @@ const store = createStore<State>({
 
 The `createStore()` function takes a property object, with
 
-- `state`: The inital state to make sure that every store is propper initalized. The inital state is required.
+- `state`: The initial state to make sure that every store is proper initialized. The initial state is required.
 - `middleware` (optional): a set of <Link to="middleware">middleware</Link> functions.
 - `options` (optional):
-  - `storeName`: A name for the store. Usefull to identify a store if you use <Link to="/multiple-stores">multiple stores</Link>.
+  - `storeName`: A name for the store. Useful to identify a store if you use <Link to="/multiple-stores">multiple stores</Link>.
   - `freeze`: If set to `true` this protects against accidental modifications of the state. However, this comes with a performance impact. It is recommended to set this option to `false` in production.
 
 ## Store.state
 
 You can read the state of the store (outside of a react component) with the `store.state` property:
 
-```code lines=6 src=https://stackblitz.com/edit/react-rx-state-create-store
+```code lines=6 src=https://stackblitz.com/edit/restate-create-store
 const store = createStore<State>({
   state: {
     name: 'John Snow',
@@ -61,7 +61,7 @@ console.log(store.state.name) // logs 'John Snow'
 
 Use the `store.next()` function to update the store.
 
-```code src=https://stackblitz.com/edit/react-rx-state-create-store
+```code src=https://stackblitz.com/edit/restate-create-store
 store.next(state => {
   state.name = "John Targaryen"
 })
@@ -69,7 +69,7 @@ store.next(state => {
 
 The `Store.next()` provides the current state, which you can modify.
 
-Internaly, <a href="https://github.com/immerjs/immer">immer.js</a> is
+Internally, <a href="https://github.com/immerjs/immer">immer.js</a> is
 used and allows you to work with the immutable state in a more convenient
 way. The immer rules to modify the state apply. For example, this will
 throw an error:
@@ -83,10 +83,10 @@ store.next(s => s.name = "John Targaryen")`
   An immer producer returned a new value *and* modified its draft.
   Either return a new value *or* modify the draft.
 </blockquote>
-To avoid such an error, wrap your code in currly braces or return a new
+To avoid such an error, wrap your code in curly braces or return a new
 state object:
 
-```code variant=ok title="Different ways to use store.next" src=https://stackblitz.com/edit/react-rx-state-create-store
+```code variant=ok title="Different ways to use store.next" src=https://stackblitz.com/edit/restate-create-store
 // immer style - imperative
 store.next( state => { state.name = "John Targaryen"} )
 
@@ -108,7 +108,7 @@ The state is hold by an <a href="http://reactivex.io/rxjs/manual/overview.html#b
 
 This make it very easy for glue-code functions to observe and react to state changes:
 
-```code lines=3-11 src=https://stackblitz.com/edit/react-rx-state-middleware-logger
+```code lines=3-11 src=https://stackblitz.com/edit/restate-middleware-logger
 // Simple logger glue-code
 function connectLogger(store: RxStore<any>) {
   store
@@ -148,7 +148,7 @@ For those use-cases the `store.messageBus$` observable comes in handy.
 
 A good example would be the log-in/log-out of a user.
 
-```code lines=5-18 src=https://stackblitz.com/edit/react-rx-state-messagebus
+```code lines=5-18 src=https://stackblitz.com/edit/restate-messagebus
 // Glue-code to perform a login
 function connectLoginAction(store: RxStore<State>) {
   store.messageBus$.subscribe(async msg => {

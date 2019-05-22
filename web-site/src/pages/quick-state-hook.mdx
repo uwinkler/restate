@@ -12,7 +12,7 @@ To select properties from our state, you use an **app state hook** (or state hoo
 
 First, we have to create an _app-state-hook_ using the `createStateHook` function.
 
-```code lines=1 src=https://stackblitz.com/edit/react-rx-state-hello-world
+```code lines=1 src=https://stackblitz.com/edit/restate-hello-world
 const useAppState = createStateHook(AppStoreProvider);
 ```
 
@@ -51,9 +51,9 @@ In the following example we want to count the seconds since the store has been l
 We use an observable `everySec` to count the seconds. We subscribe to the store using the `useStore()` hook
 and re-set the counter `lastUpdate` everytime the state changes.
 
-Try it on <a href="https://stackblitz.com/edit/react-rx-state-views?file=index.tsx" target="https://stackblitz.com/edit/react-rx-state-views?file=index.tsx">stackblitz</a>.
+Try it on <a href="https://stackblitz.com/edit/restate-views?file=index.tsx" target="https://stackblitz.com/edit/react-rrestatefile=index.tsx">stackblitz</a>.
 
-```code lines=4,10-13 src=https://stackblitz.com/edit/react-rx-state-views?file=index.tsx
+```code lines=4,10-13 src=https://stackblitz.com/edit/restate-views?file=index.tsx
 const everySec$ = interval(1000)
 
 function useStoreLastChanged() {

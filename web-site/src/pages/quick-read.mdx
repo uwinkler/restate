@@ -10,12 +10,12 @@ export default MdxLayout
 
 ## Read
 
-`react-rx-state` provides a hook to select values from your store.
+`restate` provides a hook to select values from your store.
 
 But first we need a provider to provide the store to a react application:
 
 ```code
-import { createProvider } from 'react-rx-state'
+import { createProvider } from '@restate/core'
 
 const store = createStore({
 ...
@@ -23,6 +23,7 @@ const store = createStore({
 
 const AppStoreProvider = createProvider(store); // to provide the store to react
 ```
+
 - <Link to="/state-hook">State hooks</Link> - to select values from your store
 - <Link to="/next-hook">Next hooks</Link> - to update your store
 
@@ -33,7 +34,7 @@ State hooks are use to
 - select properties from your state
 - do some basic computations / transformations
 
-```code lines=9,13,15 src=https://stackblitz.com/edit/react-rx-state-hello-world?file=index.tsx
+```code lines=9,13,15 src=https://stackblitz.com/edit/restate-hello-world?file=index.tsx
 const store = createStore({
   state: {
     user: { name: 'John Doe', age: 32 },

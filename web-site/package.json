@@ -1,5 +1,5 @@
 {
-  "name": "react-rx-state-www",
+  "name": "restate-www",
   "description": "react rx documentation",
   "version": "1.0.0",
   "dependencies": {
@@ -10,6 +10,7 @@
     "@mdx-js/mdx": "^1.0.19",
     "@mdx-js/react": "^1.0.16",
     "@reach/router": "^1.2.1",
+    "@restate/core": "^0.8.2",
     "@types/classnames": "^2.2.7",
     "@types/node": "^12.0.0",
     "@types/prismjs": "^1.16.0",
@@ -29,8 +30,7 @@
     "prismjs": "^1.16.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
-    "react-helmet": "^5.2.1",
-    "@rx-state/core": "^0.4.7"
+    "react-helmet": "^5.2.1"
   },
   "keywords": [
     "gatsby, typescript"

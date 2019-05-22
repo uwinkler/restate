@@ -6,6 +6,9 @@ import { makeStyles, getThemeProps } from "@material-ui/styles"
 import { theme } from "../layouts/theme"
 
 const useClasses = makeStyles({
+  list: {
+    marginLeft: 30
+  },
   activeLink: {
     color: theme.palette.primary.main
   },
@@ -70,8 +73,9 @@ interface NavigationProps {
 }
 
 export const Navigation: React.FC<NavigationProps> = props => {
+  const classes = useClasses()
   return (
-    <List>
+    <List className={classes.list}>
       <PageLink
         path={props.path}
         variant="default"

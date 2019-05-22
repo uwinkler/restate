@@ -43,8 +43,7 @@ const useClasses = makeStyles({
     display: "none"
   },
   drawer: {
-    width: drawerWidth,
-    flexShrink: 0
+    width: drawerWidth
   },
   drawerPaper: {
     width: drawerWidth
@@ -52,8 +51,7 @@ const useClasses = makeStyles({
   drawerHeader: {
     display: "flex",
     alignItems: "center",
-    padding: "0 8px",
-    justifyContent: "center"
+    justifyContent: "flex-start"
   },
   content: {
     flexGrow: 1,
@@ -65,7 +63,8 @@ const useClasses = makeStyles({
     marginLeft: 0
   },
   logoContainer: {
-    padding: 20,
+    padding: 13,
+    marginTop: 10,
     flexDirection: "column",
     display: "flex"
   }
@@ -137,7 +136,7 @@ export const PersistentDrawerLeft: React.FC<
       >
         <div className={classes.drawerHeader}>
           <div className={classes.logoContainer}>
-            <Logo style={{ marginBottom: 0 }} />
+            <Logo />
           </div>
           <IconButton onClick={handleDrawerClose}>
             {theme.direction === "ltr" ? (
@@ -147,7 +146,7 @@ export const PersistentDrawerLeft: React.FC<
             )}
           </IconButton>
         </div>
-        {/* <Divider /> */}
+
         <Navigation path={props.path} />
       </Drawer>
 

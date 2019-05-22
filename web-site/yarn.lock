@@ -947,6 +947,17 @@
     react-lifecycles-compat "^3.0.4"
     warning "^3.0.0"
 
+"@restate/core@^0.8.2":
+  version "0.8.2"
+  resolved "https://registry.yarnpkg.com/@restate/core/-/core-0.8.2.tgz#d44dcb56e5b9df09f86bac24125634c328176bbb"
+  integrity sha512-5RX3T72QgyL+jnfJ4FRl6tfdmv12yczYdK7T0wuc4ci1gaCM74CIHpMzf4qCKsiuQDsgG3uX0nCRNc9mdHA9iQ==
+  dependencies:
+    immer "^3.1.1"
+    lodash "^4.17.11"
+    react "^16.8.6"
+    react-dom "^16.8.6"
+    rxjs "^6.5.1"
+
 "@stefanprobst/lokijs@^1.5.6-b":
   version "1.5.6-b"
   resolved "https://registry.yarnpkg.com/@stefanprobst/lokijs/-/lokijs-1.5.6-b.tgz#6a36a86dbe132e702e6b15ffd3ce4139aebfe942"
@@ -8686,18 +8697,6 @@ react-lifecycles-compat@^3.0.2, react-lifecycles-compat@^3.0.4:
   resolved "https://registry.yarnpkg.com/react-lifecycles-compat/-/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
   integrity sha512-fBASbA6LnOU9dOU2eW7aQ8xmYBSXUIWr+UmF9b1efZBazGNO+rcXT/icdKnYm2pTwcRylVUYwW7H1PHfLekVzA==
 
-react-rx-state@^0.4.7:
-  version "0.4.7"
-  resolved "https://registry.yarnpkg.com/react-rx-state/-/react-rx-state-0.4.7.tgz#63c6133ae89f56f22311694f455855538be1ec4f"
-  integrity sha512-zZJh5DTWDoBPHfAPE+cgiV76XO8tTIkMH97q4cOidJLd28cbo+UtKvDmhwsR4waiFNXB+JRSCUKiUgEAwSjGyA==
-  dependencies:
-    immer "^3.1.1"
-    lodash "^4.17.11"
-    react "^16.8.6"
-    react-dom "^16.8.6"
-    rxjs "^6.5.1"
-    utility-types "^3.7.0"
-
 react-side-effect@^1.1.0:
   version "1.1.5"
   resolved "https://registry.yarnpkg.com/react-side-effect/-/react-side-effect-1.1.5.tgz#f26059e50ed9c626d91d661b9f3c8bb38cd0ff2d"
@@ -10694,11 +10693,6 @@ utila@^0.4.0, utila@~0.4:
   version "0.4.0"
   resolved "https://registry.yarnpkg.com/utila/-/utila-0.4.0.tgz#8a16a05d445657a3aea5eecc5b12a4fa5379772c"
   integrity sha1-ihagXURWV6Oupe7MWxKk+lN5dyw=
-
-utility-types@^3.7.0:
-  version "3.7.0"
-  resolved "https://registry.yarnpkg.com/utility-types/-/utility-types-3.7.0.tgz#51f1c29fa35d4267488345706efcf3f68f2b1933"
-  integrity sha512-mqRJXN7dEArK/NZNJUubjr9kbFFVZcmF/JHDc9jt5O/aYXUVmopHYujDMhLmLil1Bxo2+khe6KAIVvDH9Yc4VA==
 
 utils-merge@1.0.1:
   version "1.0.1"
