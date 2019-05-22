@@ -10,7 +10,7 @@ type RxStoreContext<S> = React.Context<RxStore<S>>
 
 type SelectorFunction<S, T> = (state: S) => T
 
-const identifySelectorFunction: SelectorFunction<any, any> = state => state
+const identitySelectorFunction: SelectorFunction<any, any> = state => state
 
 export type UseStoreHook<S> = <T>(
   selectorFunction?: SelectorFunction<S, T>
@@ -35,7 +35,7 @@ export function createStateHook<S, SUB_STATE>(
 //
 export function createStateHook<S, SUB_STATE>(
   context: RxStoreContext<S>,
-  outerSelector: SelectorFunction<S, SUB_STATE> = identifySelectorFunction
+  outerSelector: SelectorFunction<S, SUB_STATE> = identitySelectorFunction
 ) {
   function useAppState<T>(
     selectorFunction?: SelectorFunction<SUB_STATE, T>
@@ -43,7 +43,7 @@ export function createStateHook<S, SUB_STATE>(
     const _store = useContext(context)
     const selector = selectorFunction
       ? selectorFunction
-      : identifySelectorFunction
+      : identitySelectorFunction
     const state$ = _store.state$
     const startValue = selector(outerSelector(state$.value.payload))
 
