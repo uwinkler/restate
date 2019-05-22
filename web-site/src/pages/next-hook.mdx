@@ -14,7 +14,7 @@ NextHooks are hooks to change the state within React components.
 
 ## Basic Usage
 
-```code lines=5,8,11
+```code lines=5,8,11 src=https://stackblitz.com/edit/restate-hello-world
 const store = createStore({
   state: { name: 'John Doe' }
 });
@@ -83,10 +83,4 @@ const Hello = () => {
     nextAddress(address => address.street = e.target.value)
   }
 }
-```
-
-#### Passing selectors around
-
-```
-
 ```

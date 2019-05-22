@@ -8,7 +8,7 @@ export default MdxLayout
 
 # Core Concepts
 
-`react-rx-state` follows the three principles of <a href="https://redux.js.org/introduction/three-principles">Redux</a>
+ReState follows the three principles of [Redux](https://redux.js.org/introduction/three-principles):
 
 - Single source of truth
 - State is read only
@@ -18,7 +18,7 @@ export default MdxLayout
 
 Just like `redux` the state of your whole application is stored in an object tree within a single store.
 
-What Dan Abramov statet for `redux` holds true for react-rx-state` as well:
+What Dan Abramov statet for `redux` holds true for restate` as well:
 
 <blockquote>
   The state of your whole application is stored in an object tree within a
@@ -33,7 +33,7 @@ What Dan Abramov statet for `redux` holds true for react-rx-state` as well:
 
 #### State is read-only
 
-The `react-rx-state` is immutable as well. You will get an exception if you try to bypass `next` and modify
+The state is immutable. You will get an exception if you try to bypass `next` and modify
 the state directly.
 
 From `redux`:
@@ -49,7 +49,7 @@ they can be logged, serialized, stored, and later replayed for debugging or test
 
 </blockquote>
 
-In `react-rx-state` you don't write actions yourself. You create actions with the `next` function.
+In `restate` you don't write actions yourself. You create actions with the `next` function.
 You express the intent how you want to transform the state in an imperative way by
 modifying a copy (draft) of the current state. Using immer.js, the `next` function figures how to patch
 the current state.
@@ -77,7 +77,7 @@ From `redux`:
   reusable reducers for common tasks such as pagination.
 </blockquote>
 
-In `react-rx-state` the equivalent of reducers are those tiny callback functions you put into `next`:
+In `restate` the equivalent of reducers are those tiny callback functions you put into `next`:
 
 ```
   store.next(state => state.name = 'John Tagaryan')
@@ -88,7 +88,7 @@ In `react-rx-state` the equivalent of reducers are those tiny callback functions
 Those callback function take a draft of the current state as parameter and modify the
 draft to provide the intent how the next state should look like.
 
-# What distinguishes react-rx-state from redux?
+# What distinguishes restate from redux?
 
 ### Async actions and async flow
 
@@ -97,4 +97,4 @@ Without middleware, (this is not possible)[https://redux.js.org/advanced/async-f
 The community developed numerous projects to overcome this problem: (redux-hunk)[https://github.com/reduxjs/redux-thunk],
 (redux-promise)[https://github.com/redux-utilities/redux-promise], or (redux-saga)[https://github.com/redux-saga/redux-saga], to name just a few of them.
 
-Writing asynchronous code is very straight forward in `react-rx-state`.
+Writing asynchronous code is very straight forward in `restate`.

@@ -62,7 +62,7 @@ export const MdxLayout: React.FC<DefaultLayoutProps> = props => {
         <Helmet
           title="React Rx State"
           meta={[
-            { name: "description", content: "react-rx-state" },
+            { name: "description", content: "restate" },
             { name: "keywords", content: "react, state management" }
           ]}
         >

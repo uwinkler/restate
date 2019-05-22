@@ -16,7 +16,7 @@ receives - among other things - the `next()` function to update the store.
 An _ActionFactory_ returns a object that holds
 the all the actions to change the state. Think about actions as "member functions" of your state.
 
-```code src=https://stackblitz.com/edit/react-rx-state-actions?file=index.tsx
+```code src=https://stackblitz.com/edit/restate-actions?file=index.tsx
 
 // Action factory
 const userActionsFactory = ( {next}:ActionFactoryProps<User>) => ({
@@ -35,7 +35,7 @@ const userActionsFactory = ( {next}:ActionFactoryProps<User>) => ({
 
 The _ActionFactory_ is hooked into `React` using the `createActionsHook`:
 
-```code src=https://stackblitz.com/edit/react-rx-state-actions?file=index.tsx
+```code src=https://stackblitz.com/edit/restates?file=index.tsx
 const useUserActions = createActionsHook(AppStoreProvider, state => state.user, userActionsFactory);
 
 const Age = () => {

@@ -14,7 +14,7 @@ They can change the `nextState`, if required. If a middleware throws an exceptio
 Take the `ageValidator` middleware for example.
 It ensures, that the `user.age` property never gets negative.
 
-```code src=https://stackblitz.com/edit/react-rx-state-middleware
+```code src=https://stackblitz.com/edit/restate-middleware
 // Ensures the age will never be < 0 or > 120
 const ageValidator: Middleware<State> = ({ nextState, currentState }) => {
   nextState.age = nextState.user.age < 0 ? currentState.user.age : nextState.user.age

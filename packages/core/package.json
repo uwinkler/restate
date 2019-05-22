@@ -1,6 +1,6 @@
 {
-  "name": "react-rx-state",
-  "version": "0.7.2",
+  "name": "@restate/core",
+  "version": "0.8.2",
   "license": "MIT",
   "scripts": {
     "clean": "rm -rf build",
@@ -11,18 +11,31 @@
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "dependencies": {
-    "@types/lodash": "^4.14.129",
     "immer": "^3.1.1",
     "lodash": "^4.17.11",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "rxjs": "^6.5.1"
   },
+  "homepage": "https://github.com/org/restate",
+  "keywords": [
+    "react",
+    "restate",
+    "state",
+    "manager",
+    "management",
+    "redux",
+    "store"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "devDependencies": {
     "@types/enzyme": "^3.9.1",
     "@types/enzyme-adapter-react-16": "^1.0.5",
     "@types/history": "^4.7.2",
     "@types/jest": "^24.0.12",
+    "@types/lodash": "^4.14.129",
     "@types/react": "^16.8.17",
     "@types/react-dom": "^16.8.4",
     "@types/react-test-renderer": "^16.8.1",
@@ -38,5 +51,5 @@
     "typescript": "^3.4.5",
     "utility-types": "^3.7.0"
   },
-  "gitHead": "6fc58748b1a2f0f97895a674499d717018d7ae92"
+  "gitHead": "6aab764342a0936d0de670849c6ab135dcdf265e"
 }

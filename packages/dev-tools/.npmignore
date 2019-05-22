@@ -1,5 +1,6 @@
 src 
 tsconfig.json
+build/__tests__
 coverage
 jest.config.js
 yarn-error.log

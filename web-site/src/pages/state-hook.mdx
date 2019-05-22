@@ -16,7 +16,7 @@ App-State-Hoosks (or just state hooks for short) are functions used to:
 
 ## Basic Usage
 
-```code lines=7,10,11 src=https://stackblitz.com/edit/react-rx-state-hello-selector-render?file=index.tsx
+```code lines=7,10,11 src=https://stackblitz.com/edit/restate-hello-selector-render?file=index.tsx
 const store = createStore({
   state: {
     user: { name: 'John Doe', age: 32 },
@@ -41,7 +41,7 @@ To simplify - and organise the access to various sub-states - you may utilize a 
 
 The `createStateHook` function takes a second parameter, a `scope function`, that narrows the state to the selected object.
 
-```code src=https://stackblitz.com/edit/react-rx-state-hello-selector-render?file=index.tsx
+```code src=https://stackblitz.com/edit/restate-hello-selector-render?file=index.tsx
 const useUserState = createStateHook(AppStoreProvider, state => state.user);
 
 const Hello = () => {
@@ -69,7 +69,7 @@ Depending on your needs you can choose between various selector function types:
 Property selector select a single property (e.g the `name` property) from the app state. Property selectors are very
 fine grain selectors and therefore very efficient selectors. You should use them most of the time.
 
-```code src=https://stackblitz.com/edit/react-rx-state-hello-selector-render?file=index.tsx
+```code src=https://stackblitz.com/edit/restate-hello-selector-render?file=index.tsx
 const name = useAppState(state => state.name)
 ```
 
@@ -78,7 +78,7 @@ const name = useAppState(state => state.name)
 Sometime your want to transform the app-state - or combine various app-state properties - into a single object. You can do so with a simple
 _transforming selector function_, which is a fancy name for a simple function that takes the app-state and returns the desired object.
 
-```code src=https://stackblitz.com/edit/react-rx-state-hello-selector-render?file=index.tsx
+```code src=https://stackblitz.com/edit/restate-hello-selector-render?file=index.tsx
 const compState = useAppState(state => ({
     userName: state.user.name
     todos: state.todos
@@ -91,7 +91,7 @@ const compState = useAppState(state => ({
 
 You can do basic computations as well:
 
-```code src=https://stackblitz.com/edit/react-rx-state-hello-selector-render?file=index.tsx
+```code src=https://stackblitz.com/edit/restate-hello-selector-render?file=index.tsx
 const todosCount = useAppState(state => state.todos.length)
 const todosDone = useAppState(state => state.todos.filter( todo => todo.done ))
 const todosOpen = useAppState(state => state.todos.filter( todo => !todo.done ))
@@ -99,7 +99,7 @@ const todosOpen = useAppState(state => state.todos.filter( todo => !todo.done ))
 
 Computing selectors look very "natural" with a scoped app state hook:
 
-```code src=https://stackblitz.com/edit/react-rx-state-hello-selector-render?file=index.tsx
+```code src=https://stackblitz.com/edit/restate-hello-selector-render?file=index.tsx
 const useTodos = createStateHook(AppStoreProvider, state => state.todos);
 ...
 const todosCount = useTodos(todos => todos.length)
@@ -113,7 +113,7 @@ result of the selector changes.
 
 Take for example following snippet:
 
-```code variant=warn title="Not efficient" src=https://stackblitz.com/edit/react-rx-state-hello-selector-render?file=index.tsx
+```code variant=warn title="Not efficient" src=https://stackblitz.com/edit/restate-hello-selector-render?file=index.tsx
 const todos = useAppState(state => state.todos)
 const aLotOfWork = todos.length > 10;
 ```
@@ -122,7 +122,7 @@ Your component will render every time `state.todos[]` changes, even if `aLotOfWo
 
 The next snippet - using a computing selector - is efficient as react renders the component only if the value of `aLotOfWork` toggles.
 
-```code variant=ok title="Better" src=https://stackblitz.com/edit/react-rx-state-hello-selector-render?file=index.tsx
+```code variant=ok title="Better" src=https://stackblitz.com/edit/restate-hello-selector-render?file=index.tsx
 const aLotOfWork = useAppState(state => state.todos.length > 10)
 ```
 
@@ -132,18 +132,36 @@ const aLotOfWork = useAppState(state => state.todos.length > 10)
 
 Of course you can also combine computing and transforming selectors:
 
-```code src=https://stackblitz.com/edit/react-rx-state-hello-selector-render?file=index.tsx
+```code src=https://stackblitz.com/edit/restate-hello-selector-render?file=index.tsx
 const compState = useAppState(state => ({
   userName: state.user.name,
   aLotOfWork: state.todos.filter > 10
 )}
 ```
 
+### Working with Arrays
+
+You select array entries as well:
+
+```
+function useTodoWithId(id:string) {
+  return useTodos( todos => todos.find( todo => todo.id === id))
+}
+```
+
+or
+
+```
+function useMyTodoAtIdx(idx:number) {
+ return useTodos( todos => todos[idx])
+}
+```
+
 ### Sub-State Selector
 
 Sometime it is handy to select an object from the application state if you plan to consume all of it's properties in your component.
 
-```code src=https://stackblitz.com/edit/react-rx-state-hello-selector-render?file=index.tsx
+```code src=https://stackblitz.com/edit/restate-hello-selector-render?file=index.tsx
 const user = useAppState(state => state.user)
 // or
 const { name, age } = useAppState(state => state.user)
@@ -157,7 +175,7 @@ const { name, age } = useAppState(state => state.user)
 
 <p>Consider to use <b>scoped state hook</b> and <b>property selector</b> instead:</p>
 
-```code variant=ok title="Better" src=https://stackblitz.com/edit/react-rx-state-hello-selector-render?file=index.tsx
+```code variant=ok title="Better" src=https://stackblitz.com/edit/restate-hello-selector-render?file=index.tsx
 const useUserState = createStateHook(AppStoreProvider, state => state.user)
 ...
 const name  = useUserState(userState => userState.name);
@@ -170,7 +188,7 @@ const age  = useUserState(userState => userState.age);
 
 The state selector function (identity selector) gives you access to the whole state object.
 
-```code src=https://stackblitz.com/edit/react-rx-state-hello-selector-render?file=index.tsx
+```code src=https://stackblitz.com/edit/restate-hello-selector-render?file=index.tsx
 const appState = useAppState(state => state)
 ```
 

@@ -1,7 +1,7 @@
 module.exports = {
   siteMetadata: {
-    title: `react-rx-state Documentation`,
-    siteUrl: `https://react-rx-state.netlify.com`
+    title: `restate Documentation`,
+    siteUrl: `https://restate.netlify.com`
   },
   plugins: [
     `gatsby-plugin-sitemap`,

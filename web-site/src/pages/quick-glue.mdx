@@ -16,10 +16,10 @@ Glue code can receive message from the React components, actions or other glue-c
 
 Here is an very simple logger example, that observes the state and logs all state changes:
 
-```code src=https://stackblitz.com/edit/react-rx-state-hello-quick-glue?file=index.tsx
+```code src=https://stackblitz.com/edit/restate-hello-quick-glue?file=index.tsx
 function connectLogger(store:RxStore<any>) {
   store.state$.subscribe( nextState => {
-    console.log('STATE:', JSON.stringify(nextState, null, 2));
+    console.log('STATE:', JSON.stringify(nextState.payload, null, 2));
   })
 }
 
@@ -49,7 +49,7 @@ Here is a simple UNDO example. The glue-code records the history of the app stat
 The glue-code also listens to the `UNDO` events by subscribing the `store.messageBus$`.
 If it receives the `UNDO` event, it rewinds the state history by on step.
 
-```code src=https://stackblitz.com/edit/react-rx-state-glue-undo?file=index.tsx
+```code src=https://stackblitz.com/edit/restate-glue-undo?file=index.tsx
 function connectUndo(store:RxStore<any>) {
   const history = []
 
@@ -73,7 +73,7 @@ connectUndo(store);
 
 The application can use `createDispatchHook(AppStoreProvider)` to create a `useDispatch` hook. With this hook, a component can dispatch an `UNDO` event:
 
-```code src=https://stackblitz.com/edit/react-rx-state-glue-undo?file=index.tsx
+```code src=https://stackblitz.com/edit/restate-glue-undo?file=index.tsx
 const useDispatch = createMessageBusHook(AppStoreProvider)
 
 function useUndo() {

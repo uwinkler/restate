@@ -1,6 +1,6 @@
 {
-  "name": "react-rx-state-router",
-  "version": "0.7.2",
+  "name": "@restate/dev-tools",
+  "version": "0.8.2",
   "license": "MIT",
   "scripts": {
     "clean": "rm -rf build",
@@ -10,12 +10,24 @@
   },
   "main": "build/index.js",
   "types": "build/index.d.ts",
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "react",
+    "restate",
+    "state",
+    "manager",
+    "management",
+    "redux",
+    "store",
+    "dev",
+    "dev-tools"
+  ],
   "dependencies": {
-    "history": "^4.9.0",
-    "react-rx-state": "^0.7.2"
+    "@restate/core": "^0.8.1"
   },
   "devDependencies": {
-    "@types/history": "^4.7.2",
     "@types/jest": "^24.0.12",
     "@types/react-test-renderer": "^16.8.1",
     "jest": "^24.8.0",
@@ -25,7 +37,8 @@
     "react-test-renderer": "^16.8.6",
     "rxjs": "^6.5.1",
     "ts-jest": "^24.0.2",
-    "typescript": "^3.4.5"
+    "typescript": "^3.4.5",
+    "utility-types": "^3.7.0"
   },
-  "gitHead": "6fc58748b1a2f0f97895a674499d717018d7ae92"
+  "gitHead": "6aab764342a0936d0de670849c6ab135dcdf265e"
 }

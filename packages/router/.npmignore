@@ -2,3 +2,4 @@ src
 tsconfig.json
 coverage
 jest.config.js
+build/__tests__
