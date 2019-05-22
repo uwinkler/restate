@@ -1,4 +1,4 @@
-# RESTATE
+# Restate
 
 _Restate_ is a predictable, easy to use, easy to integrate, typesafe state container for [React](https://reactjs.org/).
 
@@ -44,9 +44,14 @@ const Name = () => {
 }
 ```
 
-Try it on [StackBlitz](https://stackblitz.com/edit/restate-hello-world)!
+Even the code above looks like JS, it is indeed Typescript. Go on [StackBlitz](https://stackblitz.com/edit/restate-hello-world) and
+make some changes to the state, for example change the property `user.name` to `user.firstName`. You will see how Typescript is
+able to pick up those changes and gives you nice error messages. 
 
-The documentation is available on Netlify:[https://restate-state.netlify.com/](https://restate.netlify.com/).
+
+## Documentation
+
+The documentation is also available on Netlify:[https://restate.netlify.com/](https://restate.netlify.com/).
 
 ## Installation
 
@@ -311,7 +316,7 @@ Glue-code can also receive messages from the application - redux style.
 
 Here is a simple UNDO example. The glue-code records the history of the app state using the `store.state$` observable.
 The glue-code also listens to the `UNDO` events by subscribing the `store.messageBus$`.
-If it receives the `UNDO` event, it rewinds the state history by on step.
+If it receives the `UNDO` event, it rewinds the state history by one step.
 
 ```ts
   const history = []
@@ -334,10 +339,10 @@ If it receives the `UNDO` event, it rewinds the state history by on step.
 connectUndo(store);
 ```
 
-The application uses `createDispatchHook(AppStoreProvider)` to create a `useDispatch` hook. With the dispatch hook, a component can dispatch an `UNDO` event:
+The application uses `createDispatchHook` to create a dispatch hook. With the dispatch hook, a component can dispatch an `UNDO` event, like so:
 
 ```ts
-const useDispatch = createMessageBusHook(AppStoreProvider)
+const useDispatch = createDispatchHook(AppStoreProvider)
 
 function useUndo() {
   const dispatch = useDispatch()
