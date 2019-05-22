@@ -1,5 +1,5 @@
 {
-  "name": "@rx-state/core",
+  "name": "@restate/core",
   "version": "0.8.1",
   "license": "MIT",
   "scripts": {
@@ -17,7 +17,7 @@
     "react-dom": "^16.8.6",
     "rxjs": "^6.5.1"
   },
-  "homepage": "https://github.com/uwinkler/react-rx-state",
+  "homepage": "https://github.com/org/restate",
   "keywords": [
     "react",
     "state",

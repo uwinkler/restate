@@ -1,5 +1,5 @@
 {
-  "name": "@rx-state/router",
+  "name": "@restate/router",
   "version": "0.8.1",
   "license": "MIT",
   "scripts": {

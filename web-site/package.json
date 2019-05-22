@@ -30,7 +30,7 @@
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-helmet": "^5.2.1",
-    "react-rx-state": "^0.4.7"
+    "@rx-state/core": "^0.4.7"
   },
   "keywords": [
     "gatsby, typescript"

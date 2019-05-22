@@ -4,9 +4,9 @@
   },
   "scripts": {
     "publish": "lerna run clean && lerna run build && lerna run test && lerna publish",
-	"netlify": "cd packages/www && yarn install && yarn build"
+    "netlify": "cd packages/www && yarn install && yarn build"
   },
-  "name": "rx-state",
+  "name": "restate",
   "license": "MIT",
   "version": "0.0.0"
 }
