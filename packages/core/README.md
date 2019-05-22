@@ -20,7 +20,7 @@ Futhermore, Restate
 
 ## What it looks like...
 
-```
+```ts
 const store = createStore({
   state: {
     name: "John Snow",
@@ -46,11 +46,7 @@ const Name = () => {
 
 Try it on [StackBlitz](https://stackblitz.com/edit/restate-hello-world)!
 
-<hr />
-
 The documentation is available on Netlify:[https://restate-state.netlify.com/](https://restate.netlify.com/).
-
-<hr />
 
 ## Installation
 
@@ -107,7 +103,7 @@ You can use [multiple stores](https://stackblitz.com/edit/restate-multiple-store
 
 ## Read from the state
 
-To read from the state RxState provides you _AppStateHooks_.
+To read from the state Restate provides you _AppStateHooks_.
 
 AppStateHooks hooks are use to
 
