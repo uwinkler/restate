@@ -1,6 +1,6 @@
 {
   "name": "@rx-state/core",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "license": "MIT",
   "scripts": {
     "clean": "rm -rf build",

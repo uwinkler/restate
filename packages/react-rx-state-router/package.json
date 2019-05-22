@@ -1,6 +1,6 @@
 {
   "name": "@rx-state/router",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "license": "MIT",
   "scripts": {
     "clean": "rm -rf build",
@@ -14,7 +14,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@rx-state/core": "^0.8.0",
+    "@rx-state/core": "^0.8.1",
     "history": "^4.9.0"
   },
   "devDependencies": {
