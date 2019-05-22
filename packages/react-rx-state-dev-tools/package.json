@@ -1,5 +1,5 @@
 {
-  "name": "react-rx-state-dev-tools",
+  "name": "@rx-state/dev-tools",
   "version": "0.7.1",
   "license": "MIT",
   "scripts": {
@@ -11,7 +11,7 @@
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "dependencies": {
-    "react-rx-state": "^0.7.0"
+    "@rx-state/core": "^0.7.0"
   },
   "devDependencies": {
     "@types/jest": "^24.0.12",

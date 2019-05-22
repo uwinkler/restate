@@ -1,5 +1,5 @@
 {
-  "name": "react-rx-state-router",
+  "name": "@rx-state/router",
   "version": "0.7.0",
   "license": "MIT",
   "scripts": {
@@ -12,7 +12,7 @@
   "types": "build/index.d.ts",
   "dependencies": {
     "history": "^4.9.0",
-    "react-rx-state": "^0.7.0"
+    "@rx-state/core": "^0.7.0"
   },
   "devDependencies": {
     "@types/history": "^4.7.2",

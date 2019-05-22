@@ -1,5 +1,5 @@
 {
-  "name": "react-rx-state",
+  "name": "@rx-state/core",
   "version": "0.7.0",
   "license": "MIT",
   "scripts": {
