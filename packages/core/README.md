@@ -1,10 +1,6 @@
 # RESTATE
 
-# What is Restate?
-
 _Restate_ is a predictable, easy to use, easy to integrate, typesafe state container for [React](https://reactjs.org/).
-
-<hr />
 
 _Restate_ follows the [three principles of Redux](https://redux.js.org/introduction/three-principles):
 
