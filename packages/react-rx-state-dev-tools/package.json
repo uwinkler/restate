@@ -10,6 +10,9 @@
   },
   "main": "build/index.js",
   "types": "build/index.d.ts",
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
     "@rx-state/core": "^0.8.0"
   },
@@ -26,5 +29,5 @@
     "typescript": "^3.4.5",
     "utility-types": "^3.7.0"
   },
-  "gitHead": "6fc58748b1a2f0f97895a674499d717018d7ae92"
+  "gitHead": "6aab764342a0936d0de670849c6ab135dcdf265e"
 }
