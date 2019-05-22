@@ -1,6 +1,6 @@
 # RESTATE
 
-# What is ReState?
+# What is Restate?
 
 _Restate_ is a predictable, easy to use, easy to integrate, typesafe state container for [React](https://reactjs.org/).
 
@@ -21,6 +21,34 @@ Futhermore, Restate
   the state is [reactive](https://github.com/ReactiveX/rxjs).
 - dev-tools
 - easy to learn and easy to test
+
+## What it looks like...
+
+```
+const store = createStore({
+  state: {
+    name: "John Snow",
+    age: 32
+  }
+})
+
+const AppStoreProvider = createProvider(store);
+const useAppState = createStateHook(AppStoreProvider);
+const useNextAppState = createNextHook(AppStoreProvider);
+
+const Name = () => {
+  const name = useAppState(state => state.user.name)
+  const next = useNextAppState(state => state.user)
+
+  function setName(nextName:string) {
+    next(user => user.name = nextName)
+  }
+
+  return <input value={name} onChange={e => setName(e.target.value)} />
+}
+```
+
+Try it on [StackBlitz](https://stackblitz.com/edit/restate-hello-world)!
 
 <hr />
 
@@ -78,6 +106,8 @@ const App: React.FC = () => (
 ```
 
 Try on [StackBlitz](https://stackblitz.com/edit/restate-hello-world)!
+
+You can use [multiple stores](https://stackblitz.com/edit/restate-multiple-stores-toggle?file=index.tsx) as well.
 
 ## Read from the state
 
@@ -162,6 +192,8 @@ receives - among other things - the `next()` function to update the store.
 An _ActionFactory_ returns a object that holds
 the all the actions to change the state. Think about actions as "member functions" of your state.
 
+Actions can be asynchronous.
+
 ```ts
 // Action factory
 const userActionsFactory = ({ next }: ActionFactoryProps<User>) => ({
@@ -219,7 +251,7 @@ Take the `ageValidator` middleware for example.
 It ensures, that the `user.age` property never gets negative.
 
 ```ts
-// Ensures the age will never be < 0 or > 120
+// Ensures the age will never be < 0
 const ageValidator: Middleware<State> = ({ nextState, currentState }) => {
   nextState.age =
     nextState.user.age < 0 ? currentState.user.age : nextState.user.age
@@ -240,11 +272,15 @@ Try on [StackBlitz](https://stackblitz.com/edit/restate-middleware)
 
 ## Glue-Code
 
-Glue code is code that "glues" your store to other parts of the application, for example to your server, database, ...
+Glue-code is code that "glues" your store to other parts of the application, for example to your server, database, ...
 
-Glue code can receive messages from the React components, actions or other glue-code.
+Glue-code can
 
-#### Read
+- observer the state and react to state changes using the `store.state$` observable
+- change the state using the `store.next()` function
+- listen to events dispatched on the `state.messageBus$` observable. The messages are similar to redux actions.
+
+#### Observe `store.state$`
 
 Here is an very simple logger example, that observes the state and logs all state changes:
 
@@ -260,7 +296,7 @@ connectLogger(store)
 
 Try on [StackBlitz](https://stackblitz.com/edit/restate-hello-quick-glue?file=index.tsx)
 
-#### Update
+#### Change the state with `store.next()`
 
 Another example of glue code could be a <a href="https://socket.io">socket.io</a> adapter, that receives chat
 messages from a server and adds them to the application state:
@@ -277,7 +313,7 @@ function connectSocket(store: RxStore<any>) {
 connectSocket(store)
 ```
 
-#### Messages
+#### Listen to events
 
 Glue-code can also receive messages from the application - redux style.
 
@@ -361,3 +397,7 @@ const store = createStore({
 
 connectDevTools(store)
 ```
+
+## License
+
+MIT
