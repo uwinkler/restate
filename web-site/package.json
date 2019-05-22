@@ -1,6 +1,6 @@
 {
   "name": "restate-www",
-  "description": "react rx documentation",
+  "description": "restate documentation",
   "version": "1.0.0",
   "dependencies": {
     "@babel/core": "^7.4.4",
