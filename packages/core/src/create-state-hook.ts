@@ -10,13 +10,17 @@ type RxStoreContext<S> = React.Context<RxStore<S>>
 
 type SelectorFunction<S, T> = (state: S) => T
 
+export interface StateHookProps<S> {
+  deps?: any
+  compare?: (previous: S, next: S) => boolean
+}
+
 const identitySelectorFunction: SelectorFunction<any, any> = state => state
 
 export type UseStoreHook<S> = <T>(
-  selectorFunction?: SelectorFunction<S, T>
+  selectorFunction: SelectorFunction<S, T>,
+  props?: StateHookProps<T>
 ) => T
-
-export type UseStoreHookScoped<S> = UseStoreHook<S>
 
 //
 // createStateHook definition
@@ -28,7 +32,7 @@ export function createStateHook<S>(
 export function createStateHook<S, SUB_STATE>(
   context: React.Context<RxStore<S>>,
   outerSelector: SelectorFunction<S, SUB_STATE>
-): UseStoreHookScoped<SUB_STATE>
+): UseStoreHook<SUB_STATE>
 
 //
 // createStateHook implementation
@@ -38,14 +42,23 @@ export function createStateHook<S, SUB_STATE>(
   outerSelector: SelectorFunction<S, SUB_STATE> = identitySelectorFunction
 ) {
   function useAppState<T>(
-    selectorFunction?: SelectorFunction<SUB_STATE, T>
+    selector: SelectorFunction<SUB_STATE, T>,
+    props?: StateHookProps<T>
   ): T {
     const _store = useContext(context)
-    const selector = selectorFunction
-      ? selectorFunction
-      : identitySelectorFunction
+
+    const _props = {
+      deps: [],
+      compare: undefined,
+      ...props
+    }
     const state$ = _store.state$
-    const startValue = selector(outerSelector(state$.value.payload))
+    const deps = _props.deps
+
+    const startValue = useMemo(
+      () => getSelectedValue(state$.value.payload, outerSelector, selector),
+      [...deps]
+    )
 
     const [value, setValue] = useState<T>(startValue)
 
@@ -54,22 +67,37 @@ export function createStateHook<S, SUB_STATE>(
     }, [state$])
 
     useEffect(() => {
-      const subscription = state$.subscribe(nextStateValue => {
-        const nextSubValue = selector(outerSelector(nextStateValue.payload))
-        output$.next(nextSubValue)
+      const stateSub = state$.subscribe(nextStateValue => {
+        const nextValue = getSelectedValue(
+          nextStateValue.payload,
+          outerSelector,
+          selector
+        )
+        output$.next(nextValue)
       })
 
-      output$
-        .pipe(distinctUntilChanged())
+      const outputSub = output$
+        .pipe(distinctUntilChanged(_props.compare))
         .subscribe(nextStateValue => setValue(nextStateValue))
 
       return function cleanup() {
-        subscription.unsubscribe()
+        stateSub.unsubscribe()
+        outputSub.unsubscribe()
       }
-    }, [output$])
+    }, [output$, ...deps])
 
     return value
   }
 
   return useAppState
+}
+
+function getSelectedValue<S, SUB_STATE, T>(
+  state: S,
+  outerSelector: SelectorFunction<S, SUB_STATE>,
+  selector: SelectorFunction<SUB_STATE, T> | SelectorFunction<any, any>
+) {
+  const subState = outerSelector(state)
+  const value = selector(subState)
+  return value
 }
