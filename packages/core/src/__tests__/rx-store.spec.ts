@@ -171,8 +171,7 @@ it("freeze: should not freeze the state if the freeze options is set to false", 
 
 it("should be able to set the state as object, not using immer's imperative way", () => {
   const store = createStore({
-    state: { value: 1 },
-    options: { freeze: false }
+    state: { value: 1 }
   })
   store.next({ value: 12 })
 
@@ -181,11 +180,19 @@ it("should be able to set the state as object, not using immer's imperative way"
 
 it("should be able to set the state as object, not using immer's imperative way", () => {
   const store = createStore({
-    state: { value: 1 },
-    options: { freeze: false }
+    state: { value: 1 }
   })
 
   store.next({ value: 12 })
 
+  expect(store.state).toEqual({ value: 12 })
+})
+
+it("should be able to update the store using spread", () => {
+  const store = createStore({
+    state: { value: 1 }
+  })
+
+  store.next(state => ({ ...state, value: 12 }))
   expect(store.state).toEqual({ value: 12 })
 })
