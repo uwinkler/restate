@@ -9,8 +9,6 @@ function paginate(todos: Todo[], page: number) {
 
 export function useVisibleTodos() {
   return useAppState(state => {
-    console.log("useVisibleTodos")
-    debugger
     const visible = state.visibility
     const page = state.page
     const visibleTodos = filter(state.todos, visible)
