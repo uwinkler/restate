@@ -73,6 +73,37 @@ fine grain selectors and therefore very efficient selectors. You should use them
 const name = useAppState(state => state.name)
 ```
 
+<InfoPanel>
+
+The app state hooks also takes an options object:
+
+```
+
+{
+deps?: any[]
+compare?: (previous: State, next: State) => boolean
+}
+
+```
+
+The `deps` is used for dependencies to memorizing the selector, in particular if your selector depends on values
+that are not part of the app state.
+
+```code
+const [offset, setOffset] = React.useState()
+const value = useAppState(todos => todos[offset], { deps: [offset]})
+```
+
+The selector also takes a `compare` function. The `compare` function is used to decide
+whether or not to update a selected value.
+
+```code
+// will never update the user name again
+const value = useAppState(state => state.user.name, { compare: () => false })
+```
+
+</InfoPanel>
+
 ### Transforming Selector
 
 Sometime your want to transform the app-state - or combine various app-state properties - into a single object. You can do so with a simple
@@ -84,7 +115,6 @@ const compState = useAppState(state => ({
     todos: state.todos
   })
 )
-
 ```
 
 ### Computing Selector
@@ -141,7 +171,7 @@ const compState = useAppState(state => ({
 
 ### Working with Arrays
 
-You select array entries as well:
+Select array entries by ID:
 
 ```
 function useTodoWithId(id:string) {
@@ -149,7 +179,7 @@ function useTodoWithId(id:string) {
 }
 ```
 
-or
+or by index:
 
 ```
 function useMyTodoAtIdx(idx:number) {
