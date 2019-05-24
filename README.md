@@ -18,6 +18,10 @@ Futhermore, Restate
 - dev-tools
 - easy to learn and easy to test
 
+## Documentation
+
+The documentation is also available on Netlify: [https://restate.netlify.com/](https://restate.netlify.com/).
+
 ## What it looks like...
 
 ```ts
@@ -49,9 +53,7 @@ make some changes to the state, for example change the property `user.name` to `
 able to pick up those changes and gives you nice error messages. 
 
 
-## Documentation
 
-The documentation is also available on Netlify:[https://restate.netlify.com/](https://restate.netlify.com/).
 
 ## Installation
 
@@ -102,13 +104,13 @@ const App: React.FC = () => (
 )
 ```
 
-Try on [StackBlitz](https://stackblitz.com/edit/restate-hello-world)!
+Try it on [StackBlitz](https://stackblitz.com/edit/restate-hello-world)!
 
 You can use [multiple stores](https://stackblitz.com/edit/restate-multiple-stores-toggle?file=index.tsx) as well.
 
 ## Read from the state
 
-To read from the state Restate provides you _AppStateHooks_.
+To read from the state _Restate_ provides you _AppStateHooks_.
 
 AppStateHooks hooks are use to
 
