@@ -10,6 +10,8 @@
   },
   "main": "build/index.js",
   "types": "build/index.d.ts",
+  "repository": "https://github.com/uwinkler/restate",
+  "homepage": "https://restate.netlify.com/dev-tools",
   "publishConfig": {
     "access": "public"
   },

@@ -18,7 +18,8 @@
     "react": "^16.8.6",
     "react-dom": "^16.8.6"
   },
-  "homepage": "https://github.com/org/restate",
+  "repository": "https://github.com/uwinkler/restate",
+  "homepage": "https://restate.netlify.com/",
   "keywords": [
     "react",
     "restate",
