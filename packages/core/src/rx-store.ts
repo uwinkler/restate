@@ -90,14 +90,20 @@ export class RxStore<STATE> {
       const currentStatePackage = this.state$.value
       const isUpdateFunction = updateFunctionOrNextState instanceof Function
 
-      const draft = isUpdateFunction
+      // we accept either a new state object or a update function
+      // a) If we receive an object, we create a draft from that object. The draft will be used in the middleware
+      // b) If we receive an function, we create a draft from the current state.
+      let draft = isUpdateFunction
         ? (createDraft(currentStatePackage.payload) as STATE)
         : (createDraft(updateFunctionOrNextState) as STATE)
 
       const draftMetaInfo = createDraft(metaInfo)
 
       if (updateFunctionOrNextState instanceof Function) {
-        updateFunctionOrNextState(draft)
+        const ret = updateFunctionOrNextState(draft)
+        if (ret !== undefined) {
+          draft = createDraft(ret)
+        }
       }
 
       recursiveMiddlewareHandler<STATE>({

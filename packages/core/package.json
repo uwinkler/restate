@@ -12,10 +12,11 @@
   "types": "build/index.d.ts",
   "dependencies": {
     "immer": "^3.1.1",
-    "lodash": "^4.17.11",
-    "react": "^16.8.6",
-    "react-dom": "^16.8.6",
     "rxjs": "^6.5.1"
+  },
+  "peerDependencies": {
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6"
   },
   "homepage": "https://github.com/org/restate",
   "keywords": [
