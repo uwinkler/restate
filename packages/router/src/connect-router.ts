@@ -1,5 +1,5 @@
 import { Location, History } from "history"
-import { RxStore } from "react-rx-state"
+import { RxStore } from "@restate/core"
 
 export interface WithConnectReactRouterState<LocationState> {
   location: Location<LocationState>

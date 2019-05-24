@@ -1,4 +1,4 @@
-import { RxStore } from "react-rx-state"
+import { RxStore } from "@restate/core"
 
 export function connectDevTools(store: RxStore<any>): () => void {
   const devToolsExtension = (window as any).__REDUX_DEVTOOLS_EXTENSION__
