@@ -285,6 +285,17 @@
     "@types/istanbul-reports" "^1.1.1"
     "@types/yargs" "^12.0.9"
 
+"@restate/core@^0.8.7":
+  version "0.8.7"
+  resolved "https://registry.yarnpkg.com/@restate/core/-/core-0.8.7.tgz#37cb429b315fe6788d0937c24c3bfdecab97da7b"
+  integrity sha512-CPhOY8uEpZ1HaZmXvs7JJXbHYX3WgI59Dwc5W9rkjUdtJVXEC7FlvDfZQe0hgXZjEj1bos9MslT4Otnlte7yFg==
+  dependencies:
+    immer "^3.1.1"
+    lodash "^4.17.11"
+    react "^16.8.6"
+    react-dom "^16.8.6"
+    rxjs "^6.5.1"
+
 "@types/babel__core@^7.1.0":
   version "7.1.1"
   resolved "https://registry.yarnpkg.com/@types/babel__core/-/babel__core-7.1.1.tgz#ce9a9e5d92b7031421e1d0d74ae59f572ba48be6"
@@ -349,11 +360,6 @@
   integrity sha512-60sjqMhat7i7XntZckcSGV8iREJyXXI6yFHZkSZvCPUeOnEJ/VP1rU/WpEWQ56mvoh8NhC+sfKAuJRTyGtCOow==
   dependencies:
     "@types/jest-diff" "*"
-
-"@types/lodash@^4.14.129":
-  version "4.14.129"
-  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.129.tgz#9aaca391db126802482655c48dd79a814488202f"
-  integrity sha512-oYaV0eSlnOacOr7i4X1FFdH8ttSlb57gu3I9MuStIv2CYkISEY84dNHYsC3bF6sNH7qYcu1BtVrCtQ8Q4KPTfQ==
 
 "@types/prop-types@*":
   version "15.7.1"
@@ -2812,18 +2818,6 @@ react-is@^16.8.1, react-is@^16.8.4, react-is@^16.8.6:
   version "16.8.6"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.8.6.tgz#5bbc1e2d29141c9fbdfed456343fe2bc430a6a16"
   integrity sha512-aUk3bHfZ2bRSVFFbbeVS4i+lNPZr3/WM5jT2J5omUVV1zzcs1nAaf3l51ctA5FFvCRbhrH0bdAsRRQddFJZPtA==
-
-react-rx-state@^0.7.0:
-  version "0.7.0"
-  resolved "https://registry.yarnpkg.com/react-rx-state/-/react-rx-state-0.7.0.tgz#52e56205b1d1f2903d5aa067ab48a5f58921a5da"
-  integrity sha512-llCUz0ajAwmOR3U1KcpxzBjwRjhKEgkqkfYSY/cDEv1Fj6SOKFyC0iCpRWjs3+3Ml0kNzyRnYAKrhJM68vpcJw==
-  dependencies:
-    "@types/lodash" "^4.14.129"
-    immer "^3.1.1"
-    lodash "^4.17.11"
-    react "^16.8.6"
-    react-dom "^16.8.6"
-    rxjs "^6.5.1"
 
 react-test-renderer@^16.8.6:
   version "16.8.6"

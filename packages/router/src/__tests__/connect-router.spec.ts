@@ -1,4 +1,4 @@
-import { createStore } from "react-rx-state"
+import { createStore } from "@restate/core"
 import { WithConnectReactRouterState } from ".."
 import { defaultRouterState, connectReactRouter } from "../"
 import { createMemoryHistory } from "history"
@@ -22,10 +22,10 @@ it("should provide histor", () => {
 
   connectReactRouter({ appStore: store, history })
 
-  expect(store.state$.value.location.pathname).toEqual("/")
-  expect(store.state$.value.location.state).toEqual({ routerInfo: 0 })
+  expect(store.state.location.pathname).toEqual("/")
+  expect(store.state.location.state).toEqual({ routerInfo: 0 })
 
   history.push("/new_path", { routerInfo: 1 })
-  expect(store.state$.value.location.pathname).toEqual("/new_path")
-  expect(store.state$.value.location.state).toEqual({ routerInfo: 1 })
+  expect(store.state.location.pathname).toEqual("/new_path")
+  expect(store.state.location.state).toEqual({ routerInfo: 1 })
 })

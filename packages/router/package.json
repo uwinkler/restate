@@ -1,6 +1,6 @@
 {
   "name": "@restate/router",
-  "version": "0.8.7",
+  "version": "0.8.8",
   "license": "MIT",
   "scripts": {
     "clean": "rm -rf build",
@@ -13,14 +13,16 @@
   "publishConfig": {
     "access": "public"
   },
-  "dependencies": {
+  "peerDependencies": {
     "@restate/core": "^0.8.7",
     "history": "^4.9.0"
   },
   "devDependencies": {
+    "@restate/core": "^0.8.8",
     "@types/history": "^4.7.2",
     "@types/jest": "^24.0.12",
     "@types/react-test-renderer": "^16.8.1",
+    "history": "^4.9.0",
     "jest": "^24.8.0",
     "prettier": "^1.17.0",
     "react": "^16.8.6",
@@ -28,7 +30,8 @@
     "react-test-renderer": "^16.8.6",
     "rxjs": "^6.5.1",
     "ts-jest": "^24.0.2",
-    "typescript": "^3.4.5"
+    "typescript": "^3.4.5",
+    "utility-types": "^3.7.0"
   },
   "gitHead": "6aab764342a0936d0de670849c6ab135dcdf265e"
 }
