@@ -27,7 +27,7 @@
     "dev-tools"
   ],
   "peerDependencies": {
-    "@restate/core": "^0.8.7"
+    "@restate/core": "^0.8.9"
   },
   "devDependencies": {
     "@restate/core": "^0.8.9",
