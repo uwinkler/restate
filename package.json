@@ -6,6 +6,7 @@
     "publish": "lerna run clean && lerna run build && lerna run test && lerna publish",
     "netlify": "cd packages/www && yarn install && yarn build",
     "postinstall": "lerna bootstrap",
+    "build": "lerna run build",
     "test": "lerna run test"
   },
   "name": "restate",
