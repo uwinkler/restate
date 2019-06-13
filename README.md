@@ -269,16 +269,16 @@ store.next(s => (s.user.age = -1)) // will be intercepted by the ageValidator mi
 
 Try on [StackBlitz](https://stackblitz.com/edit/restate-middleware)
 
-## Glue-Code
+## Connectors
 
-Glue-code is code that "glues" your store to other parts of the application, for example to your server, database, ...
+Connectors  "glue" your store to other parts of the application, for example to your server, database, ...
 
-Glue-code can
+Connectors can
 
 - observer the state and react to state changes using the `store.state$` observable
 - change the state using the `store.next()` function
 - listen to events dispatched on the `state.messageBus$` observable. The messages are similar to redux actions.
-
+- 
 #### Observe `store.state$`
 
 Here is an very simple logger example, that observes the state and logs all state changes:
@@ -314,11 +314,12 @@ connectSocket(store)
 
 #### Listen to events
 
-Glue-code can also receive messages from the application - redux style.
+Connectors can also receive messages from the application - redux style.
 
-Here is a simple UNDO example. The glue-code records the history of the app state using the `store.state$` observable.
-The glue-code also listens to the `UNDO` events by subscribing the `store.messageBus$`.
-If it receives the `UNDO` event, it rewinds the state history by one step.
+Here is a simple UNDO example. The undo-connector records the history of the app state using the `store.state$` observable.
+
+The undo-connector also listens to the `UNDO` events by subscribing to  `store.messageBus$`.
+If the connector receives a `UNDO` event, the connector rewinds the state history by one.
 
 ```ts
   const history = []
@@ -341,7 +342,7 @@ If it receives the `UNDO` event, it rewinds the state history by one step.
 connectUndo(store);
 ```
 
-The application uses `createDispatchHook` to create a dispatch hook. With the dispatch hook, a component can dispatch an `UNDO` event, like so:
+The application uses `createDispatchHook` to create a dispatch hook. With a dispatch hook, a component can dispatch an `UNDO` event, like so:
 
 ```ts
 const useDispatch = createDispatchHook(AppStoreProvider)

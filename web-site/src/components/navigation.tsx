@@ -135,7 +135,7 @@ export const Navigation: React.FC<NavigationProps> = props => {
           path={props.path}
           variant="inset"
           to="/quick-glue/"
-          title="Glue Code"
+          title="Connectors"
         />
         <PageLink
           path={props.path}

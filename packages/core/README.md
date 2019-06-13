@@ -267,11 +267,11 @@ store.next(s => (s.user.age = -1)) // will be intercepted by the ageValidator mi
 
 Try on [StackBlitz](https://stackblitz.com/edit/restate-middleware)
 
-## Glue-Code
+## Connectors
 
-Glue-code is code that "glues" your store to other parts of the application, for example to your server, database, ...
+Connectors  "glue" your store to other parts of the application, for example to your server, database, ...
 
-Glue-code can
+Connectors can
 
 - observer the state and react to state changes using the `store.state$` observable
 - change the state using the `store.next()` function
@@ -284,7 +284,7 @@ Here is an very simple logger example, that observes the state and logs all stat
 ```ts
 function connectLogger(store: RxStore<any>) {
   store.state$.subscribe(nextState => {
-    console.log("STATE:", JSON.stringify(nextState.payload, null, 2))
+    console.log("STATE:", JSON.stringify(nextState.payload))
   })
 }
 
@@ -295,8 +295,7 @@ Try on [StackBlitz](https://stackblitz.com/edit/restate-hello-quick-glue?file=in
 
 #### Change the state with `store.next()`
 
-Another example of glue code could be a <a href="https://socket.io">socket.io</a> adapter, that receives chat
-messages from a server and adds them to the application state:
+Another example of a connector could be a <a href="https://socket.io">socket.io</a> adapter, that receives chat messages from a server and adds them to the application state:
 
 ```ts
 function connectSocket(store: RxStore<any>) {
@@ -312,10 +311,10 @@ connectSocket(store)
 
 #### Listen to events
 
-Glue-code can also receive messages from the application - redux style.
+Connectors can also receive messages from the application - redux style.
 
-Here is a simple UNDO example. The glue-code records the history of the app state using the `store.state$` observable.
-The glue-code also listens to the `UNDO` events by subscribing the `store.messageBus$`.
+Here is a simple UNDO example. The connector records the history of the app state using the `store.state$` observable.
+The connector also listens to the `UNDO` events by subscribing the `store.messageBus$`.
 If it receives the `UNDO` event, it rewinds the state history by one step.
 
 ```ts

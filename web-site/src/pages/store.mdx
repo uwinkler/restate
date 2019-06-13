@@ -106,10 +106,10 @@ store.next({name: "John Targaryen", age: 32})
 
 The state is hold by an <a href="http://reactivex.io/rxjs/manual/overview.html#behaviorsubject">`RxJS.BehaviourSubject`</a>
 
-This make it very easy for glue-code functions to observe and react to state changes:
+This make it very easy for connectors to observe and react to state changes:
 
 ```code lines=3-11 src=https://stackblitz.com/edit/restate-middleware-logger
-// Simple logger glue-code
+// Simple logger connector
 function connectLogger(store: RxStore<any>) {
   store
     .state$
@@ -132,14 +132,14 @@ store.next(s => { s.name = "Bran Stark" })
 // State: {"name":"John Targaryen"} -> {"name":"Bran Stark"}
 ```
 
-In this example the `connectLogger` glue-code subscribes to the `state$` observable
+In this example, `connectLogger` subscribes to the `state$` observable
 and takes the states in pairs (old and new) using <a href="https://rxjs-dev.firebaseapp.com/api/operators/pairwise" target="rxjs_pairwise">RxJS's pairwise operator</a>.
 
 ---
 
 ## Observable `store.messageBus$`
 
-Sometimes it is convenient to send a message (or action in redux terms) to the glue-code and let glue-code do all the hard work.
+Sometimes it is convenient to send a message (or action in redux terms) to a connector and let the connector do all the hard work.
 
 This is particular true with long running or complex operations, async operations or in case where several different parts
 of the application have to react to a specific event.
@@ -149,7 +149,7 @@ For those use-cases the `store.messageBus$` observable comes in handy.
 A good example would be the log-in/log-out of a user.
 
 ```code lines=5-18 src=https://stackblitz.com/edit/restate-messagebus
-// Glue-code to perform a login
+// Connector to perform a login
 function connectLoginAction(store: RxStore<State>) {
   store.messageBus$.subscribe(async msg => {
       // Note: this is an an async function and updates the state twice
