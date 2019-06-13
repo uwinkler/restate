@@ -19,9 +19,9 @@
   },
   "devDependencies": {
     "@restate/core": "^0.8.9",
-    "@types/history": "^4.7.2",
-    "@types/jest": "^24.0.12",
-    "@types/react-test-renderer": "^16.8.1",
+    "@types/history": "4.7.2",
+    "@types/jest": "24.0.12",
+    "@types/react": "16.8.19",
     "history": "^4.9.0",
     "jest": "^24.8.0",
     "prettier": "^1.17.0",
@@ -33,5 +33,6 @@
     "typescript": "^3.4.5",
     "utility-types": "^3.7.0"
   },
-  "gitHead": "6aab764342a0936d0de670849c6ab135dcdf265e"
+  "gitHead": "6aab764342a0936d0de670849c6ab135dcdf265e",
+  "dependencies": {}
 }
