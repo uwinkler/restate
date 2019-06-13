@@ -285,17 +285,6 @@
     "@types/istanbul-reports" "^1.1.1"
     "@types/yargs" "^12.0.9"
 
-"@restate/core@^0.8.7":
-  version "0.8.7"
-  resolved "https://registry.yarnpkg.com/@restate/core/-/core-0.8.7.tgz#37cb429b315fe6788d0937c24c3bfdecab97da7b"
-  integrity sha512-CPhOY8uEpZ1HaZmXvs7JJXbHYX3WgI59Dwc5W9rkjUdtJVXEC7FlvDfZQe0hgXZjEj1bos9MslT4Otnlte7yFg==
-  dependencies:
-    immer "^3.1.1"
-    lodash "^4.17.11"
-    react "^16.8.6"
-    react-dom "^16.8.6"
-    rxjs "^6.5.1"
-
 "@types/babel__core@^7.1.0":
   version "7.1.1"
   resolved "https://registry.yarnpkg.com/@types/babel__core/-/babel__core-7.1.1.tgz#ce9a9e5d92b7031421e1d0d74ae59f572ba48be6"
@@ -1397,11 +1386,6 @@ ignore-walk@^3.0.1:
   integrity sha512-DTVlMx3IYPe0/JJcYP7Gxg7ttZZu3IInhuEhbchuqneY9wWe5Ojy2mXLBaQFUQmo0AW2r3qG7m1mg86js+gnlQ==
   dependencies:
     minimatch "^3.0.4"
-
-immer@^3.1.1:
-  version "3.1.1"
-  resolved "https://registry.yarnpkg.com/immer/-/immer-3.1.1.tgz#eddd2c28403f494df604992c554eade8d9e5c2bb"
-  integrity sha512-8mH3vMqkvCy0jADoJGJR/+RNsIJOsrVhN1/8NBSLGV+Y4S8bSQ5i2VsDHu+1fm+IFhd8cZFX0shms2nsTBJUbA==
 
 import-local@^2.0.0:
   version "2.0.0"
