@@ -1,4 +1,7 @@
+[![CircleCI](https://circleci.com/gh/uwinkler/restate.svg?style=svg)](https://circleci.com/gh/uwinkler/restate)
+
 # Restate
+
 
 _Restate_ is a predictable, easy to use, easy to integrate, typesafe state container for [React](https://reactjs.org/).
 
