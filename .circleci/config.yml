@@ -23,6 +23,8 @@ jobs:
 
       - run: yarn
 
+      - run: yarn build
+
       - run:
           name: "tests"
           command: yarn run test
