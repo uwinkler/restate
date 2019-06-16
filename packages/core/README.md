@@ -373,7 +373,7 @@ Go and get the ReduxDevTools for your browser:
 Then install the `@restate/dev-tools`
 
 ```bash
-yarn install @restate/dev-tools
+yarn add @restate/dev-tools
 ```
 
 #### Usage
