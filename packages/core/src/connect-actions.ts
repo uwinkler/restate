@@ -1,7 +1,8 @@
 import { createDraft, finishDraft } from "immer"
 import { BehaviorSubject, Observable, Subscription } from "rxjs"
 import { distinctUntilChanged, map } from "rxjs/operators"
-import { MetaInfo, RxStore } from "./rx-store"
+import { MetaInfo, RxStore, Message } from "./rx-store"
+import { dispatch } from "rxjs/internal/observable/range"
 
 const defaultMetaInfo: MetaInfo = {
   type: "@RX/ACTIONS"
@@ -20,6 +21,7 @@ export interface ActionFactoryProps<SUB_STATE> {
   messageBus$: Observable<MetaInfo>
   state: () => SUB_STATE
   next: (updateFunction: UpdateFunction<SUB_STATE>) => void
+  dispatch: (message: Message) => void
 }
 
 export type ActionFactory<SUB_STATE, T> = (
@@ -60,11 +62,16 @@ function createPropsForForges<S, T extends Object>(
     store.next(nextState, metaInfo)
   }
 
+  function dispatch(msg: Message) {
+    store.dispatch(msg)
+  }
+
   return {
     state$: subState$,
     messageBus$: store.messageBus$,
     next,
     state,
+    dispatch,
     store,
     subscription
   }
