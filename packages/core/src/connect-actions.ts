@@ -2,7 +2,6 @@ import { createDraft, finishDraft } from "immer"
 import { BehaviorSubject, Observable, Subscription } from "rxjs"
 import { distinctUntilChanged, map } from "rxjs/operators"
 import { MetaInfo, RxStore, Message } from "./rx-store"
-import { dispatch } from "rxjs/internal/observable/range"
 
 const defaultMetaInfo: MetaInfo = {
   type: "@RX/ACTIONS"
