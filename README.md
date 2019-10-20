@@ -1,4 +1,4 @@
-[![CircleCI](https://circleci.com/gh/uwinkler/restate.svg?style=svg)](https://circleci.com/gh/uwinkler/restate)
+[![CircleCI](https://circleci.com/gh/uwinkler/restate.svg?style=svg)](https://circleci.com/gh/uwinkler/restate) [![Greenkeeper badge](https://badges.greenkeeper.io/uwinkler/restate.svg)](https://greenkeeper.io/)
 
 # Restate
 
