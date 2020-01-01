@@ -43,7 +43,7 @@
     "@types/react-test-renderer": "^16.8.1",
     "babel-jest": "^24.8.0",
     "enzyme": "^3.9.0",
-    "enzyme-adapter-react-16": "^1.12.1",
+    "enzyme-adapter-react-16": "1.12.1",
     "jest": "^24.8.0",
     "jsdom": "^15.0.0",
     "jsdom-global": "^3.0.2",
