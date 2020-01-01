@@ -11,7 +11,7 @@
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "dependencies": {
-    "immer": "^4.0.1",
+    "immer": "^5.0.0",
     "rxjs": "^6.5.1"
   },
   "peerDependencies": {
