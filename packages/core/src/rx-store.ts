@@ -114,7 +114,7 @@ export class RxStore<STATE> {
         _inversePatches = inversePatches
       }) as STATE
 
-      const nextMetaInfo = finishDraft(draftMetaInfo)
+      const nextMetaInfo = finishDraft(draftMetaInfo, () => {})
 
       const nextStatePackage: StatePackage<STATE> = {
         type: nextMetaInfo.type,
