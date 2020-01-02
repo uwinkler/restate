@@ -1,5 +1,5 @@
 {
-  "name": "@restate/dev-tools",
+  "name": "@restate/webapi",
   "version": "0.9.1",
   "license": "MIT",
   "scripts": {
@@ -10,22 +10,9 @@
   },
   "main": "build/index.js",
   "types": "build/index.d.ts",
-  "repository": "https://github.com/uwinkler/restate",
-  "homepage": "https://restate.netlify.com/dev-tools",
   "publishConfig": {
     "access": "public"
   },
-  "keywords": [
-    "react",
-    "restate",
-    "state",
-    "manager",
-    "management",
-    "redux",
-    "store",
-    "dev",
-    "dev-tools"
-  ],
   "peerDependencies": {
     "@restate/core": "^0.9.0"
   },
@@ -35,6 +22,8 @@
     "jest": "^24.8.0",
     "prettier": "^1.17.0",
     "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "react-test-renderer": "^16.8.6",
     "rxjs": "^6.5.1",
     "ts-jest": "^24.0.2",
     "typescript": "^3.4.5",

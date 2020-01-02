@@ -1,7 +1,7 @@
-import { createDraft, finishDraft } from "immer"
-import { BehaviorSubject, Observable, Subscription } from "rxjs"
+import { createDraft, finishDraft, Patch } from "immer"
+import { BehaviorSubject, Subscription } from "rxjs"
 import { distinctUntilChanged, map } from "rxjs/operators"
-import { MetaInfo, RxStore } from "./rx-store"
+import { Message, MetaInfo, RxStore } from "./rx-store"
 
 const defaultMetaInfo: MetaInfo = {
   type: "@RX/ACTIONS"
@@ -16,10 +16,9 @@ export interface ActionPropsState<STATE> {
 }
 
 export interface ActionFactoryProps<SUB_STATE> {
-  state$: Observable<SUB_STATE>
-  messageBus$: Observable<MetaInfo>
   state: () => SUB_STATE
   next: (updateFunction: UpdateFunction<SUB_STATE>) => void
+  dispatch: (message: Message) => void
 }
 
 export type ActionFactory<SUB_STATE, T> = (
@@ -33,12 +32,8 @@ function createPropsForForges<S, T extends Object>(
   store: RxStore<S>,
   selectorFunction: ActionFactorySelectorFunction<S, T>
 ): ActionFactoryConnectProps<S, T> {
-  const state$ = store.state$
-  const subState$ = new BehaviorSubject<T>(
-    selectorFunction(store.state$.value.payload)
-  )
-
-  const state = () => selectorFunction(state$.value.payload)
+  const subState$ = new BehaviorSubject<T>(selectorFunction(store.state))
+  const state = () => selectorFunction(store.state)
 
   const subscription = store.state$
     .pipe(
@@ -52,19 +47,23 @@ function createPropsForForges<S, T extends Object>(
     updateFunction: UpdateFunction<T>,
     metaInfo: MetaInfo = defaultMetaInfo
   ) {
-    const currentState = state$.value.payload
+    const currentState = store.state
     const draftState = createDraft(currentState)
     const subState = selectorFunction(draftState as any)
     updateFunction(subState)
-    const nextState = finishDraft(draftState) as S
+    const patchListener = (_patches: Patch[], _inversePatches: Patch[]) => {}
+    const nextState = finishDraft(draftState, patchListener) as S
     store.next(nextState, metaInfo)
   }
 
+  function dispatch(msg: Message) {
+    store.dispatch(msg)
+  }
+
   return {
-    state$: subState$,
-    messageBus$: store.messageBus$,
     next,
-    state,
+    state, // SubState
+    dispatch,
     store,
     subscription
   }

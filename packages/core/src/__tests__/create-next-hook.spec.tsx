@@ -55,7 +55,7 @@ it("should update a state", async () => {
 
   let component: any
 
-  act(() => {
+  await act(() => {
     component = mount(
       <AppStoreProvider.Provider value={store}>
         <TestComponent />
@@ -67,7 +67,7 @@ it("should update a state", async () => {
     `"<button class=\\"btn\\">1</button>"`
   )
 
-  act(() => {
+  await act(() => {
     const btn = component.find(".btn")
     btn.simulate("click")
   })

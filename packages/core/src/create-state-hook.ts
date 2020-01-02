@@ -52,11 +52,11 @@ export function createStateHook<S, SUB_STATE>(
       compare: undefined,
       ...props
     }
-    const state$ = _store.state$
+    const state = _store.state
     const deps = _props.deps
 
     const startValue = useMemo(
-      () => getSelectedValue(state$.value.payload, outerSelector, selector),
+      () => getSelectedValue(state, outerSelector, selector),
       [...deps]
     )
 
@@ -64,10 +64,10 @@ export function createStateHook<S, SUB_STATE>(
 
     const output$ = useMemo(() => {
       return new BehaviorSubject(startValue)
-    }, [state$])
+    }, [state])
 
     useEffect(() => {
-      const stateSub = state$.subscribe(nextStateValue => {
+      const stateSub = _store.state$.subscribe(nextStateValue => {
         const nextValue = getSelectedValue(
           nextStateValue.payload,
           outerSelector,

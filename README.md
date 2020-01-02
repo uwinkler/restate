@@ -1,21 +1,17 @@
-# REACT-RX-STATE
+[![CircleCI](https://circleci.com/gh/uwinkler/restate.svg?style=svg)](https://circleci.com/gh/uwinkler/restate) [![Greenkeeper badge](https://badges.greenkeeper.io/uwinkler/restate.svg)](https://greenkeeper.io/)
 
-[![Netlify Status](https://api.netlify.com/api/v1/badges/763285d5-b187-4cb9-8fde-d92ffd11360c/deploy-status)](https://app.netlify.com/sites/react-rx-state/deploys)
+# Restate
 
 
-## What is `react-rx-state`?
+_Restate_ is a predictable, easy to use, easy to integrate, typesafe state container for [React](https://reactjs.org/).
 
-**Rx-State** is a predictable, easy to use, easy to extend, typesafe state container for [React](https://reactjs.org/) applications.
-
-<hr />
-
-Rx-State follows the [three principles of Redux](https://redux.js.org/introduction/three-principles):
+_Restate_ follows the [three principles of Redux](https://redux.js.org/introduction/three-principles):
 
 - Single source of truth
-- State is read only,
-- Changes are of the immutable state are made in a convenient way (using [immer.js](https://github.com/immerjs/immer))
+- State is read only
+- Changes are pure, but made in a convenient way using [immer.js](https://github.com/immerjs/immer)
 
-Futhermore, Rx-State
+Futhermore, Restate
 
 - provides a nice React-Hook based API to read and update the state
 - is using Typescript to make your application more robust and your development experience more enjoyable
@@ -25,51 +21,82 @@ Futhermore, Rx-State
 - dev-tools
 - easy to learn and easy to test
 
-<hr />
+## Documentation
 
-The documentation is available on Netlify:[https://react-rx-state.netlify.com/](https://react-rx-state.netlify.com/).
+The documentation is also available on Netlify: [https://restate.netlify.com/](https://restate.netlify.com/).
 
-<hr />
+## What it looks like...
+
+```ts
+const store = createStore({
+  state: {
+    name: "John Snow",
+    age: 32
+  }
+})
+
+const AppStoreProvider = createProvider(store);
+const useAppState = createStateHook(AppStoreProvider);
+const useNextAppState = createNextHook(AppStoreProvider);
+
+const Name = () => {
+  const name = useAppState(state => state.user.name)
+  const next = useNextAppState(state => state.user)
+
+  function setName(nextName:string) {
+    next(user => user.name = nextName)
+  }
+
+  return <input value={name} onChange={e => setName(e.target.value)} />
+}
+```
+
+Even the code above looks like JS, it is indeed Typescript. Go on [StackBlitz](https://stackblitz.com/edit/restate-hello-world) and
+make some changes to the state, for example change the property `user.name` to `user.firstName`. You will see how Typescript is
+able to pick up those changes and gives you nice error messages. 
+
+
+
 
 ## Installation
 
 With NPM:
 
 ```bash
-npm install react-rx-state --save
+npm install @restate/core --save
 ```
 
 or with YARN:
 
 ```bash
-yarn add react-rx-state
+yarn add @restate/core
 ```
 
 ## Store
 
 To get started, you need to create a store:
 
-```ts 
-import { createStore } from 'react-rx-state'
+```ts
+import { createStore } from "@restate/core"
 
 const store = createStore({
   state: {
-    name: 'John Snow',
-    age: 32,
+    name: "John Snow",
+    age: 32
   }
 })
 ```
 
-Try on [StackBlitz](https://stackblitz.com/edit/react-rx-state-hello-world)!
+Try on [StackBlitz](https://stackblitz.com/edit/restate-hello-world)!
 
 ## Provider
 
 To connect our store to the React component tree we need a `Provider`:
 
 ```ts
-import { createProvider } from 'react-rx-state'
+import { createProvider } from "@restate/core"
 
-const AppStoreProvider = createProvider(store); // to provide the store to react
+const AppStoreProvider = createProvider(store) // to provide the store to react
 
 const App: React.FC = () => (
   <AppStoreProvider.Provider value={store}>
@@ -77,15 +104,16 @@ const App: React.FC = () => (
     <Age />
     <NameForm />
   </AppStoreProvider.Provider>
-);
+)
 ```
 
-Try on [StackBlitz](https://stackblitz.com/edit/react-rx-state-hello-world)!
+Try it on [StackBlitz](https://stackblitz.com/edit/restate-hello-world)!
 
+You can use [multiple stores](https://stackblitz.com/edit/restate-multiple-stores-toggle?file=index.tsx) as well.
 
 ## Read from the state
 
-To read from the state RxState provides you _AppStateHooks_. 
+To read from the state _Restate_ provides you _AppStateHooks_.
 
 AppStateHooks hooks are use to
 
@@ -95,15 +123,15 @@ AppStateHooks hooks are use to
 ```ts
 const store = createStore({
   state: {
-    user: { name: 'John Doe', age: 32 },
+    user: { name: "John Doe", age: 32 },
     todos: 0
   }
 })
 
-const AppStoreProvider = createProvider(store); 
+const AppStoreProvider = createProvider(store)
 
 // create a `scoped state hook` (we select the `user` object)
-const useUserState = createStateHook(AppStoreProvider, state => state.user);
+const useUserState = createStateHook(AppStoreProvider, state => state.user)
 
 const Hello = () => {
   // select a property from the state
@@ -111,22 +139,25 @@ const Hello = () => {
   // do some basic views/computations/transformations
   const days = useUserState(user => user.age * 365)
 
-  return <h1>Hello {name}, you are {days} days old</h1>
+  return (
+    <h1>
+      Hello {name}, you are {days} days old
+    </h1>
+  )
 }
 ```
 
-Try on [StackBlitz](https://stackblitz.com/edit/react-rx-state-hello-world)!
-
+Try on [StackBlitz](https://stackblitz.com/edit/restate-hello-world)!
 
 ## Change the state - using hooks
 
 To change the state, we use a Next-Hook.
 
 ```ts
-import { createNextHook } from 'react-rx-state'
+import { createNextHook } from "@restate/core"
 
 // create a next-hook
-const useNextAppState = createNextHook(AppStoreProvider);
+const useNextAppState = createNextHook(AppStoreProvider)
 ```
 
 The `useNextAppState` hook takes a selector function to scope
@@ -142,17 +173,16 @@ const NameForm = () => {
   // Creates a `next` function to change the user
   const next = useNextAppState(state => state.user)
 
-  function setName(nextName:string) {
+  function setName(nextName: string) {
     // The next function provides the current user object as parameter, which we can modify.
-    next(user => user.name = nextName);
+    next(user => (user.name = nextName))
   }
 
   return <input value={name} onChange={e => setName(e.target.value)} />
 }
 ```
 
-Try on [StackBlitz](https://stackblitz.com/edit/react-rx-state-hello-world)!
-
+Try on [StackBlitz](https://stackblitz.com/edit/restate-hello-world)!
 
 ## Change the state - using actions
 
@@ -164,19 +194,20 @@ receives - among other things - the `next()` function to update the store.
 An _ActionFactory_ returns a object that holds
 the all the actions to change the state. Think about actions as "member functions" of your state.
 
-```ts
+Actions can be asynchronous.
 
+```ts
 // Action factory
-const userActionsFactory = ( {next}:ActionFactoryProps<User>) => ({
+const userActionsFactory = ({ next }: ActionFactoryProps<User>) => ({
   incrementAge() {
     next(user => user.age++)
   },
   decrementAge() {
     next(user => user.age--)
   },
-  async fetchData(userId:string) {
+  async fetchData(userId: string) {
     const data = await serverFetchUserData(userId)
-    next(user => user.data = data)
+    next(user => (user.data = data))
   }
 })
 ```
@@ -184,10 +215,14 @@ const userActionsFactory = ( {next}:ActionFactoryProps<User>) => ({
 The _ActionFactory_ is hooked into `React` using the `createActionsHook`:
 
 ```ts
-const useUserActions = createActionsHook(AppStoreProvider, state => state.user, userActionsFactory);
+const useUserActions = createActionsHook(
+  AppStoreProvider,
+  state => state.user,
+  userActionsFactory
+)
 
 const Age = () => {
-  const userActions = useUserActions();
+  const userActions = useUserActions()
   return (
     <div>
       <button onClick={userActions.incrementAge}>+</button>
@@ -197,90 +232,97 @@ const Age = () => {
 }
 ```
 
-Try on [StackBlitz](https://stackblitz.com/edit/react-rx-state-actions?file=index.tsx)
+Try on [StackBlitz](https://stackblitz.com/edit/restate-actions?file=index.tsx)
 
 ## Change the state - using `store.next()`
 
-Outside of your component tree, you can also change the store like this:
+Outside of your component tree you can change the store like this:
 
 ```ts
-store.next( state => { state.user.name = "John"})
+store.next(state => {
+  state.user.name = "John"
+})
 ```
-
 
 ## Middleware
 
-Middleware are small functions which intercept state updates. Middleware functions receiving the `currentState` as well as the `nextState`.
+Middleware are small synchronous functions which intercept state updates. Middleware functions receiving the `currentState` as well as the `nextState`.
 They can change the `nextState`, if required. If a middleware throws an exception, the state update will be canceled.
 
 Take the `ageValidator` middleware for example.
 It ensures, that the `user.age` property never gets negative.
 
 ```ts
-// Ensures the age will never be < 0 or > 120
+// Ensures the age will never be < 0
 const ageValidator: Middleware<State> = ({ nextState, currentState }) => {
-  nextState.age = nextState.user.age < 0 ? currentState.user.age : nextState.user.age
+  nextState.age =
+    nextState.user.age < 0 ? currentState.user.age : nextState.user.age
 }
 
 const store = createStore({
   state: {
-    name: 'John Snow',
-    age: 32,
+    name: "John Snow",
+    age: 32
   },
   middleware: [ageValidator]
 })
 
-
-store.next( s => s.user.age = -1); // will be intercepted by the ageValidator middleware.
+store.next(s => (s.user.age = -1)) // will be intercepted by the ageValidator middleware.
 ```
 
-Try on [StackBlitz](https://stackblitz.com/edit/react-rx-state-middleware)
+Try on [StackBlitz](https://stackblitz.com/edit/restate-middleware)
 
+## Connectors
 
-## Glue-Code
+Connectors  "glue" your store to other parts of the application, for example to your server, database, ...
 
-Glue code is code that "glues" your store to other parts of the application, for example to your server, database, ...
+Connectors can
 
-Glue code can receive messages from the React components, actions or other glue-code.
-
-#### Read
+- observer the state and react to state changes using the `store.state$` observable
+- change the state using the `store.next()` function
+- listen to events dispatched on the `state.messageBus$` observable. The messages are similar to redux actions.
+- 
+#### Observe `store.state$`
 
 Here is an very simple logger example, that observes the state and logs all state changes:
 
 ```ts
-function connectLogger(store:RxStore<any>) {
-  store.state$.subscribe( nextState => {
-    console.log('STATE:', JSON.stringify(nextState.payload, null, 2));
+function connectLogger(store: RxStore<any>) {
+  store.state$.subscribe(nextState => {
+    console.log("STATE:", JSON.stringify(nextState.payload, null, 2))
   })
 }
 
-connectLogger(store);
+connectLogger(store)
 ```
 
-Try on [StackBlitz](https://stackblitz.com/edit/react-rx-state-hello-quick-glue?file=index.tsx)
+Try on [StackBlitz](https://stackblitz.com/edit/restate-hello-quick-glue?file=index.tsx)
 
-#### Update
+#### Change the state with `store.next()`
 
 Another example of glue code could be a <a href="https://socket.io">socket.io</a> adapter, that receives chat
 messages from a server and adds them to the application state:
 
 ```ts
-function connectSocket(store:RxStore<any>) {
- socket.on('chat message', msg => {
-    store.next(state => {state.messages.push(msg)});
- });
+function connectSocket(store: RxStore<any>) {
+  socket.on("chat message", msg => {
+    store.next(state => {
+      state.messages.push(msg)
+    })
+  })
 }
 
 connectSocket(store)
 ```
 
-#### Messages
+#### Listen to events
 
-Glue-code can also receive messages from the application, redux style.
+Connectors can also receive messages from the application - redux style.
 
-Here is a simple UNDO example. The glue-code records the history of the app state using the `store.state$` observable.
-The glue-code also listens to the `UNDO` events by subscribing the `store.messageBus$`.
-If it receives the `UNDO` event, it rewinds the state history by on step.
+Here is a simple UNDO example. The undo-connector records the history of the app state using the `store.state$` observable.
+
+The undo-connector also listens to the `UNDO` events by subscribing to  `store.messageBus$`.
+If the connector receives a `UNDO` event, the connector rewinds the state history by one.
 
 ```ts
   const history = []
@@ -303,58 +345,62 @@ If it receives the `UNDO` event, it rewinds the state history by on step.
 connectUndo(store);
 ```
 
-The application can use `createDispatchHook(AppStoreProvider)` to create a `useDispatch` hook. With this hook, a component can dispatch an `UNDO` event:
+The application uses `createDispatchHook` to create a dispatch hook. With a dispatch hook, a component can dispatch an `UNDO` event, like so:
 
 ```ts
-const useDispatch = createMessageBusHook(AppStoreProvider)
+const useDispatch = createDispatchHook(AppStoreProvider)
 
 function useUndo() {
-  const dispatch = useDispatch();
-  return () => dispatch({type:'UNDO'})
+  const dispatch = useDispatch()
+  return () => dispatch({ type: "UNDO" })
 }
 
 const UndoButton = () => {
-  const undo = useUndo();
-  return <button onClick={undo} >UNDO</button>
+  const undo = useUndo()
+  return <button onClick={undo}>UNDO</button>
 }
 ```
 
-Try the UNDO example on [StackBlitz!](https://stackblitz.com/edit/react-rx-state-glue-undo?file=index.tsx)
+Try the UNDO example on [StackBlitz!](https://stackblitz.com/edit/restate-glue-undo?file=index.tsx)
 
 ## DevTools
 
-`react-rx-state` uses the
+`restate` uses the
 excellent <a href="https://github.com/zalmoxisus/redux-devtools-extension" target="https://github.com/zalmoxisus/redux-devtools-extension">ReduxDevTools</a> to provide power-ups for your development workflow.
 
-![DevTools screenshot](https://raw.githubusercontent.com/uwinkler/react-rx-state/dev/web-site/src/pages/dev-tools-screenshot.png)
+![DevTools screenshot](https://raw.githubusercontent.com/uwinkler/restate/dev/web-site/src/pages/dev-tools-screenshot.png)
 
 #### Installation
+
 Go and get the ReduxDevTools for your browser:
 
 - <a href="https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd">Google Chrome</a>
 - <a href="https://addons.mozilla.org/en-US/firefox/addon/reduxdevtools/">Firefox</a>
 
-Then install the `react-rx-state-dev-tools`
+Then install the `@restate/dev-tools`
 
 ```bash
-yarn install react-rx-state-dev-tools
+yarn add @restate/dev-tools
 ```
 
 #### Usage
 
 ```ts
-import {connectDevTools} from 'react-rx-state-dev-tools'
+import { connectDevTools } from "@restate/dev-tools"
 
 const store = createStore({
   state: {
-    name: 'John Snow',
-    age: 32,
+    name: "John Snow",
+    age: 32
   },
   options: {
     storeName: "MY APP STORE" // <-- will show up in the instance selector
   }
 })
 
-connectDevTools(store);
+connectDevTools(store)
 ```
 
+## License
+
+MIT

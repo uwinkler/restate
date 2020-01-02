@@ -1,9 +1,10 @@
 {
+  "version": "0.9.1",
   "packages": [
     "packages/*"
   ],
   "publishConfig": {
     "access": "public"
   },
-  "version": "0.8.8"
+  "npmClient": "yarn"
 }

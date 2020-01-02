@@ -1,5 +1,5 @@
 ---
-title: Glue Code
+title: Connector
 path: /quick-glue/
 ---
 
@@ -8,9 +8,9 @@ import { Link } from "gatsby"
 import { InfoPanel, WarningPanel } from "../components/panel"
 export default MdxLayout
 
-Glue code is code that "glues" your store to other parts of the application, for example to your server, database, ...
+Connectors "glues" your store to other parts of the application, for example to your server, database, ...
 
-Glue code can receive message from the React components, actions or other glue-code.
+Connectors can receive message from the React components, actions or other connectors.
 
 #### Read
 
@@ -28,7 +28,7 @@ connectLogger(store);
 
 #### Update
 
-Another example of glue code could be a <a href="https://socket.io">socket.io</a> adapter, that receives chat
+Another example of a connector could be a <a href="https://socket.io">socket.io</a> adapter, that receives chat
 messages from a server and adds them to the application state:
 
 ```
@@ -43,10 +43,10 @@ connectSocket(store)
 
 #### Messages
 
-Glue-code can also receive messages from the application.
+Connectors can also receive messages from the application.
 
-Here is a simple UNDO example. The glue-code records the history of the app state using the `store.state$` observable.
-The glue-code also listens to the `UNDO` events by subscribing the `store.messageBus$`.
+Here is a simple UNDO example. The undo-connector records the history of the app state using the `store.state$` observable.
+The connector also listens to the `UNDO` events by subscribing the `store.messageBus$`.
 If it receives the `UNDO` event, it rewinds the state history by on step.
 
 ```code src=https://stackblitz.com/edit/restate-glue-undo?file=index.tsx
@@ -89,4 +89,4 @@ const UndoButton = () => {
 
 <hr />
 
-To learn more about glue code read the <Link to="/glue-code">Glue Code Guide</Link>
+To learn more about _connectors_ read the <Link to="/glue-code">Connector Guide</Link>

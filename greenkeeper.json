@@ -1,0 +1,15 @@
+{
+  "groups": {
+    "default": {
+      "packages": [
+        "examples/todos/package.json",
+        "package.json",
+        "packages/core/package.json",
+        "packages/dev-tools/package.json",
+        "packages/router/package.json",
+        "packages/webapi/package.json",
+        "web-site/package.json"
+      ]
+    }
+  }
+}
