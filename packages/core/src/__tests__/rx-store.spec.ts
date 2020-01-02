@@ -110,10 +110,6 @@ it("should be able to throw within a middleware function", () => {
   })
 
   expect(store.state.a).toEqual(1) // no update
-  expect(store.error$.value!.error).toBeDefined()
-  expect(store.error$.value!.package.payload).toEqual({
-    a: 1
-  })
 })
 
 it("should return default options", () => {
@@ -146,7 +142,7 @@ it("freeze: should freeze the state if the freeze options is set to true", () =>
   })
 
   function shouldThrow() {
-    const state = store.state$.value.payload as any
+    const state = store.state as any
     state.value = 3
   }
   expect(shouldThrow).toThrow()
@@ -163,7 +159,7 @@ it("freeze: should not freeze the state if the freeze options is set to false", 
   })
 
   function shouldNotThrow() {
-    const state = store.state$.value as any
+    const state = store.state as any
     state.value = 3
   }
   expect(shouldNotThrow).not.toThrow()

@@ -1,25 +1,28 @@
-import { distinctUntilChanged } from "rxjs/operators"
 import { Patch } from "immer"
 import { RxStore } from "./rx-store"
 
-export function connectLogger(appStore: RxStore<any>) {
+interface LoggerProps {
+  color?: string
+  backgroundColor?: string
+}
+
+export function connectLogger(
+  appStore: RxStore<any>,
+  props: LoggerProps = { color: "white", backgroundColor: "DarkOrange" }
+) {
+  const { color, backgroundColor } = props
+
   const name =
     appStore.options.storeName === "" ? "RxState" : appStore.options.storeName
 
-  appStore.state$.pipe(distinctUntilChanged()).subscribe(update => {
-    console.groupCollapsed(`[${name}]: ` + update.type)
-    formatPatches(update.patches || [])
-    console.log("State:", update.payload)
-    console.log("Meta:", update.meta)
-    console.groupEnd()
-  })
-
-  appStore.messageBus$.subscribe(message => {
+  appStore.state$.subscribe(update => {
     console.groupCollapsed(
-      `[${name}] Message: ` + message.type,
-      message.payload
+      `%c [${name}] : ` + update.type,
+      `color: ${color}, background-color:${backgroundColor}`
     )
-    console.log(message.payload)
+    formatPatches(update.patches || [])
+    console.log("State: ", update.payload)
+    console.log("Meta: ", update.meta)
     console.groupEnd()
   })
 }

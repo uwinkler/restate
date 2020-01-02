@@ -1,6 +1,6 @@
 {
   "name": "@restate/core",
-  "version": "0.8.11",
+  "version": "0.9.1",
   "license": "MIT",
   "scripts": {
     "clean": "rm -rf build",
@@ -10,13 +10,11 @@
   },
   "main": "build/index.js",
   "types": "build/index.d.ts",
-  "dependencies": {
-    "immer": "^5.0.0",
-    "rxjs": "^6.5.1"
-  },
   "peerDependencies": {
+    "immer": "^5.0.0",
     "react": "^16.8.6",
-    "react-dom": "^16.8.6"
+    "react-dom": "^16.8.6",
+    "rxjs": "^6.5.1"
   },
   "repository": "https://github.com/uwinkler/restate",
   "homepage": "https://restate.netlify.com/",
@@ -44,6 +42,7 @@
     "babel-jest": "^24.8.0",
     "enzyme": "^3.9.0",
     "enzyme-adapter-react-16": "1.12.1",
+    "immer": "^5.0.0",
     "jest": "^24.8.0",
     "jsdom": "^15.0.0",
     "jsdom-global": "^3.0.2",
@@ -51,6 +50,7 @@
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-test-renderer": "^16.8.6",
+    "rxjs": "^6.5.1",
     "ts-jest": "^24.0.2",
     "typescript": "^3.4.5",
     "utility-types": "^3.7.0"
