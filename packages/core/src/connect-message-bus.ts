@@ -33,7 +33,17 @@ export function connectMessageBus<S>(
   const subscribeListenerToMessageBus = (
     store: RxStore<S>,
     listener: MessagesListener<S>
-  ) => store.messageBus$.subscribe(message => listener({ message, store }))
+  ) =>
+    store.state$.subscribe(statePackage => {
+      const payload = statePackage.meta || { payload: "" }
+      listener({
+        message: {
+          type: statePackage.type,
+          payload
+        },
+        store
+      })
+    })
 
   if (listener == null) {
     return function(listener: MessagesListener<S>) {

@@ -1,5 +1,6 @@
-import { BehaviorSubject } from "rxjs"
 import { createDraft, finishDraft, Patch } from "immer"
+import { BehaviorSubject, queueScheduler } from "rxjs"
+import { observeOn } from "rxjs/operators"
 
 export type UpdateFunction<S> = (subState: S) => void
 
@@ -52,14 +53,6 @@ export interface StatePackage<STATE> {
 export class RxStore<STATE> {
   protected _state$: BehaviorSubject<StatePackage<STATE>>
 
-  protected _messageBus$: BehaviorSubject<Message> = new BehaviorSubject(
-    INIT_MESSAGE
-  )
-
-  protected _error$: BehaviorSubject<NextErrorMessage<
-    STATE
-  > | null> = new BehaviorSubject(null as any)
-
   protected _options: RxStoreOptions
 
   protected _middleware: Middleware<STATE>[] = []
@@ -87,7 +80,7 @@ export class RxStore<STATE> {
     metaInfo: MetaInfo = defaultMetaInfo
   ) {
     try {
-      const currentStatePackage = this.state$.value
+      const currentStatePackage = this._state$.value
       const isUpdateFunction = updateFunctionOrNextState instanceof Function
 
       // we accept either a new state object or a update function
@@ -102,7 +95,7 @@ export class RxStore<STATE> {
       if (updateFunctionOrNextState instanceof Function) {
         const ret = updateFunctionOrNextState(draft)
         if (ret !== undefined) {
-          draft = createDraft(ret)
+          draft = createDraft((ret as unknown) as STATE) as STATE
         }
       }
 
@@ -125,24 +118,22 @@ export class RxStore<STATE> {
 
       const nextStatePackage: StatePackage<STATE> = {
         type: nextMetaInfo.type,
-        payload: nextState,
         meta: nextMetaInfo.payload,
+        payload: nextState,
         patches: _patches,
         inversePatches: _inversePatches
       }
 
-      this.state$.next(nextStatePackage)
-      this.error$.next(null as any)
+      this._state$.next(nextStatePackage)
 
       return { state: nextState, metaInfo: nextMetaInfo }
     } catch (e) {
-      this._error$.next({ error: e, package: this.state$.value, metaInfo })
-      return e
+      return { state: this._state$.value, metaInfo }
     }
   }
 
   dispatch(message: Message) {
-    this.messageBus$.next(message)
+    this.next(() => {}, message)
   }
 
   get state(): Readonly<STATE> {
@@ -150,15 +141,7 @@ export class RxStore<STATE> {
   }
 
   get state$() {
-    return this._state$
-  }
-
-  get messageBus$() {
-    return this._messageBus$
-  }
-
-  get error$() {
-    return this._error$
+    return this._state$.pipe(observeOn(queueScheduler))
   }
 
   get options() {
