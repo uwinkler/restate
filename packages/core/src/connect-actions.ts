@@ -1,4 +1,4 @@
-import { createDraft, finishDraft } from "immer"
+import { createDraft, finishDraft, Patch } from "immer"
 import { BehaviorSubject, Subscription } from "rxjs"
 import { distinctUntilChanged, map } from "rxjs/operators"
 import { Message, MetaInfo, RxStore } from "./rx-store"
@@ -51,7 +51,8 @@ function createPropsForForges<S, T extends Object>(
     const draftState = createDraft(currentState)
     const subState = selectorFunction(draftState as any)
     updateFunction(subState)
-    const nextState = finishDraft(draftState) as S
+    const patchListener = (_patches: Patch[], _inversePatches: Patch[]) => {}
+    const nextState = finishDraft(draftState, patchListener) as S
     store.next(nextState, metaInfo)
   }
 
