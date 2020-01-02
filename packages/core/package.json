@@ -10,13 +10,11 @@
   },
   "main": "build/index.js",
   "types": "build/index.d.ts",
-  "dependencies": {
-    "immer": "^5.0.0",
-    "rxjs": "^6.5.1"
-  },
   "peerDependencies": {
     "react": "^16.8.6",
-    "react-dom": "^16.8.6"
+    "react-dom": "^16.8.6",
+    "immer": "^5.0.0",
+    "rxjs": "^6.5.1"
   },
   "repository": "https://github.com/uwinkler/restate",
   "homepage": "https://restate.netlify.com/",
@@ -33,6 +31,8 @@
     "access": "public"
   },
   "devDependencies": {
+    "immer": "^5.0.0",
+    "rxjs": "^6.5.1",
     "@types/enzyme": "^3.9.1",
     "@types/enzyme-adapter-react-16": "^1.0.5",
     "@types/history": "4.7.3",

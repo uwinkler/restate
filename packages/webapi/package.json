@@ -14,7 +14,7 @@
     "access": "public"
   },
   "peerDependencies": {
-    "@restate/core": "^0.8.10"
+    "@restate/core": "^0.9.0"
   },
   "devDependencies": {
     "@restate/core": "^0.9.0",
