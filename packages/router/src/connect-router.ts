@@ -13,14 +13,29 @@ export const defaultRouterState = {
 }
 
 export enum RestateRouterMessageType {
-  INIT = "Restate/History/Init"
+  INIT = "Restate/Router/Init",
+  POP = "Restate/Router/Pop",
+  PUSH = "Restate/Router/Push"
 }
 
-export interface RestateRouterInitMessage extends Message {
+interface RestateRouterInitMessage extends Message {
   type: RestateRouterMessageType.INIT
 }
 
-const initMessage: RestateRouterInitMessage = {
+interface RestateRouterPopMessage extends Message {
+  type: RestateRouterMessageType.POP
+}
+
+interface RestateRouterPushMessage extends Message {
+  type: RestateRouterMessageType.PUSH
+}
+
+export type RestateRouterMessage =
+  | RestateRouterInitMessage
+  | RestateRouterPopMessage
+  | RestateRouterPushMessage
+
+const RESTATE_ROUTER_INIT_MESSAGE: RestateRouterInitMessage = {
   type: RestateRouterMessageType.INIT
 }
 
@@ -37,14 +52,14 @@ export function connectReactRouter<
   appStore.next(state => {
     state.location = currentLocation as any
     state.location.state = initState
-  }, initMessage as any)
+  }, RESTATE_ROUTER_INIT_MESSAGE as any)
 
   history.listen((location, action) => {
     appStore.next(
       state => {
         state.location = Object.assign(state.location, location)
       },
-      { type: "HISTORY/" + action } as any
+      { type: "Restate/Router/" + action } as any
     )
   })
 }
