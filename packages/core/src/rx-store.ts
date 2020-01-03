@@ -105,7 +105,7 @@ export class RxStore<STATE, MESSAGES extends Message> {
   }
 
   dispatch(message: MESSAGES) {
-    this.next(() => {}, message)
+    setTimeout(() => this.next(() => {}, message), 0)
   }
 
   get state(): Readonly<STATE> {
