@@ -1,5 +1,5 @@
 import { Location, History } from "history"
-import { RxStore } from "@restate/core"
+import { RxStore, Message } from "@restate/core"
 
 export interface WithConnectReactRouterState<LocationState> {
   location: Location<LocationState>
@@ -12,31 +12,39 @@ export const defaultRouterState = {
   hash: ""
 }
 
-const INIT = "HISTORY/INIT"
+export enum RestateRouterMessageType {
+  INIT = "Restate/History/Init"
+}
+
+export interface RestateRouterInitMessage extends Message {
+  type: RestateRouterMessageType.INIT
+}
+
+const initMessage: RestateRouterInitMessage = {
+  type: RestateRouterMessageType.INIT
+}
 
 export function connectReactRouter<
   LocationStateType,
-  S extends WithConnectReactRouterState<LocationStateType>
->(props: { appStore: RxStore<S>; history: History<any> }) {
+  S extends WithConnectReactRouterState<LocationStateType>,
+  M extends Message
+>(props: { appStore: RxStore<S, M>; history: History<any> }) {
   const { appStore, history } = props
   const currentLocation = props.history.location
 
   const initState = appStore.state.location.state
 
-  appStore.next(
-    state => {
-      state.location = currentLocation as any
-      state.location.state = initState
-    },
-    { type: INIT }
-  )
+  appStore.next(state => {
+    state.location = currentLocation as any
+    state.location.state = initState
+  }, initMessage as any)
 
   history.listen((location, action) => {
     appStore.next(
       state => {
         state.location = Object.assign(state.location, location)
       },
-      { type: "HISTORY/" + action }
+      { type: "HISTORY/" + action } as any
     )
   })
 }

@@ -1,6 +1,6 @@
 import { RxStore } from "@restate/core"
 
-export function connectDevTools(store: RxStore<any>): () => void {
+export function connectDevTools(store: RxStore<any, any>): () => void {
   const devToolsExtension = (window as any).__REDUX_DEVTOOLS_EXTENSION__
 
   if (!devToolsExtension) {
@@ -34,10 +34,10 @@ export function connectDevTools(store: RxStore<any>): () => void {
 
   devTools.init(store.state)
 
-  const storeSub = store.state$.subscribe(update => {
-    const { type, payload } = update
-    if (type.indexOf("@RX_DEV_TOOLS") === -1) {
-      devTools.send({ type, payload }, payload)
+  const storeSub = store.state$.subscribe(pack => {
+    const { state, message } = pack
+    if (message.type.indexOf("@RX_DEV_TOOLS") === -1) {
+      devTools.send({ type: message.type, payload: state }, state)
     }
   })
 

@@ -1,4 +1,4 @@
-import { RxStore } from "@restate/core"
+import { RxStore, Message } from "@restate/core"
 
 /**
  * isFullscreenAvailable: https://developer.mozilla.org/en-US/docs/Web/API/Document/fullscreenEnabled
@@ -9,18 +9,25 @@ export interface WithWebApiConnector {
   }
 }
 
-const INIT = "@RESTATE/WEB_API/INIT"
+export interface RestateWebApiInitMessage extends Message {
+  type: "@RESTATE/WEB_API/INIT"
+}
 
-export function connectWebApi<S extends WithWebApiConnector>(props: {
-  appStore: RxStore<S>
-}) {
+const initMessage: RestateWebApiInitMessage = {
+  type: "@RESTATE/WEB_API/INIT"
+}
+
+export function connectWebApi<
+  S extends WithWebApiConnector,
+  M extends Message
+>(props: { appStore: RxStore<S, M> }) {
   const { appStore } = props
 
   appStore.next(
     state => {
       state.webApi.isFullscreenAvailable = isFullscreenAvailable()
     },
-    { type: INIT }
+    initMessage as any
   )
 }
 
