@@ -1,7 +1,8 @@
 import { BehaviorSubject } from "rxjs"
 import { distinctUntilChanged } from "rxjs/operators"
-import { RxStore, Message } from "./rx-store"
+import { RxStore } from "./rx-store"
 import { useContext, useEffect, useMemo, useState } from "react"
+import { Message } from "./message"
 
 //
 // Types

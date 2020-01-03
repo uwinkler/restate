@@ -1,6 +1,7 @@
 import { createStore } from "../create-store"
 import { immerable } from "immer"
-import { Middleware, Message } from "../rx-store"
+import { Middleware } from "../rx-store"
+import { Message } from "../message"
 
 it("should be able to set a next state", () => {
   const orgState = { a: 1 }

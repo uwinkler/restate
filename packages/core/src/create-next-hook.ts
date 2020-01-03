@@ -1,5 +1,6 @@
-import { RxStore, Message } from "./rx-store"
+import { RxStore } from "./rx-store"
 import { useContext } from "react"
+import { Message } from "./message"
 
 type AppStoreProvider<S, M extends Message> = React.Context<RxStore<S, M>>
 type SelectorFunction<S, T extends object> = (state: S) => T

@@ -1,10 +1,11 @@
-import { RxStore, Message } from "./rx-store"
+import { RxStore } from "./rx-store"
 import { useContext, useMemo } from "react"
 import {
   ActionFactorySelectorFunction,
   connectActions,
   ActionFactoryConnectFunction
 } from "./connect-actions"
+import { Message } from "./message"
 
 export function createActionsHook<
   STATE extends object,

@@ -1,5 +1,6 @@
-import { map, distinctUntilChanged } from "rxjs/operators"
-import { RxStore, Message } from "./rx-store"
+import { distinctUntilChanged, map } from "rxjs/operators"
+import { Message } from "./message"
+import { RxStore } from "./rx-store"
 
 export type SelectorFunction<S, T> = (state: S) => T
 

@@ -1,6 +1,7 @@
 import React from "react"
-import { RxStore, Message } from "./rx-store"
+import { RxStore } from "./rx-store"
 import { Subtract } from "utility-types"
+import { Message } from "./message"
 
 type WithStoreHocProps<S, M extends Message> = React.Context<RxStore<S, M>>
 

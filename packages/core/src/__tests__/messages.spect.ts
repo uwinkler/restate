@@ -1,6 +1,6 @@
 import { map } from "rxjs/operators"
 import { createStore } from "../create-store"
-import { Message } from "../rx-store"
+import { Message } from "../message"
 
 interface MyMessage extends Message {
   type: "MyMessage"

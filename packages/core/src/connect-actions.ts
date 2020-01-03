@@ -1,7 +1,8 @@
 import { createDraft, finishDraft, Patch } from "immer"
 import { BehaviorSubject, Subscription } from "rxjs"
 import { distinctUntilChanged, map } from "rxjs/operators"
-import { defaultMetaInfo, Message, RxStore } from "./rx-store"
+import { Message, RESTATE_UPDATE_MESSAGE } from "./message"
+import { RxStore } from "./rx-store"
 
 export type ActionFactorySelectorFunction<S, T extends object> = (state: S) => T
 
@@ -45,7 +46,7 @@ function createPropsForForges<S, M extends Message, T extends Object>(
 
   function next(
     updateFunction: UpdateFunction<T>,
-    message: M = defaultMetaInfo as any
+    message: M = RESTATE_UPDATE_MESSAGE as any
   ) {
     const currentState = store.state
     const draftState = createDraft(currentState)

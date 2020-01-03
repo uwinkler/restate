@@ -1,6 +1,6 @@
 import * as Rx from "../index"
 import { ActionFactoryProps } from "../connect-actions"
-import { Message } from "../rx-store"
+import { Message } from "../message"
 
 type MainView = {
   hello: string

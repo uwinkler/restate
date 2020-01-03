@@ -1,25 +1,9 @@
 import { createDraft, finishDraft, Patch } from "immer"
 import { BehaviorSubject, queueScheduler } from "rxjs"
 import { observeOn } from "rxjs/operators"
-
-export enum RestateMessage {
-  INIT = "@Restate/Init",
-  UPDATE = "@Restate/Update"
-}
+import { Message, RESTATE_UPDATE_MESSAGE } from "./message"
 
 export type UpdateFunction<S> = (subState: S) => void
-
-export interface Message {
-  type: any
-}
-
-export const defaultMetaInfo: Message = {
-  type: RestateMessage.UPDATE
-}
-
-export const INIT_MESSAGE: Message = {
-  type: RestateMessage.INIT
-}
 
 interface MiddlewareProps<S, MESSAGE extends Message> {
   nextState: S
@@ -70,7 +54,7 @@ export class RxStore<STATE, MESSAGES extends Message> {
 
   next(
     updateFunctionOrNextState: UpdateFunction<STATE> | STATE,
-    message: MESSAGES = defaultMetaInfo as any
+    message: MESSAGES = RESTATE_UPDATE_MESSAGE as any
   ) {
     try {
       const currentStatePackage = this._state$.value
