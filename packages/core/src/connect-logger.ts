@@ -7,7 +7,7 @@ interface LoggerProps {
 }
 
 export function connectLogger(
-  appStore: RxStore<any>,
+  appStore: RxStore<any, any>,
   props: LoggerProps = { color: "white", backgroundColor: "DarkOrange" }
 ) {
   const { color, backgroundColor } = props
@@ -17,12 +17,12 @@ export function connectLogger(
 
   appStore.state$.subscribe(update => {
     console.groupCollapsed(
-      `%c [${name}] : ` + update.type,
+      `%c [${name}] : ` + update.message.type,
       `color: ${color}, background-color:${backgroundColor}`
     )
     formatPatches(update.patches || [])
-    console.log("State: ", update.payload)
-    console.log("Meta: ", update.meta)
+    console.log("State: ", update.state)
+    console.log("Message: ", update.message)
     console.groupEnd()
   })
 }

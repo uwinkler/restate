@@ -1,4 +1,4 @@
-import { RxStore } from "./rx-store"
+import { RxStore, Message } from "./rx-store"
 import { useContext, useMemo } from "react"
 import {
   ActionFactorySelectorFunction,
@@ -8,12 +8,18 @@ import {
 
 export function createActionsHook<
   STATE extends object,
+  MESSAGES extends Message,
   SUB_STATE extends object,
   ACTIONS
 >(
-  provider: React.Context<RxStore<STATE>>,
+  provider: React.Context<RxStore<STATE, MESSAGES>>,
   selectorFunction: ActionFactorySelectorFunction<STATE, SUB_STATE>,
-  actionFactory: ActionFactoryConnectFunction<STATE, SUB_STATE, ACTIONS>
+  actionFactory: ActionFactoryConnectFunction<
+    STATE,
+    MESSAGES,
+    SUB_STATE,
+    ACTIONS
+  >
 ) {
   return function useActions() {
     const store = useContext(provider)

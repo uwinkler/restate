@@ -1,6 +1,6 @@
 import React from "react"
-import { RxStore } from "./rx-store"
+import { RxStore, Message } from "./rx-store"
 
-export function createProvider<S>(store: RxStore<S>) {
+export function createProvider<S, M extends Message>(store: RxStore<S, M>) {
   return React.createContext(store)
 }

@@ -1,43 +1,43 @@
 import { createDraft, finishDraft, Patch } from "immer"
 import { BehaviorSubject, Subscription } from "rxjs"
 import { distinctUntilChanged, map } from "rxjs/operators"
-import { Message, MetaInfo, RxStore } from "./rx-store"
-
-const defaultMetaInfo: MetaInfo = {
-  type: "@RX/ACTIONS"
-}
+import { defaultMetaInfo, Message, RxStore } from "./rx-store"
 
 export type ActionFactorySelectorFunction<S, T extends object> = (state: S) => T
+
 type UpdateFunction<T> = (subState: T) => void
 
-export interface ActionPropsState<STATE> {
-  store: RxStore<STATE>
+export interface ActionPropsState<STATE, MESSAGES extends Message> {
+  store: RxStore<STATE, MESSAGES>
   subscription: Subscription
 }
 
-export interface ActionFactoryProps<SUB_STATE> {
+export interface ActionFactoryProps<SUB_STATE, MESSAGES> {
   state: () => SUB_STATE
   next: (updateFunction: UpdateFunction<SUB_STATE>) => void
-  dispatch: (message: Message) => void
+  dispatch: (message: MESSAGES) => void
 }
 
-export type ActionFactory<SUB_STATE, T> = (
-  props: ActionFactoryProps<SUB_STATE>
+export type ActionFactory<SUB_STATE, MESSAGES, T> = (
+  props: ActionFactoryProps<SUB_STATE, MESSAGES>
 ) => T
 
-type ActionFactoryConnectProps<S, T> = ActionPropsState<S> &
-  ActionFactoryProps<T>
+type ActionFactoryConnectProps<S, M extends Message, T> = ActionPropsState<
+  S,
+  M
+> &
+  ActionFactoryProps<T, M>
 
-function createPropsForForges<S, T extends Object>(
-  store: RxStore<S>,
+function createPropsForForges<S, M extends Message, T extends Object>(
+  store: RxStore<S, M>,
   selectorFunction: ActionFactorySelectorFunction<S, T>
-): ActionFactoryConnectProps<S, T> {
+): ActionFactoryConnectProps<S, M, T> {
   const subState$ = new BehaviorSubject<T>(selectorFunction(store.state))
   const state = () => selectorFunction(store.state)
 
   const subscription = store.state$
     .pipe(
-      map(statePackage => statePackage.payload),
+      map(statePackage => statePackage.state),
       map(selectorFunction),
       distinctUntilChanged()
     )
@@ -45,7 +45,7 @@ function createPropsForForges<S, T extends Object>(
 
   function next(
     updateFunction: UpdateFunction<T>,
-    metaInfo: MetaInfo = defaultMetaInfo
+    message: M = defaultMetaInfo as any
   ) {
     const currentState = store.state
     const draftState = createDraft(currentState)
@@ -53,10 +53,10 @@ function createPropsForForges<S, T extends Object>(
     updateFunction(subState)
     const patchListener = (_patches: Patch[], _inversePatches: Patch[]) => {}
     const nextState = finishDraft(draftState, patchListener) as S
-    store.next(nextState, metaInfo)
+    store.next(nextState, message)
   }
 
-  function dispatch(msg: Message) {
+  function dispatch(msg: M) {
     store.dispatch(msg)
   }
 
@@ -69,14 +69,27 @@ function createPropsForForges<S, T extends Object>(
   }
 }
 
-export type ActionFactoryConnectFunction<STATE, SUB_STATE, ACTIONS> = (
-  props: ActionFactoryConnectProps<STATE, SUB_STATE>
-) => ACTIONS
+export type ActionFactoryConnectFunction<
+  STATE,
+  MESSAGES extends Message,
+  SUB_STATE,
+  ACTIONS
+> = (props: ActionFactoryConnectProps<STATE, MESSAGES, SUB_STATE>) => ACTIONS
 
-export function connectActions<STATE, SUB_STATE extends Object, ACTIONS>(
-  store: RxStore<STATE>,
+export function connectActions<
+  STATE,
+  MESSAGES extends Message,
+  SUB_STATE extends Object,
+  ACTIONS
+>(
+  store: RxStore<STATE, MESSAGES>,
   selectorFunction: ActionFactorySelectorFunction<STATE, SUB_STATE>,
-  actionFactory: ActionFactoryConnectFunction<STATE, SUB_STATE, ACTIONS>
+  actionFactory: ActionFactoryConnectFunction<
+    STATE,
+    MESSAGES,
+    SUB_STATE,
+    ACTIONS
+  >
 ) {
   const props = createPropsForForges(store, selectorFunction)
   return actionFactory(props)
