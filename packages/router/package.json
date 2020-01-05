@@ -1,6 +1,6 @@
 {
   "name": "@restate/router",
-  "version": "0.9.4",
+  "version": "0.10.0",
   "license": "MIT",
   "scripts": {
     "clean": "rm -rf build",
@@ -18,7 +18,7 @@
     "history": "^4.9.0"
   },
   "devDependencies": {
-    "@restate/core": "^0.9.4",
+    "@restate/core": "^0.10.0",
     "@types/history": "4.7.3",
     "@types/jest": "24.0.25",
     "history": "^4.9.0",
