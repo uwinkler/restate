@@ -1,7 +1,8 @@
 import { RxStore } from "./rx-store"
 import { useContext } from "react"
+import { Message } from "./message"
 
-type AppStoreProvider<S> = React.Context<RxStore<S>>
+type AppStoreProvider<S, M extends Message> = React.Context<RxStore<S, M>>
 type SelectorFunction<S, T extends object> = (state: S) => T
 type UpdateFunction<S> = (state: S) => void
 
@@ -14,20 +15,25 @@ type CreateNextHookRet<S> = <T extends object>(
 ) => (updateFunction: UpdateFunction<T>) => void
 
 // not-scoped
-export function createNextHook<S extends object>(
-  provider: AppStoreProvider<S>
+export function createNextHook<S extends object, M extends Message>(
+  provider: AppStoreProvider<S, M>
 ): CreateNextHookRet<S>
 
 // scoped
-export function createNextHook<S extends object, T extends object>(
-  provider: AppStoreProvider<S>,
+export function createNextHook<
+  S extends object,
+  T extends object,
+  M extends Message
+>(
+  provider: AppStoreProvider<S, M>,
   scope: SelectorFunction<S, T>
 ): CreateNextHookRet<T>
 
-export function createNextHook<S extends object, T extends object>(
-  provider: AppStoreProvider<S>,
-  scope?: SelectorFunction<S, T>
-) {
+export function createNextHook<
+  S extends object,
+  T extends object,
+  M extends Message
+>(provider: AppStoreProvider<S, M>, scope?: SelectorFunction<S, T>) {
   function useNextHook<T extends object>(
     selector: SelectorFunction<S, T>
   ): (updateFunction: UpdateFunction<T>) => void {

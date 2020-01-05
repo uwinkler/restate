@@ -1,6 +1,7 @@
 import { createStore } from "../create-store"
 import { immerable } from "immer"
 import { Middleware } from "../rx-store"
+import { Message } from "../message"
 
 it("should be able to set a next state", () => {
   const orgState = { a: 1 }
@@ -46,13 +47,13 @@ it("should use middleware", () => {
   interface State {
     a: number
   }
-  const store = createStore<State>({
+  const store = createStore<State, Message>({
     state: {
       a: 1
     }
   })
 
-  const plusOne: Middleware<State> = ({ nextState }) => {
+  const plusOne: Middleware<State, Message> = ({ nextState }) => {
     nextState.a = nextState.a + 1
   }
 
@@ -69,13 +70,13 @@ it("should use multiple middleware", () => {
   interface State {
     a: number
   }
-  const store = createStore<State>({
+  const store = createStore<State, Message>({
     state: {
       a: 1
     }
   })
 
-  const plusOne: Middleware<State> = ({ nextState }) => {
+  const plusOne: Middleware<State, Message> = ({ nextState }) => {
     nextState.a = nextState.a + 1
   }
 
@@ -93,13 +94,13 @@ it("should be able to throw within a middleware function", () => {
     a: number
   }
 
-  const store = createStore<State>({
+  const store = createStore<State, Message>({
     state: {
       a: 1
     }
   })
 
-  const errorMiddleware: Middleware<State> = () => {
+  const errorMiddleware: Middleware<State, Message> = () => {
     throw Error("error!")
   }
 

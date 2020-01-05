@@ -1,35 +1,31 @@
 import { setAutoFreeze } from "immer"
 import { BehaviorSubject } from "rxjs"
-import {
-  RxStore,
-  RxStoreOptions,
-  Middleware,
-  StatePackage,
-  INIT_MESSAGE
-} from "./rx-store"
+import { Middleware, RxStore, RxStoreOptions, StatePackage } from "./rx-store"
+import { Message, RESTATE_INIT_MESSAGE } from "./message"
 
-type CreateStoreProps<StateType> = {
+type CreateStoreProps<StateType, M extends Message> = {
   state: StateType
-  middleware?: Middleware<StateType>[]
+  middleware?: Middleware<StateType, M>[]
   options?: Partial<RxStoreOptions>
 }
 
 const defaultOptions: RxStoreOptions = {
   freeze: true,
-  storeName: "STORE"
+  storeName: "STORE",
+  dev: process.env.NODE_ENV !== "production"
 }
 
-export function createStore<STATE>({
+export function createStore<STATE, M extends Message>({
   state,
   middleware = [],
   options = defaultOptions
-}: CreateStoreProps<STATE>) {
+}: CreateStoreProps<STATE, M>) {
   const opts = { ...defaultOptions, ...options }
   setAutoFreeze(opts.freeze)
 
-  const initialStatePackage: StatePackage<STATE> = {
-    ...INIT_MESSAGE,
-    payload: state
+  const initialStatePackage: StatePackage<STATE, M> = {
+    state: state,
+    message: RESTATE_INIT_MESSAGE as any
   }
 
   const state$ = new BehaviorSubject(initialStatePackage)

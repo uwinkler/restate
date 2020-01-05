@@ -1,65 +1,44 @@
 import { createDraft, finishDraft, Patch } from "immer"
 import { BehaviorSubject, queueScheduler } from "rxjs"
 import { observeOn } from "rxjs/operators"
+import { Message, RESTATE_UPDATE_MESSAGE } from "./message"
 
 export type UpdateFunction<S> = (subState: S) => void
 
-export interface Message {
-  type: string
-  payload?: any
-}
-
-export interface MetaInfo extends Message {
-  // nothing here
-}
-
-export const UPDATE = "@RX/UPDATE"
-
-const defaultMetaInfo = {
-  type: UPDATE
-}
-
-export const INIT_MESSAGE: Message = {
-  type: "@RX/INIT"
-}
-
-export interface NextErrorMessage<STATE> {
-  error: Error
-  package: StatePackage<STATE>
-  metaInfo: MetaInfo
-}
-
-interface MiddlewareProps<S> {
+interface MiddlewareProps<S, MESSAGE extends Message> {
   nextState: S
   currentState: S
-  metaInfo: MetaInfo
+  message: MESSAGE
 }
 
-export type Middleware<S> = (props: MiddlewareProps<S>) => any
+export type Middleware<S, MESSAGE extends Message> = (
+  props: MiddlewareProps<S, MESSAGE>
+) => any
 
 export interface RxStoreOptions {
   freeze: boolean
   storeName: string
+  dev: boolean
 }
 
-export interface StatePackage<STATE> {
-  type: string
-  payload: Readonly<STATE>
-  meta?: MetaInfo
+export interface StatePackage<STATE, MESSAGES extends Message> {
+  state: Readonly<STATE>
+  message: MESSAGES
   patches?: Patch[] | null
   inversePatches?: Patch[] | null
+  stack?: string
 }
 
-export class RxStore<STATE> {
-  protected _state$: BehaviorSubject<StatePackage<STATE>>
+export class RxStore<STATE, MESSAGES extends Message> {
+  protected _state$: BehaviorSubject<StatePackage<STATE, MESSAGES>>
 
   protected _options: RxStoreOptions
 
-  protected _middleware: Middleware<STATE>[] = []
+  protected _middleware: Middleware<STATE, MESSAGES>[] = []
 
   constructor(
-    stateSubject: BehaviorSubject<StatePackage<STATE>>,
-    middleware: Middleware<STATE>[],
+    stateSubject: BehaviorSubject<StatePackage<STATE, MESSAGES>>,
+    middleware: Middleware<STATE, MESSAGES>[],
     options: RxStoreOptions
   ) {
     this._state$ = stateSubject
@@ -67,17 +46,18 @@ export class RxStore<STATE> {
     this._middleware = middleware
   }
 
-  static of<S>(
-    state: BehaviorSubject<StatePackage<S>>,
-    middleware: Middleware<S>[],
+  static of<S, M extends Message>(
+    state: BehaviorSubject<StatePackage<S, M>>,
+    middleware: Middleware<S, M>[],
     options: RxStoreOptions
   ) {
     return new RxStore(state, middleware, options)
   }
 
-  next(
+  private _next(
     updateFunctionOrNextState: UpdateFunction<STATE> | STATE,
-    metaInfo: MetaInfo = defaultMetaInfo
+    message: MESSAGES = RESTATE_UPDATE_MESSAGE as any,
+    stack: string | undefined
   ) {
     try {
       const currentStatePackage = this._state$.value
@@ -87,10 +67,8 @@ export class RxStore<STATE> {
       // a) If we receive an object, we create a draft from that object. The draft will be used in the middleware
       // b) If we receive an function, we create a draft from the current state.
       let draft = isUpdateFunction
-        ? (createDraft(currentStatePackage.payload) as STATE)
+        ? (createDraft(currentStatePackage.state) as STATE)
         : (createDraft(updateFunctionOrNextState) as STATE)
-
-      const draftMetaInfo = createDraft(metaInfo)
 
       if (updateFunctionOrNextState instanceof Function) {
         const ret = updateFunctionOrNextState(draft)
@@ -99,11 +77,11 @@ export class RxStore<STATE> {
         }
       }
 
-      recursiveMiddlewareHandler<STATE>({
+      recursiveMiddlewareHandler<STATE, MESSAGES>({
         middleware: this._middleware,
         nextState: draft,
         currentState: this.state,
-        metaInfo: draftMetaInfo
+        message
       })
 
       let _patches: Patch[] | null = null
@@ -114,30 +92,49 @@ export class RxStore<STATE> {
         _inversePatches = inversePatches
       }) as STATE
 
-      const nextMetaInfo = finishDraft(draftMetaInfo, () => {})
-
-      const nextStatePackage: StatePackage<STATE> = {
-        type: nextMetaInfo.type,
-        meta: nextMetaInfo.payload,
-        payload: nextState,
+      const nextStatePackage: StatePackage<STATE, MESSAGES> = {
+        message,
+        state: nextState,
         patches: _patches,
-        inversePatches: _inversePatches
+        inversePatches: _inversePatches,
+        stack: this._options.dev ? stack : undefined
       }
 
       this._state$.next(nextStatePackage)
 
-      return { state: nextState, metaInfo: nextMetaInfo }
+      return nextStatePackage
     } catch (e) {
-      return { state: this._state$.value, metaInfo }
+      return { state: this._state$.value, message }
     }
   }
 
-  dispatch(message: Message) {
-    this.next(() => {}, message)
+  next(
+    updateFunctionOrNextState: UpdateFunction<STATE> | STATE,
+    message: MESSAGES = RESTATE_UPDATE_MESSAGE as any
+  ) {
+    const stack = getStackTrace(this._options.dev)
+    this._next(updateFunctionOrNextState, message, stack)
+  }
+
+  nextAsync(
+    updateFunctionOrNextState: UpdateFunction<STATE> | STATE,
+    message: MESSAGES = RESTATE_UPDATE_MESSAGE as any
+  ) {
+    const stack = getStackTrace(this._options.dev)
+    setTimeout(() => {
+      this._next(updateFunctionOrNextState, message, stack)
+    }, 0)
+  }
+
+  dispatch(message: MESSAGES) {
+    const stack = getStackTrace(this._options.dev)
+    setTimeout(() => {
+      this._next(() => {}, message, stack)
+    }, 0)
   }
 
   get state(): Readonly<STATE> {
-    return this._state$.value.payload
+    return this._state$.value.state
   }
 
   get state$() {
@@ -153,28 +150,29 @@ export class RxStore<STATE> {
   }
 }
 
-interface RecursiveMiddlewareHandlerProps<STATE> {
-  middleware: Middleware<STATE>[]
+interface RecursiveMiddlewareHandlerProps<STATE, MESSAGES extends Message> {
+  middleware: Middleware<STATE, MESSAGES>[]
   nextState: STATE
   currentState: STATE
-  metaInfo: MetaInfo
+  message: MESSAGES
 }
 
-function recursiveMiddlewareHandler<STATE>({
+function recursiveMiddlewareHandler<STATE, MESSAGES extends Message>({
   middleware,
   nextState,
   currentState,
-  metaInfo
-}: RecursiveMiddlewareHandlerProps<STATE>): any {
+  message
+}: RecursiveMiddlewareHandlerProps<STATE, MESSAGES>): any {
   if (middleware.length === 0) {
     return
   }
 
   const nextMiddleware = middleware[0]
+
   nextMiddleware({
     nextState,
     currentState,
-    metaInfo
+    message
   })
 
   const remainingMiddleware = middleware.slice(1, middleware.length)
@@ -183,6 +181,14 @@ function recursiveMiddlewareHandler<STATE>({
     middleware: remainingMiddleware,
     nextState,
     currentState,
-    metaInfo
+    message
   })
+}
+
+function getStackTrace(dev: boolean) {
+  if (dev) {
+    return new Error().stack
+  } else {
+    return undefined
+  }
 }

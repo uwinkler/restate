@@ -1,5 +1,6 @@
 import * as Rx from "../index"
 import { ActionFactoryProps } from "../connect-actions"
+import { Message } from "../message"
 
 type MainView = {
   hello: string
@@ -22,16 +23,21 @@ const defaultAppState: AppState = {
 const store = Rx.createStore({ state: defaultAppState })
 const myOtherStore = Rx.createStore({ state: defaultAppState })
 
-function hello(greetings: string, { next }: ActionFactoryProps<MainView>) {
+function hello(
+  greetings: string,
+  { next }: ActionFactoryProps<MainView, Message>
+) {
   next(state => (state.hello = greetings))
 }
 
-function upperCase({ next, state }: ActionFactoryProps<MainView>) {
+function upperCase({ next, state }: ActionFactoryProps<MainView, Message>) {
   const nextGreetings = state().hello.toUpperCase()
   next(state => (state.hello = nextGreetings))
 }
 
-const mainViewActionsFactory = (props: ActionFactoryProps<MainView>) => ({
+const mainViewActionsFactory = (
+  props: ActionFactoryProps<MainView, Message>
+) => ({
   hello: (greetings: string) => hello(greetings, props),
   upperCase: () => upperCase(props)
 })

@@ -1,9 +1,10 @@
-import * as Rx from ".."
 import React from "react"
 import renderer from "react-test-renderer"
-import { subscribe } from "../subscribe"
 import { Subscription } from "rxjs"
+import * as Rx from ".."
 import { WithRxStore } from "../create-with-store-hoc"
+import { Message } from "../message"
+import { subscribe } from "../subscribe"
 
 type AppState = {
   servus: string
@@ -24,7 +25,7 @@ const withTestStore = Rx.createWithStoreHoc(TestStoreProvider)
 describe("subscribe", () => {
   test("should subscribe", () => {
     class TestComponent extends React.Component<
-      WithRxStore<AppState>,
+      WithRxStore<AppState, Message>,
       TestComponentState
     > {
       state = {
