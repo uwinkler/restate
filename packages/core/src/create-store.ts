@@ -11,7 +11,8 @@ type CreateStoreProps<StateType, M extends Message> = {
 
 const defaultOptions: RxStoreOptions = {
   freeze: true,
-  storeName: "STORE"
+  storeName: "STORE",
+  dev: process.env.NODE_ENV !== "production"
 }
 
 export function createStore<STATE, M extends Message>({

@@ -1,5 +1,4 @@
 export * from "./connect-actions"
-export * from "./connect-logger"
 export * from "./create-actions-hook"
 export * from "./create-dispatch-hook"
 export * from "./create-next-hook"

@@ -18,6 +18,7 @@ export type Middleware<S, MESSAGE extends Message> = (
 export interface RxStoreOptions {
   freeze: boolean
   storeName: string
+  dev: boolean
 }
 
 export interface StatePackage<STATE, MESSAGES extends Message> {
@@ -25,6 +26,7 @@ export interface StatePackage<STATE, MESSAGES extends Message> {
   message: MESSAGES
   patches?: Patch[] | null
   inversePatches?: Patch[] | null
+  stack?: string
 }
 
 export class RxStore<STATE, MESSAGES extends Message> {
@@ -52,9 +54,10 @@ export class RxStore<STATE, MESSAGES extends Message> {
     return new RxStore(state, middleware, options)
   }
 
-  next(
+  private _next(
     updateFunctionOrNextState: UpdateFunction<STATE> | STATE,
-    message: MESSAGES = RESTATE_UPDATE_MESSAGE as any
+    message: MESSAGES = RESTATE_UPDATE_MESSAGE as any,
+    stack: string | undefined
   ) {
     try {
       const currentStatePackage = this._state$.value
@@ -93,7 +96,8 @@ export class RxStore<STATE, MESSAGES extends Message> {
         message,
         state: nextState,
         patches: _patches,
-        inversePatches: _inversePatches
+        inversePatches: _inversePatches,
+        stack: this._options.dev ? stack : undefined
       }
 
       this._state$.next(nextStatePackage)
@@ -104,8 +108,29 @@ export class RxStore<STATE, MESSAGES extends Message> {
     }
   }
 
+  next(
+    updateFunctionOrNextState: UpdateFunction<STATE> | STATE,
+    message: MESSAGES = RESTATE_UPDATE_MESSAGE as any
+  ) {
+    const stack = getStackTrace(this._options.dev)
+    this._next(updateFunctionOrNextState, message, stack)
+  }
+
+  nextAsync(
+    updateFunctionOrNextState: UpdateFunction<STATE> | STATE,
+    message: MESSAGES = RESTATE_UPDATE_MESSAGE as any
+  ) {
+    const stack = getStackTrace(this._options.dev)
+    setTimeout(() => {
+      this._next(updateFunctionOrNextState, message, stack)
+    }, 0)
+  }
+
   dispatch(message: MESSAGES) {
-    setTimeout(() => this.next(() => {}, message), 0)
+    const stack = getStackTrace(this._options.dev)
+    setTimeout(() => {
+      this._next(() => {}, message, stack)
+    }, 0)
   }
 
   get state(): Readonly<STATE> {
@@ -158,4 +183,12 @@ function recursiveMiddlewareHandler<STATE, MESSAGES extends Message>({
     currentState,
     message
   })
+}
+
+function getStackTrace(dev: boolean) {
+  if (dev) {
+    return new Error().stack
+  } else {
+    return undefined
+  }
 }
