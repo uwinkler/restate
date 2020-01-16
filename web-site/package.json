@@ -7,7 +7,7 @@
     "@material-ui/core": "^4.5.1",
     "@material-ui/icons": "^4.5.1",
     "@material-ui/styles": "^4.5.0",
-    "@mdx-js/mdx": "^1.0.19",
+    "@mdx-js/mdx": "^1.5.4",
     "@mdx-js/react": "^1.0.16",
     "@reach/router": "^1.2.1",
     "@restate/core": "^0.8.2",
