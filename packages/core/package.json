@@ -13,7 +13,7 @@
   "peerDependencies": {
     "immer": "^5.0.0",
     "react": "^16.13.0",
-    "react-dom": "^16.8.6",
+    "react-dom": "^16.13.0",
     "rxjs": "^6.5.1"
   },
   "repository": "https://github.com/uwinkler/restate",
