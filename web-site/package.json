@@ -29,7 +29,7 @@
     "gatsby-plugin-typescript": "^2.0.13",
     "gatsby-react-router-scroll": "^2.0.7",
     "prismjs": "^1.16.0",
-    "react": "^16.8.6",
+    "react": "^16.13.1",
     "react-dom": "^16.8.6",
     "react-helmet": "^5.2.1"
   },
