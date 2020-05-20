@@ -936,10 +936,10 @@
     unist-builder "^1.0.1"
     unist-util-visit "^1.3.0"
 
-"@mdx-js/react@^1.0.16":
-  version "1.0.16"
-  resolved "https://registry.yarnpkg.com/@mdx-js/react/-/react-1.0.16.tgz#414c3fce49493a4c60e5590cfc0a2a07efc19f38"
-  integrity sha512-HJJO8LYogt9UT4TP3+TVeokMj0lgwCONKlcOfr7VMb38Z6DDE3Ydvi+M3iScUea2DfifS4kGztgJ7zH6HXynTw==
+"@mdx-js/react@^1.6.2":
+  version "1.6.2"
+  resolved "https://registry.yarnpkg.com/@mdx-js/react/-/react-1.6.2.tgz#b2b7797c2fc0016acd39f6c529da4cca485891e8"
+  integrity sha512-eaBJubuxIv6KVN3w4IzV3Jdnkx8qELh7IIfiycqMuCwKViQJVP75AA6XiXLju4kH3Qpjk5Z+ju5IZYpxoDONXA==
 
 "@mikaelkristiansson/domready@^1.0.9":
   version "1.0.9"
@@ -1054,10 +1054,15 @@
   resolved "https://registry.yarnpkg.com/@types/mkdirp/-/mkdirp-0.3.29.tgz#7f2ad7ec55f914482fc9b1ec4bb1ae6028d46066"
   integrity sha1-fyrX7FX5FEgvybHsS7GuYCjUYGY=
 
-"@types/node@*", "@types/node@^12.0.0":
+"@types/node@*":
   version "12.0.0"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-12.0.0.tgz#d11813b9c0ff8aaca29f04cbc12817f4c7d656e5"
   integrity sha512-Jrb/x3HT4PTJp6a4avhmJCDEVrPdqLfl3e8GGMbpkGGdwAV5UGlIs4vVEfsHHfylZVOKZWpOqmqFH8CbfOZ6kg==
+
+"@types/node@^13.1.0":
+  version "13.13.8"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-13.13.8.tgz#39fa1c8563bce1077507fea05699437f112ecbcc"
+  integrity sha512-WJoiKALUF5exZo0G3T5coauJR2Tmc6rdE9/kgppZVnV6rlUB2dl3gTu2GTNBKhKF6SZ/WFfpEUIGNC/0qvdMWA==
 
 "@types/node@^7.0.11":
   version "7.10.6"
