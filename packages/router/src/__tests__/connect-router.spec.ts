@@ -11,10 +11,15 @@ interface AppState extends WithConnectReactRouterState<RouterState> {
   value: number
 }
 
-it("should provide histor", () => {
+it("test history", () => {
+  const history = createMemoryHistory()
+  expect(history.location.pathname).toMatchInlineSnapshot(`"/"`)
+})
+
+it("should provide history", () => {
   const defaultState: AppState = {
     value: 0,
-    location: { ...defaultRouterState, state: { routerInfo: 0 } }
+    location: { ...defaultRouterState, state: { routerInfo: 0 } },
   }
 
   const store = createStore({ state: defaultState })

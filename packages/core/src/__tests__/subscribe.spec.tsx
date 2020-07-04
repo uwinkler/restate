@@ -11,7 +11,7 @@ type AppState = {
 }
 
 const defaultAppState: AppState = {
-  servus: "rx-state"
+  servus: "rx-state",
 }
 
 interface TestComponentState {
@@ -24,20 +24,17 @@ const withTestStore = Rx.createWithStoreHoc(TestStoreProvider)
 
 describe("subscribe", () => {
   test("should subscribe", () => {
-    class TestComponent extends React.Component<
-      WithRxStore<AppState, Message>,
-      TestComponentState
-    > {
+    class TestComponent extends React.Component<WithRxStore<AppState, Message>, TestComponentState> {
       state = {
-        greetings: ""
+        greetings: "",
       }
 
       sub: Subscription | null = null
 
       componentDidMount() {
         this.sub = subscribe(this.props.rxStore)
-          .select(store => store.servus)
-          .mount(nextServus => this.setState({ greetings: nextServus }))
+          .select((store) => store.servus)
+          .mount((nextServus) => this.setState({ greetings: nextServus }))
       }
 
       componentWillUnmount() {

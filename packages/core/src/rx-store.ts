@@ -1,7 +1,9 @@
-import { createDraft, finishDraft, Patch } from "immer"
+import { createDraft, finishDraft, Patch, enableAllPlugins } from "immer"
 import { BehaviorSubject, queueScheduler } from "rxjs"
 import { observeOn } from "rxjs/operators"
 import { Message, RESTATE_UPDATE_MESSAGE } from "./message"
+
+enableAllPlugins()
 
 export type UpdateFunction<S> = (subState: S) => void
 
@@ -11,9 +13,7 @@ interface MiddlewareProps<S, MESSAGE extends Message> {
   message: MESSAGE
 }
 
-export type Middleware<S, MESSAGE extends Message> = (
-  props: MiddlewareProps<S, MESSAGE>
-) => any
+export type Middleware<S, MESSAGE extends Message> = (props: MiddlewareProps<S, MESSAGE>) => any
 
 export interface RxStoreOptions {
   freeze: boolean
@@ -81,7 +81,7 @@ export class RxStore<STATE, MESSAGES extends Message> {
         middleware: this._middleware,
         nextState: draft,
         currentState: this.state,
-        message
+        message,
       })
 
       let _patches: Patch[] | null = null
@@ -97,7 +97,7 @@ export class RxStore<STATE, MESSAGES extends Message> {
         state: nextState,
         patches: _patches,
         inversePatches: _inversePatches,
-        stack: this._options.dev ? stack : undefined
+        stack: this._options.dev ? stack : undefined,
       }
 
       this._state$.next(nextStatePackage)
@@ -108,10 +108,7 @@ export class RxStore<STATE, MESSAGES extends Message> {
     }
   }
 
-  next(
-    updateFunctionOrNextState: UpdateFunction<STATE> | STATE,
-    message: MESSAGES = RESTATE_UPDATE_MESSAGE as any
-  ) {
+  next(updateFunctionOrNextState: UpdateFunction<STATE> | STATE, message: MESSAGES = RESTATE_UPDATE_MESSAGE as any) {
     const stack = getStackTrace(this._options.dev)
     this._next(updateFunctionOrNextState, message, stack)
   }
@@ -161,7 +158,7 @@ function recursiveMiddlewareHandler<STATE, MESSAGES extends Message>({
   middleware,
   nextState,
   currentState,
-  message
+  message,
 }: RecursiveMiddlewareHandlerProps<STATE, MESSAGES>): any {
   if (middleware.length === 0) {
     return
@@ -172,7 +169,7 @@ function recursiveMiddlewareHandler<STATE, MESSAGES extends Message>({
   nextMiddleware({
     nextState,
     currentState,
-    message
+    message,
   })
 
   const remainingMiddleware = middleware.slice(1, middleware.length)
@@ -181,7 +178,7 @@ function recursiveMiddlewareHandler<STATE, MESSAGES extends Message>({
     middleware: remainingMiddleware,
     nextState,
     currentState,
-    message
+    message,
   })
 }
 
