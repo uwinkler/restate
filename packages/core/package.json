@@ -1,6 +1,6 @@
 {
   "name": "@restate/core",
-  "version": "0.11.0",
+  "version": "0.12.0",
   "license": "MIT",
   "scripts": {
     "clean": "rm -rf build",
@@ -31,31 +31,29 @@
     "access": "public"
   },
   "devDependencies": {
-    "@types/enzyme-adapter-react-16": "^1.0.5",
     "@types/enzyme": "^3.9.1",
+    "@types/enzyme-adapter-react-16": "^1.0.5",
     "@types/history": "4.7.3",
     "@types/jest": "24.0.25",
     "@types/lodash": "^4.14.129",
+    "@types/react": "^16.9.41",
     "@types/react-dom": "16.9.3",
     "@types/react-test-renderer": "16.8.1",
-    "@types/react": "^16.9.41",
     "babel-jest": "^24.8.0",
-    "enzyme-adapter-react-16": "1.12.1",
     "enzyme": "^3.9.0",
+    "enzyme-adapter-react-16": "1.12.1",
     "immer": "^7.0.5",
     "jest": "^24.8.0",
-    "jsdom-global": "^3.0.2",
     "jsdom": "^15.0.0",
+    "jsdom-global": "^3.0.2",
     "prettier": "^1.17.0",
+    "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-test-renderer": "^16.8.6",
-    "react": "^16.8.6",
     "rxjs": "^6.5.1",
     "ts-jest": "^24.0.2",
     "typescript": "^3.4.5",
     "utility-types": "^3.7.0"
   },
-  "gitHead": "6aab764342a0936d0de670849c6ab135dcdf265e",
-  "dependencies": {
-  }
+  "gitHead": "6aab764342a0936d0de670849c6ab135dcdf265e"
 }
