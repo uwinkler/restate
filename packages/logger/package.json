@@ -33,6 +33,6 @@
   "gitHead": "6aab764342a0936d0de670849c6ab135dcdf265e",
   "dependencies": {
     "@types/source-map-support": "^0.5.0",
-    "source-map-support": "^0.5.16"
+    "source-map-support": "^0.5.21"
   }
 }
