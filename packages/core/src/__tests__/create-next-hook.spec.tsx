@@ -1,9 +1,5 @@
-/**
- * @jest-environment jsdom
- */
-import { render, screen } from '@testing-library/react'
 import React from 'react'
-import { act } from 'react-test-renderer'
+import renderer, { act } from 'react-test-renderer'
 import { createNextHook } from '../create-next-hook'
 import { createProvider } from '../create-provider'
 import { createStateHook } from '../create-state-hook'
@@ -34,28 +30,34 @@ it('should update a state', async () => {
     )
   }
 
-  const { container } = render(
+  const Component = (
     <AppStoreProvider.Provider value={store}>
       <TestComponent />
     </AppStoreProvider.Provider>
   )
-  expect(container.firstChild).toMatchInlineSnapshot(`
+
+  const container = renderer.create(Component)
+
+  expect(container.toJSON()).toMatchInlineSnapshot(`
     <button
-      class="btn"
+      className="btn"
+      onClick={[Function]}
     >
       1
     </button>
   `)
+  container.root.findByType('button').props.onClick()
+  container.update(Component)
 
-  act(() => {
-    const btn = screen.getByText('1')
-    btn.click()
-  })
-
-  process.nextTick(() => {
-    expect(store.state.value).toEqual(2)
-    expect(container.firstChild).toMatchInlineSnapshot(`"<button class=\\"btn\\">2</button>"`)
-  })
+  expect(store.state.value).toEqual(2)
+  expect(container.toJSON()).toMatchInlineSnapshot(`
+    <button
+      className="btn"
+      onClick={[Function]}
+    >
+      2
+    </button>
+  `)
 })
 
 it('should update selected properties', () => {
@@ -65,7 +67,7 @@ it('should update selected properties', () => {
   const useAppStore = createStateHook(AppStoreProvider)
   const useAppStoreUpdate = createNextHook(AppStoreProvider)
 
-  const TestComponent: React.FC = () => {
+  const TestComponent = () => {
     const value = useAppStore((s) => s.value)
     const nextStore = useAppStoreUpdate((s) => s)
 
@@ -82,29 +84,37 @@ it('should update selected properties', () => {
     )
   }
 
-  const { container } = render(
+  const App = (
     <AppStoreProvider.Provider value={store}>
       <TestComponent />
     </AppStoreProvider.Provider>
   )
 
-  expect(container.firstChild).toMatchInlineSnapshot(`
+  const container = renderer.create(App)
+
+  expect(container.toJSON()).toMatchInlineSnapshot(`
     <button
-      class="btn"
+      className="btn"
+      onClick={[Function]}
     >
       1
     </button>
   `)
 
   act(() => {
-    const btn = screen.getByText('1')
-    btn.click()
+    container.root.findByType('button').props.onClick()
+    container.update(App)
   })
 
-  process.nextTick(() => {
-    expect(store.state.value).toEqual(2)
-    expect(container.firstChild).toMatchInlineSnapshot(`"<button class=\\"btn\\">2</button>"`)
-  })
+  expect(store.state.value).toEqual(2)
+  expect(container.toJSON()).toMatchInlineSnapshot(`
+    <button
+      className="btn"
+      onClick={[Function]}
+    >
+      2
+    </button>
+  `)
 })
 
 it('should update a scoped state', () => {
@@ -114,7 +124,7 @@ it('should update a scoped state', () => {
   const useAppState = createStateHook(AppStoreProvider)
   const useNextAppState = createNextHook(AppStoreProvider, (state) => state.subState)
 
-  const TestComponent: React.FC = () => {
+  const TestComponent = () => {
     const x = useAppState((s) => s)
 
     const nextAppState = useNextAppState((s) => s)
@@ -132,27 +142,35 @@ it('should update a scoped state', () => {
     )
   }
 
-  const { container } = render(
+  const App = (
     <AppStoreProvider.Provider value={store}>
       <TestComponent />
     </AppStoreProvider.Provider>
   )
 
-  expect(container.firstChild).toMatchInlineSnapshot(`
+  const container = renderer.create(App)
+
+  expect(container.toJSON()).toMatchInlineSnapshot(`
     <button
-      class="btn"
+      className="btn"
+      onClick={[Function]}
     >
       1
     </button>
   `)
 
   act(() => {
-    const btn = screen.getByText('1')
-    btn.click()
+    container.root.findByType('button').props.onClick()
+    container.update(App)
   })
 
-  process.nextTick(() => {
-    expect(store.state.subState.value).toEqual(2)
-    expect(container.firstChild).toMatchInlineSnapshot(`"<button class=\\"btn\\">2</button>"`)
-  })
+  expect(store.state.subState.value).toEqual(2)
+  expect(container.toJSON()).toMatchInlineSnapshot(`
+    <button
+      className="btn"
+      onClick={[Function]}
+    >
+      2
+    </button>
+  `)
 })
