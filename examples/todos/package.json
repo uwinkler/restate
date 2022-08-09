@@ -3,14 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@restate/core": "^0.8.6",
-    "@restate/dev-tools": "^0.8.6",
-    "@types/react": "16.9.20",
-    "@types/react-dom": "16.9.3",
-    "react": "^16.8.6",
-    "react-dom": "^16.8.6",
-    "react-scripts": "3.3.1",
-    "typescript": "^3.4.5"
+    "@restate/core": "^0.12.0",
+    "@restate/dev-tools": "^0.12.0",
+    "@types/react": "^18.0.0",
+    "@types/react-dom": "^18.0.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-scripts": "^5.0.1",
+    "typescript": "^4.7.4"
   },
   "scripts": {
     "start": "react-scripts start",

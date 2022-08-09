@@ -1,12 +1,12 @@
-import { VisibilityFiler, Todo } from "./store"
+import { Visibility, Todo } from './store'
 
-export function filter(todos: Todo[], visible: VisibilityFiler) {
+export function filter(todos: Todo[], visible: Visibility) {
   switch (visible) {
-    case "all":
+    case 'all':
       return todos
-    case "done":
-      return todos.filter(todo => todo.done)
-    case "open":
-      return todos.filter(todo => !todo.done)
+    case 'done':
+      return todos.filter((todo) => todo.done)
+    case 'open':
+      return todos.filter((todo) => !todo.done)
   }
 }

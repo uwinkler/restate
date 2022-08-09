@@ -1,7 +1,7 @@
-import { createDraft, finishDraft, Patch, enableAllPlugins } from "immer"
-import { BehaviorSubject, queueScheduler } from "rxjs"
-import { observeOn } from "rxjs/operators"
-import { Message, RESTATE_UPDATE_MESSAGE } from "./message"
+import { createDraft, finishDraft, Patch, enableAllPlugins } from 'immer'
+import { BehaviorSubject, queueScheduler } from 'rxjs'
+import { observeOn } from 'rxjs/operators'
+import { Message, RESTATE_UPDATE_MESSAGE } from './message'
 
 enableAllPlugins()
 
@@ -73,7 +73,7 @@ export class RxStore<STATE, MESSAGES extends Message> {
       if (updateFunctionOrNextState instanceof Function) {
         const ret = updateFunctionOrNextState(draft)
         if (ret !== undefined) {
-          draft = createDraft((ret as unknown) as STATE) as STATE
+          draft = createDraft(ret as unknown as STATE) as STATE
         }
       }
 
@@ -81,7 +81,7 @@ export class RxStore<STATE, MESSAGES extends Message> {
         middleware: this._middleware,
         nextState: draft,
         currentState: this.state,
-        message,
+        message
       })
 
       let _patches: Patch[] | null = null
@@ -97,7 +97,7 @@ export class RxStore<STATE, MESSAGES extends Message> {
         state: nextState,
         patches: _patches,
         inversePatches: _inversePatches,
-        stack: this._options.dev ? stack : undefined,
+        stack: this._options.dev ? stack : undefined
       }
 
       this._state$.next(nextStatePackage)
@@ -158,7 +158,7 @@ function recursiveMiddlewareHandler<STATE, MESSAGES extends Message>({
   middleware,
   nextState,
   currentState,
-  message,
+  message
 }: RecursiveMiddlewareHandlerProps<STATE, MESSAGES>): any {
   if (middleware.length === 0) {
     return
@@ -169,7 +169,7 @@ function recursiveMiddlewareHandler<STATE, MESSAGES extends Message>({
   nextMiddleware({
     nextState,
     currentState,
-    message,
+    message
   })
 
   const remainingMiddleware = middleware.slice(1, middleware.length)
@@ -178,7 +178,7 @@ function recursiveMiddlewareHandler<STATE, MESSAGES extends Message>({
     middleware: remainingMiddleware,
     nextState,
     currentState,
-    message,
+    message
   })
 }
 

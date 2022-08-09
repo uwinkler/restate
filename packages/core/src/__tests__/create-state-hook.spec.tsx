@@ -1,97 +1,89 @@
-import "jsdom-global/register"
-import Adapter from "enzyme-adapter-react-16"
+import React from 'react'
+import renderer, { act } from 'react-test-renderer'
+import { createProvider } from '../create-provider'
+import { createStateHook } from '../create-state-hook'
+import { createNextHook } from '../create-next-hook'
 
-import { createStore } from "../create-store"
-import { createProvider } from "../create-provider"
-import React from "react"
-import renderer, { act } from "react-test-renderer"
-import { createStateHook } from "../create-state-hook"
-import { configure, mount } from "enzyme"
-import { createNextHook } from "../create-next-hook"
+import { createStore } from '../create-store'
 
-configure({ adapter: new Adapter() })
-
-it("should create default hook", () => {
+it('should create default hook', () => {
   const state = { value: 1 }
   const store = createStore({ state })
   const AppStoreProvider = createProvider(store)
   const useAppStore = createStateHook(AppStoreProvider)
 
   const TestComponent: React.FC = () => {
-    const x = useAppStore(s => s)
+    const x = useAppStore((s) => s)
     return <div>{x.value}</div>
   }
 
-  const component = renderer.create(
+  const container = renderer.create(
     <AppStoreProvider.Provider value={store}>
       <TestComponent />
     </AppStoreProvider.Provider>
   )
-  let tree = component.toJSON()
-  expect(tree).toMatchInlineSnapshot(`
+  expect(container.toJSON()).toMatchInlineSnapshot(`
                         <div>
                           1
                         </div>
             `)
 })
 
-it("sub-state 1", () => {
+it('sub-state 1', () => {
   const state = { value: 1 }
   const store = createStore({ state })
   const AppStoreProvider = createProvider(store)
   const useAppStore = createStateHook(AppStoreProvider)
 
-  const TestComponent: React.FC = () => {
-    const value = useAppStore(s => s.value)
+  const TestComponent = () => {
+    const value = useAppStore((s) => s.value)
     return <div>{value}</div>
   }
 
-  const component = renderer.create(
+  const container = renderer.create(
     <AppStoreProvider.Provider value={store}>
       <TestComponent />
     </AppStoreProvider.Provider>
   )
-  let tree = component.toJSON()
-  expect(tree).toMatchInlineSnapshot(`
+  expect(container.toJSON()).toMatchInlineSnapshot(`
                     <div>
                       1
                     </div>
           `)
 })
 
-it("sub-state 2", () => {
+it('sub-state 2', () => {
   const state = { subState: { value: 1 } }
   const store = createStore({ state })
   const AppStoreProvider = createProvider(store)
-  const useAppStoreSubState = createStateHook(AppStoreProvider, s => s.subState)
+  const useAppStoreSubState = createStateHook(AppStoreProvider, (s) => s.subState)
 
-  const TestComponent: React.FC = () => {
-    const subState = useAppStoreSubState(s => s)
+  const TestComponent = () => {
+    const subState = useAppStoreSubState((s) => s)
     return <div>{subState.value}</div>
   }
 
-  const component = renderer.create(
+  const container = renderer.create(
     <AppStoreProvider.Provider value={store}>
       <TestComponent />
     </AppStoreProvider.Provider>
   )
-  let tree = component.toJSON()
-  expect(tree).toMatchInlineSnapshot(`
+  expect(container.toJSON()).toMatchInlineSnapshot(`
                     <div>
                       1
                     </div>
           `)
 })
 
-it("sub-state 1+2", () => {
+it('sub-state 1+2', () => {
   const state = { subState: { value: 1 } }
   const store = createStore({ state })
   const AppStoreProvider = createProvider(store)
-  const useAppStoreSubState = createStateHook(AppStoreProvider, s => s.subState)
+  const useAppStoreSubState = createStateHook(AppStoreProvider, (s) => s.subState)
 
   const TestComponent: React.FC = () => {
-    const value = useAppStoreSubState(s => s.value)
-    expect(typeof value).toEqual("number")
+    const value = useAppStoreSubState((s) => s.value)
+    expect(typeof value).toEqual('number')
     return <div>{value}</div>
   }
 
@@ -109,15 +101,15 @@ it("sub-state 1+2", () => {
             `)
 })
 
-it("should do some computations", () => {
+it('should do some computations', () => {
   const state = { subState: { value: 1 } }
   const store = createStore({ state })
   const AppStoreProvider = createProvider(store)
-  const useAppStoreSubState = createStateHook(AppStoreProvider, s => s.subState)
+  const useAppStoreSubState = createStateHook(AppStoreProvider, (s) => s.subState)
 
   const TestComponent: React.FC = () => {
-    const value = useAppStoreSubState(s => s.value + 1)
-    expect(typeof value).toEqual("number")
+    const value = useAppStoreSubState((s) => s.value + 1)
+    expect(typeof value).toEqual('number')
     return <div>{value}</div>
   }
 
@@ -135,13 +127,13 @@ it("should do some computations", () => {
             `)
 })
 
-it("should call the selector two time (initialize)", () => {
+it('should call the selector two time (initialize)', () => {
   const state = { subState: { value: 1 } }
   const store = createStore({ state })
   const AppStoreProvider = createProvider(store)
-  const useAppState = createStateHook(AppStoreProvider, s => s)
+  const useAppState = createStateHook(AppStoreProvider, (s) => s)
 
-  const selector = jest.fn(s => s.subState.value)
+  const selector = jest.fn((s) => s.subState.value)
 
   const TestComponent: React.FC = () => {
     const value = useAppState(selector)
@@ -149,7 +141,7 @@ it("should call the selector two time (initialize)", () => {
   }
 
   act(() => {
-    mount(
+    renderer.create(
       <AppStoreProvider.Provider value={store}>
         <TestComponent />
       </AppStoreProvider.Provider>
@@ -160,33 +152,33 @@ it("should call the selector two time (initialize)", () => {
   expect(selector).toHaveBeenCalledTimes(2)
 })
 
-it("should unmount observables", () => {
+it('should unmount observables', () => {
   const state = { subState: { value: 1 } }
   const store = createStore({ state })
   const AppStoreProvider = createProvider(store)
-  const useAppState = createStateHook(AppStoreProvider, s => s)
+  const useAppState = createStateHook(AppStoreProvider, (s) => s)
 
-  const selector = jest.fn(s => s.subState.value)
+  const selector = jest.fn((s) => s.subState.value)
 
   const TestComponent: React.FC = () => {
     const value = useAppState(selector)
     return <div>{value}</div>
   }
 
-  let component: any
+  const container = renderer.create(
+    <AppStoreProvider.Provider value={store}>
+      <TestComponent />
+    </AppStoreProvider.Provider>
+  )
+  expect(container.toJSON()).toMatchInlineSnapshot(`
+    <div>
+      1
+    </div>
+    `)
 
   act(() => {
-    component = mount(
-      <AppStoreProvider.Provider value={store}>
-        <TestComponent />
-      </AppStoreProvider.Provider>
-    )
-  })
-
-  component.unmount()
-
-  act(() => {
-    store.next(s => {
+    container!.unmount()
+    store.next((s) => {
       s.subState.value = 2
     })
   })
@@ -195,13 +187,13 @@ it("should unmount observables", () => {
   expect(selector).toHaveBeenCalledTimes(2)
 })
 
-it("should call the selector three times in total time if the state updates", () => {
+it('should call the selector three times in total time if the state updates', () => {
   const state = { subState: { value: 1 } }
   const store = createStore({ state })
   const AppStoreProvider = createProvider(store)
-  const useAppState = createStateHook(AppStoreProvider, s => s)
+  const useAppState = createStateHook(AppStoreProvider, (s) => s)
 
-  const selector = jest.fn(s => s.subState.value)
+  const selector = jest.fn((s) => s.subState.value)
 
   const TestComponent: React.FC = () => {
     const value = useAppState(selector)
@@ -209,7 +201,7 @@ it("should call the selector three times in total time if the state updates", ()
   }
 
   act(() => {
-    mount(
+    renderer.create(
       <AppStoreProvider.Provider value={store}>
         <TestComponent />
       </AppStoreProvider.Provider>
@@ -217,23 +209,22 @@ it("should call the selector three times in total time if the state updates", ()
   })
 
   act(() => {
-    store.next(s => {
+    store.next((s) => {
       s.subState.value = 2
     })
+    expect(selector).toHaveBeenCalledTimes(3)
   })
-
-  expect(selector).toHaveBeenCalledTimes(3)
 })
 
-it("should be able to use some outer values to do some computations", done => {
+it('should be able to use some outer values to do some computations', (done) => {
   const state = { value: 1 }
   const store = createStore({ state })
   const AppStoreProvider = createProvider(store)
-  const useAppState = createStateHook(AppStoreProvider, s => s)
+  const useAppState = createStateHook(AppStoreProvider, (s) => s)
 
   const TestComponent: React.FC = () => {
     const [add, setAdd] = React.useState(1)
-    const value = useAppState(s => s.value + add, { deps: [add] })
+    const value = useAppState((s) => s.value + add, { deps: [add] })
 
     return (
       <button className="btn" onClick={() => setAdd(add + 1)}>
@@ -241,43 +232,52 @@ it("should be able to use some outer values to do some computations", done => {
       </button>
     )
   }
-  let component: any
 
-  act(() => {
-    component = mount(
-      <AppStoreProvider.Provider value={store}>
-        <TestComponent />
-      </AppStoreProvider.Provider>
-    )
-  })
-
-  expect(component.html()).toMatchInlineSnapshot(
-    `"<button class=\\"btn\\">1-2</button>"`
+  const container = renderer.create(
+    <AppStoreProvider.Provider value={store}>
+      <TestComponent />
+    </AppStoreProvider.Provider>
   )
 
-  act(() => {
-    const btn = component.find(".btn")
-    btn.simulate("click")
-  })
+  expect(container.toJSON()).toMatchInlineSnapshot(`
+    <button
+      className="btn"
+      onClick={[Function]}
+    >
+      1
+      -
+      2
+    </button>
+  `)
 
+  act(() => {
+    container.root.findAllByType('button')[0].props.onClick()
+  })
   setTimeout(() => {
-    expect(component.html()).toMatchInlineSnapshot(
-      `"<button class=\\"btn\\">2-3</button>"`
-    )
+    expect(container.toJSON()).toMatchInlineSnapshot(`
+      <button
+        className="btn"
+        onClick={[Function]}
+      >
+        2
+        -
+        3
+      </button>
+    `)
     done()
   }, 0)
 })
 
-it("should be able to use multiple app state hooks", done => {
+it('should be able to use multiple app state hooks', (done) => {
   const state = { value: 1 }
   const store = createStore({ state })
   const AppStoreProvider = createProvider(store)
-  const useAppState = createStateHook(AppStoreProvider, s => s)
+  const useAppState = createStateHook(AppStoreProvider, (s) => s)
 
   const TestComponent: React.FC = () => {
     const [add, setAdd] = React.useState(1)
-    const value = useAppState(s => s.value + add, { deps: [add] })
-    const value2 = useAppState(s => s.value + add * 2, { deps: [add] })
+    const value = useAppState((s) => s.value + add, { deps: [add] })
+    const value2 = useAppState((s) => s.value + add * 2, { deps: [add] })
 
     return (
       <button className="btn" onClick={() => setAdd(add + 1)}>
@@ -285,75 +285,110 @@ it("should be able to use multiple app state hooks", done => {
       </button>
     )
   }
-  let component: any
-
-  act(() => {
-    component = mount(
-      <AppStoreProvider.Provider value={store}>
-        <TestComponent />
-      </AppStoreProvider.Provider>
-    )
-  })
-
-  expect(component.html()).toMatchInlineSnapshot(
-    `"<button class=\\"btn\\">1-2-3</button>"`
+  const container = renderer.create(
+    <AppStoreProvider.Provider value={store}>
+      <TestComponent />
+    </AppStoreProvider.Provider>
   )
 
+  expect(container.toJSON()).toMatchInlineSnapshot(`
+    <button
+      className="btn"
+      onClick={[Function]}
+    >
+      1
+      -
+      2
+      -
+      3
+    </button>
+  `)
+
   act(() => {
-    const btn = component.find(".btn")
-    btn.simulate("click")
+    const btn = container.root.findByType('button')
+    btn.props.onClick()
   })
 
   setTimeout(() => {
-    expect(component.html()).toMatchInlineSnapshot(
-      `"<button class=\\"btn\\">2-3-5</button>"`
-    )
+    expect(container.toJSON()).toMatchInlineSnapshot(`
+      <button
+        className="btn"
+        onClick={[Function]}
+      >
+        2
+        -
+        3
+        -
+        5
+      </button>
+    `)
     done()
   }, 0)
 })
 
-it("should be able to use a custom comparator", done => {
+it('should be able to use a custom comparator', (done) => {
   const state = { todos: [1] }
   const store = createStore({ state })
   const AppStoreProvider = createProvider(store)
   const useAppState = createStateHook(AppStoreProvider)
-  const uesNextAppState = createNextHook(AppStoreProvider)
+  const useNextAppState = createNextHook(AppStoreProvider)
 
   const TestComponent: React.FC = () => {
     // We use a comparator, that always returns true, so we never will get an update
-    const todos = useAppState(s => s.todos, { compare: () => true })
-    const nextTodos = uesNextAppState(s => s.todos)
+    const todos = useAppState((s) => s.todos, { compare: () => true })
+    const nextTodos = useNextAppState((s) => s.todos)
 
     return (
       <div>
         <div>{JSON.stringify(todos)}</div>
-        <button
-          className="btn"
-          onClick={() => nextTodos(todos => todos.push(1))}
-        />
+        <button className="btn" onClick={() => nextTodos((todos) => todos.push(2))}>
+          1
+        </button>
       </div>
     )
   }
-  let component: any
+
+  const container = renderer.create(
+    <AppStoreProvider.Provider value={store}>
+      <TestComponent />
+    </AppStoreProvider.Provider>
+  )
+
+  const html1 = container.toJSON()
+
+  expect(html1).toMatchInlineSnapshot(`
+    <div>
+      <div>
+        [1]
+      </div>
+      <button
+        className="btn"
+        onClick={[Function]}
+      >
+        1
+      </button>
+    </div>
+  `)
+
+  const btn = container.root.findByType('button')
 
   act(() => {
-    component = mount(
-      <AppStoreProvider.Provider value={store}>
-        <TestComponent />
-      </AppStoreProvider.Provider>
-    )
+    btn.props.onClick()
+    setTimeout(() => {
+      expect(container.toJSON()).toMatchInlineSnapshot(`
+      <div>
+        <div>
+          [1,2]
+        </div>
+        <button
+          className="btn"
+          onClick={[Function]}
+        >
+          1
+        </button>
+      </div>
+    `)
+      done()
+    }, 0)
   })
-
-  const html1 = component.html()
-
-  act(() => {
-    const btn = component.find(".btn")
-    btn.simulate("click")
-  })
-
-  setTimeout(() => {
-    const html2 = component.html()
-    expect(html1).toEqual(html2)
-    done()
-  }, 0)
 })

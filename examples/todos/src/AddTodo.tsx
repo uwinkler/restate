@@ -1,12 +1,12 @@
-import React from "react"
-import { useNextAppState } from "./store"
+import React from 'react'
+import { useNextAppState } from './store'
 
 export const AddTodo: React.FC = () => {
-  const next = useNextAppState(s => s.todos)
-  const [title, setTitle] = React.useState("")
+  const next = useNextAppState((s) => s.todos)
+  const [title, setTitle] = React.useState('')
 
   function addNewTodo() {
-    next(todos => {
+    next((todos) => {
       const nextId = todos[todos.length - 1].id + 1
       todos.push({
         id: nextId,
@@ -14,12 +14,12 @@ export const AddTodo: React.FC = () => {
         done: false
       })
     })
-    setTitle("")
+    setTitle('')
   }
 
   return (
     <>
-      <input value={title} onChange={e => setTitle(e.target.value)} />
+      <input value={title} onChange={(e) => setTitle(e.target.value)} />
       <button onClick={addNewTodo}>Add</button>
     </>
   )

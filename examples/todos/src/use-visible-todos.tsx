@@ -1,5 +1,5 @@
-import { useAppState, Todo, PAGE_SIZE } from "./store"
-import { filter } from "./filter"
+import { filter } from './filter'
+import { PAGE_SIZE, Todo, useAppState } from './store'
 
 function paginate(todos: Todo[], page: number) {
   const start = page * PAGE_SIZE
@@ -8,10 +8,9 @@ function paginate(todos: Todo[], page: number) {
 }
 
 export function useVisibleTodos() {
-  return useAppState(state => {
-    const visible = state.visibility
-    const page = state.page
-    const visibleTodos = filter(state.todos, visible)
-    return paginate(visibleTodos, page)
-  })
+  const todos = useAppState((state) => state.todos)
+  const page = useAppState((state) => state.page)
+  const visibility = useAppState((state) => state.visibility)
+  const visibleTodos = filter(todos, visibility)
+  return paginate(visibleTodos, page)
 }

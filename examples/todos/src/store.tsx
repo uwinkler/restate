@@ -1,56 +1,51 @@
-import {
-  createStore,
-  createProvider,
-  createStateHook,
-  createNextHook
-} from "@restate/core"
-import { connectDevTools } from "@restate/dev-tools"
+import { createNextHook, createProvider, createStateHook, createStore } from '@restate/core'
+import { connectDevTools } from '@restate/dev-tools'
 
 export const PAGE_SIZE = 10
 
 export interface Todo {
-  id: number
+  id: string
   title: string
   done: boolean
 }
 
-export type VisibilityFiler = "all" | "done" | "open"
+export type Visibility = 'all' | 'done' | 'open'
 
 interface State {
   todos: Todo[]
-  visibility: VisibilityFiler
+  visibility: Visibility
   page: number
 }
 
-export const store = createStore<State>({
+export const store = createStore<State, any>({
   state: {
     todos: [],
-    visibility: "all",
+    visibility: 'all',
     page: 0
-  },
-  options: {
-    freeze: false
   }
 })
 
 const manyTodos: Todo[] = []
 
-for (let i = 0; i < 100000; i++) {
+for (let i = 0; i < 1_000_000; i++) {
   manyTodos.push({
-    id: i,
-    title: "Task #" + i,
+    id: '' + i,
+    title: 'Task #' + i,
     done: false
   })
 }
 
-store.next(s => {
+store.next((s) => {
   s.todos = manyTodos
 })
 
-store.state$.subscribe(s => console.log(s.payload))
+if (process.env.NODE_ENV === 'development') {
+  store.state$.subscribe((s) => console.log(s.state))
+  connectDevTools(store)
+}
 
 export const AppStateProvider = createProvider(store)
-export const useAppState = createStateHook(AppStateProvider, state => state)
-export const useNextAppState = createNextHook(AppStateProvider, state => state)
+export const useAppState = createStateHook(AppStateProvider, (state) => state)
+export const useNextAppState = createNextHook(AppStateProvider, (state) => state)
 
-export const useTodos = createStateHook(AppStateProvider, state => state.todos)
+export const useTodos = createStateHook(AppStateProvider, (state) => state.todos)

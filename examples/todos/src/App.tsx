@@ -1,11 +1,9 @@
-import React from "react"
-import logo from "./logo.svg"
-import "./App.css"
-import { AppStateProvider, store } from "./store"
-import { AddTodo } from "./AddTodo"
-import { TodoList } from "./TodoList"
-import { Footer } from "./Footer"
-import { Paginator } from "./Paginator"
+import { AddTodo } from './AddTodo'
+import './App.css'
+import { Footer } from './Footer'
+import { Paginator } from './Paginator'
+import { AppStateProvider, store } from './store'
+import { TodoList } from './TodoList'
 
 function App() {
   return (
