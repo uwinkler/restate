@@ -155,7 +155,7 @@ it('should update a scoped state', () => {
       className="btn"
       onClick={[Function]}
     >
-      1
+      2
     </button>
   `)
 
@@ -174,3 +174,53 @@ it('should update a scoped state', () => {
     </button>
   `)
 })
+
+// it('should update a scoped state', () => {
+//   const state = { subState: { value: 1 } }
+//   const store = createStore({ state })
+//   const AppStoreProvider = createProvider(store)
+//   const useAppState = createStateHook(AppStoreProvider)
+//   const useNextAppState = createNextHook(AppStoreProvider, (state) => state.subState)
+
+//   const TestComponent: React.FC = () => {
+//     const x = useAppState((s) => s)
+
+//     const nextAppState = useNextAppState((s) => s)
+
+//     function increment() {
+//       nextAppState((s) => {
+//         s.value = s.value + 1
+//       })
+//     }
+
+//     return (
+//       <button className="btn" onClick={increment}>
+//         {x.subState.value}
+//       </button>
+//     )
+//   }
+
+//   const { container } = render(
+//     <AppStoreProvider.Provider value={store}>
+//       <TestComponent />
+//     </AppStoreProvider.Provider>
+//   )
+
+//   expect(container.firstChild).toMatchInlineSnapshot(`
+//     <button
+//       class="btn"
+//     >
+//       1
+//     </button>
+//   `)
+
+//   act(() => {
+//     const btn = screen.getByText('1')
+//     btn.click()
+//   })
+
+//   process.nextTick(() => {
+//     expect(store.state.subState.value).toEqual(2)
+//     expect(container.firstChild).toMatchInlineSnapshot(`"<button class=\\"btn\\">2</button>"`)
+//   })
+// })
