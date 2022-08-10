@@ -1,36 +1,28 @@
-import { createStore } from "@restate/core"
-import { WithConnectReactRouterState } from ".."
-import { defaultRouterState, connectReactRouter } from "../"
-import { createMemoryHistory } from "history"
+import { createStore } from '@restate/core'
+import { createMemoryHistory } from 'history'
+import { WithConnectReactRouterState } from '..'
+import { connectReactRouter, defaultRouterState } from '../'
 
-interface RouterState {
-  routerInfo: number
-}
+interface AppState extends WithConnectReactRouterState {}
 
-interface AppState extends WithConnectReactRouterState<RouterState> {
-  value: number
-}
-
-it("test history", () => {
+it('test history', () => {
   const history = createMemoryHistory()
   expect(history.location.pathname).toMatchInlineSnapshot(`"/"`)
 })
 
-it("should provide history", () => {
+it('should provide history', () => {
   const defaultState: AppState = {
-    value: 0,
-    location: { ...defaultRouterState, state: { routerInfo: 0 } },
+    location: { ...defaultRouterState }
   }
 
   const store = createStore({ state: defaultState })
   const history = createMemoryHistory()
 
   connectReactRouter({ appStore: store, history })
+  expect(store.state.location.pathname).toEqual('/')
+  expect(store.state.location.state).toEqual('')
 
-  expect(store.state.location.pathname).toEqual("/")
-  expect(store.state.location.state).toEqual({ routerInfo: 0 })
-
-  history.push("/new_path", { routerInfo: 1 })
-  expect(store.state.location.pathname).toEqual("/new_path")
+  history.push('/new_path', { routerInfo: 1 })
+  expect(store.state.location.pathname).toEqual('/new_path')
   expect(store.state.location.state).toEqual({ routerInfo: 1 })
 })

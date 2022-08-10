@@ -1,21 +1,22 @@
-import { Location, History } from "history"
-import { RxStore, Message } from "@restate/core"
+import { Message, RxStore } from '@restate/core'
+import { History, Location } from 'history'
 
-export interface WithConnectReactRouterState<LocationState> {
-  location: Location<LocationState>
+export interface WithConnectReactRouterState {
+  location: Location
 }
 
 export const defaultRouterState = {
-  pathname: "",
-  search: "",
-  state: undefined as any,
-  hash: ""
+  key: '',
+  pathname: '/',
+  search: '',
+  hash: '',
+  state: ''
 }
 
 export enum RestateRouterMessageType {
-  INIT = "Restate/Router/Init",
-  POP = "Restate/Router/Pop",
-  PUSH = "Restate/Router/Push"
+  INIT = '@restate/router/Init',
+  POP = '@restate/router/Pop',
+  PUSH = '@restate/router/Push'
 }
 
 interface RestateRouterInitMessage extends Message {
@@ -30,36 +31,33 @@ interface RestateRouterPushMessage extends Message {
   type: RestateRouterMessageType.PUSH
 }
 
-export type RestateRouterMessage =
-  | RestateRouterInitMessage
-  | RestateRouterPopMessage
-  | RestateRouterPushMessage
+export type RestateRouterMessage = RestateRouterInitMessage | RestateRouterPopMessage | RestateRouterPushMessage
 
 const RESTATE_ROUTER_INIT_MESSAGE: RestateRouterInitMessage = {
   type: RestateRouterMessageType.INIT
 }
 
-export function connectReactRouter<
-  LocationStateType,
-  S extends WithConnectReactRouterState<LocationStateType>,
-  M extends Message
->(props: { appStore: RxStore<S, M>; history: History<any> }) {
+export function connectReactRouter<S extends WithConnectReactRouterState, M extends Message>(props: {
+  appStore: RxStore<S, M>
+  history: History
+}) {
   const { appStore, history } = props
   const currentLocation = props.history.location
 
   const initState = appStore.state.location.state
 
-  appStore.next(state => {
+  appStore.next((state) => {
     state.location = currentLocation as any
     state.location.state = initState
   }, RESTATE_ROUTER_INIT_MESSAGE as any)
 
-  history.listen((location, action) => {
+  history.listen((update) => {
+    const { location, action } = update
     appStore.next(
-      state => {
+      (state) => {
         state.location = Object.assign(state.location, location)
       },
-      { type: "Restate/Router/" + action } as any
+      { type: '@restate/router/' + action } as any
     )
   })
 }
