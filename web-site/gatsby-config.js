@@ -1,20 +1,20 @@
 module.exports = {
   siteMetadata: {
-    title: `restate Documentation`,
+    title: `restate documentation`,
     siteUrl: `https://restate.netlify.com`
   },
   plugins: [
-    // `gatsby-plugin-sitemap`,
+    `gatsby-plugin-sitemap`,
     `gatsby-plugin-react-helmet`,
     // Add typescript stack into webpack
     `gatsby-plugin-typescript`,
-    `gatsby-mdx`,
-    {
-      resolve: `gatsby-plugin-google-analytics`,
-      options: {
-        trackingId: 'UA-140616243-1'
-      }
-    },
+    `gatsby-plugin-mdx`,
+    // {
+    //   resolve: `gatsby-plugin-google-analytics`,
+    //   options: {
+    //     trackingId: 'UA-140616243-1'
+    //   }
+    // },
     {
       resolve: `gatsby-plugin-manifest`,
       options: {

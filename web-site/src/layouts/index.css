@@ -1,5 +1,5 @@
 body {
-  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
   font-weight: 300;
   line-height: 1.6rem;
 }
@@ -9,7 +9,7 @@ h2,
 h3,
 h4 {
   margin-top: 3rem;
-  font-family: "Signika Negative", sans-serif;
+  font-family: 'Signika Negative', sans-serif;
   /* font-style: italic; */
 }
 
@@ -35,7 +35,7 @@ code {
 }
 
 code.content {
-  font-family: "Roboto Mono", monospace;
+  font-family: 'Roboto Mono', monospace;
   font-size: 15px;
   font-weight: 500;
   padding: 0;
@@ -72,11 +72,7 @@ span.token.comment {
 }
 
 .line-highlight {
-  background: linear-gradient(
-    to right,
-    hsla(26, 15%, 91%, 0.104) 20%,
-    hsla(26, 20%, 50%, 0)
-  ) !important;
+  background: linear-gradient(to right, hsla(26, 15%, 91%, 0.104) 20%, hsla(26, 20%, 50%, 0)) !important;
 }
 
 hr {

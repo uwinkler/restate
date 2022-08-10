@@ -1,16 +1,14 @@
-import * as React from "react"
-import CssBaseline from "@material-ui/core/CssBaseline"
-import Helmet from "react-helmet"
-import { AppStateProvider } from "../state/state"
-import { AppTheme } from "./theme"
-import { Code } from "../components/code"
-import { Footer } from "../components/footer"
-import { install } from "@material-ui/styles"
-import { PersistentDrawerLeft } from "../components/drawer"
-import "./index.css"
-const { MDXProvider } = require("@mdx-js/react")
+import CssBaseline from '@material-ui/core/CssBaseline'
+import * as React from 'react'
+import Helmet from 'react-helmet'
+import { Code } from '../components/code'
+import { Footer } from '../components/footer'
+import { AppStateProvider } from '../state/state'
+import { AppTheme } from './theme'
 
-install()
+import { PersistentDrawerLeft } from '../components/drawer'
+import './index.css'
+const { MDXProvider } = require('@mdx-js/react')
 
 interface DefaultLayoutProps {
   title: string
@@ -18,13 +16,13 @@ interface DefaultLayoutProps {
   pageContext: any
 }
 
-export const MDXWrapper: React.FC = props => (
+export const MDXWrapper = (props: any) => (
   <MDXProvider
     components={{
       inlineCode: (props: any) => <code>{props.children}</code>,
       code: (props: any) => {
-        const metastring = props.metastring || ""
-        let title = ""
+        const metastring = props.metastring || ''
+        let title = ''
         // console.log(props)
         if (metastring.indexOf('title="') > -1) {
           const splits = metastring.split('"')
@@ -32,12 +30,7 @@ export const MDXWrapper: React.FC = props => (
           // console.log(splits)
         }
         return (
-          <Code
-            title={title}
-            variant={props.variant}
-            src={props.src}
-            lines={props.lines}
-          >
+          <Code title={title} variant={props.variant} src={props.src} lines={props.lines}>
             {props.children}
           </Code>
         )
@@ -48,10 +41,10 @@ export const MDXWrapper: React.FC = props => (
   </MDXProvider>
 )
 
-export const MdxLayout: React.FC<DefaultLayoutProps> = props => {
+export const MdxLayout: React.FC<DefaultLayoutProps> = (props) => {
   const frontmatter = {
-    path: "/",
-    title: ""
+    path: '/',
+    title: ''
   }
   const { path, title } = props.pageContext.frontmatter || frontmatter
 
@@ -60,21 +53,11 @@ export const MdxLayout: React.FC<DefaultLayoutProps> = props => {
       <AppTheme>
         <CssBaseline />
         <Helmet
-          title="React Rx State"
-          meta={[
-            { name: "description", content: "restate" },
-            { name: "keywords", content: "react, state management" }
-          ]}
+          title="Restate"
+          meta={[{ name: 'description', content: 'restate' }, { name: 'keywords', content: 'react, state management' }]}
         >
-          <link
-            rel="stylesheet"
-            href="https://fonts.googleapis.com/css?family=Roboto:300,400,500"
-          />
-
-          <link
-            href="https://fonts.googleapis.com/css?family=Signika+Negative"
-            rel="stylesheet"
-          />
+          {/* <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" /> */}
+          {/* <link href="https://fonts.googleapis.com/css?family=Signika+Negative" rel="stylesheet" /> */}
         </Helmet>
         <PersistentDrawerLeft path={path} title={title}>
           <>
