@@ -155,7 +155,7 @@ it('should update a scoped state', () => {
       className="btn"
       onClick={[Function]}
     >
-      2
+      1
     </button>
   `)
 
