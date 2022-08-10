@@ -4,21 +4,21 @@ module.exports = {
     siteUrl: `https://restate.netlify.com`
   },
   plugins: [
-    `gatsby-plugin-sitemap`,
+    // `gatsby-plugin-sitemap`,
     `gatsby-plugin-react-helmet`,
     // Add typescript stack into webpack
     `gatsby-plugin-typescript`,
-    `gatsby-plugin-offline`,
     `gatsby-mdx`,
     {
       resolve: `gatsby-plugin-google-analytics`,
       options: {
-        trackingId: "UA-140616243-1"
+        trackingId: 'UA-140616243-1'
       }
     },
     {
       resolve: `gatsby-plugin-manifest`,
       options: {
+        icon: `src/icons/icon-512x512.png`,
         name: `GatsbyJS`,
         short_name: `GatsbyJS`,
         start_url: `/`,
@@ -26,6 +26,7 @@ module.exports = {
         theme_color: `#a2466c`,
         display: `standalone`
       }
-    }
+    },
+    `gatsby-plugin-offline`
   ]
 }
