@@ -1,35 +1,34 @@
-import AppBar from "@material-ui/core/AppBar"
-import ChevronLeftIcon from "@material-ui/icons/ChevronLeft"
-import ChevronRightIcon from "@material-ui/icons/ChevronRight"
-import classNames from "classnames"
-import Divider from "@material-ui/core/Divider"
-import Drawer from "@material-ui/core/Drawer"
-import IconButton from "@material-ui/core/IconButton"
-import MenuIcon from "@material-ui/icons/Menu"
-import React from "react"
-import Toolbar from "@material-ui/core/Toolbar"
-import Typography from "@material-ui/core/Typography"
-import { Logo } from "./logo"
-import { makeStyles } from "@material-ui/styles"
-import { Navigation } from "./navigation"
-import { theme } from "../layouts/theme"
-import { useAppState, useUpdateAppState } from "../state/state"
+import AppBar from '@material-ui/core/AppBar'
+import Drawer from '@material-ui/core/Drawer'
+import IconButton from '@material-ui/core/IconButton'
+import Toolbar from '@material-ui/core/Toolbar'
+import Typography from '@material-ui/core/Typography'
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
+import ChevronRightIcon from '@material-ui/icons/ChevronRight'
+import MenuIcon from '@material-ui/icons/Menu'
+import { makeStyles } from '@material-ui/styles'
+import classNames from 'classnames'
+import React from 'react'
+import { theme } from '../layouts/theme'
+import { useAppState, useUpdateAppState } from '../state/state'
+import { Logo } from './logo'
+import { Navigation } from './navigation'
 
 const drawerWidth = 340
 const appBarHeight = 83
 
 const useClasses = makeStyles({
   root: {
-    display: "flex"
+    display: 'flex'
   },
   appBar: {
-    transition: theme.transitions.create(["margin", "width"], {
+    transition: theme.transitions.create(['margin', 'width'], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen
     }),
     height: appBarHeight,
-    display: "flex",
-    justifyContent: "center"
+    display: 'flex',
+    justifyContent: 'center'
   },
   appBarShift: {
     width: `calc(100% - ${drawerWidth}px)`,
@@ -40,7 +39,7 @@ const useClasses = makeStyles({
     marginRight: 20
   },
   hide: {
-    display: "none"
+    display: 'none'
   },
   drawer: {
     width: drawerWidth
@@ -49,9 +48,9 @@ const useClasses = makeStyles({
     width: drawerWidth
   },
   drawerHeader: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "flex-start"
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'flex-start'
   },
   content: {
     flexGrow: 1,
@@ -65,8 +64,8 @@ const useClasses = makeStyles({
   logoContainer: {
     padding: 13,
     marginTop: 10,
-    flexDirection: "column",
-    display: "flex"
+    flexDirection: 'column',
+    display: 'flex'
   }
 })
 
@@ -75,23 +74,21 @@ interface PersistentDrawerLeftProps {
   path: string
 }
 
-export const PersistentDrawerLeft: React.FC<
-  PersistentDrawerLeftProps
-> = props => {
+export const PersistentDrawerLeft: React.FC<PersistentDrawerLeftProps> = (props) => {
   console.log(props)
   const classes = useClasses()
 
-  const open = useAppState(s => s.drawerOpen)
-  const setOpen = useUpdateAppState(s => s)
+  const open = useAppState((s) => s.drawerOpen)
+  const setOpen = useUpdateAppState((s) => s)
 
   function handleDrawerOpen() {
-    setOpen(s => {
+    setOpen((s) => {
       s.drawerOpen = true
     })
   }
 
   function handleDrawerClose() {
-    setOpen(s => {
+    setOpen((s) => {
       s.drawerOpen = false
     })
   }
@@ -99,11 +96,11 @@ export const PersistentDrawerLeft: React.FC<
   return (
     <nav className={classes.root}>
       <AppBar
-        elevation={1}
+        elevation={0}
         style={{
-          background: "white",
+          background: 'white',
           color: theme.palette.primary.dark,
-          fontWeight: "bolder"
+          fontWeight: 'bolder'
           // textShadow: "1px 0px 5px rgba(244,0,0,.24)"
         }}
         position="fixed"
@@ -139,11 +136,7 @@ export const PersistentDrawerLeft: React.FC<
             <Logo />
           </div>
           <IconButton onClick={handleDrawerClose}>
-            {theme.direction === "ltr" ? (
-              <ChevronLeftIcon />
-            ) : (
-              <ChevronRightIcon />
-            )}
+            {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
           </IconButton>
         </div>
 
