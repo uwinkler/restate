@@ -1,10 +1,10 @@
 export interface Message {
-  type: any
+  type: string
 }
 
 export enum RestateMessageType {
-  INIT = "@Restate/Core/Init",
-  UPDATE = "@Restate/Core/Update"
+  INIT = '@Restate/Core/Init',
+  UPDATE = '@Restate/Core/Update'
 }
 
 export interface RestateUpdateMessage extends Message {
@@ -24,3 +24,12 @@ export const RESTATE_INIT_MESSAGE: Message = {
 }
 
 export type RestateMessage = RestateUpdateMessage | RestateInitMessage
+
+type Login = { type: 'Auth/Login'; id: string; password: string }
+type Logout = { type: 'Auth/Logout' }
+
+type Messages = Login | Logout
+
+export const [AuthServiceProvider, useAuthService] = createService<Messages>(store, (msg) => {
+  match(msg).with({})
+})
