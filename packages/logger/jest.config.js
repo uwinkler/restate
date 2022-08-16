@@ -6,6 +6,7 @@ module.exports = {
   collectCoverageFrom: ['<rootDir>/src/**/*.{ts,tsx}'],
   coverageDirectory: 'coverage',
   transform: {
+    '^.+\\.js$': 'babel-jest', // Adding this line solved the issue
     '^.+\\.jsx?$': 'babel-jest', // Adding this line solved the issue
     '^.+\\.tsx?$': 'ts-jest'
   }

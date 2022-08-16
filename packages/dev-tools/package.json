@@ -5,10 +5,11 @@
   "scripts": {
     "clean": "rm -rf build",
     "start": "tsc --watch",
-    "build": "tsc",
+    "build": "esbuild --outdir=build --platform=node --format=cjs src/*.ts && esbuild --out-extension:.js=.mjs --outdir=build --platform=node --format=esm src/*.ts && tsc --emitDeclarationOnly",
     "test": "jest"
   },
   "main": "build/index.js",
+  "module": "build/index.mjs",
   "types": "build/index.d.ts",
   "repository": "https://github.com/uwinkler/restate",
   "homepage": "https://restate.netlify.com/dev-tools",
@@ -32,6 +33,7 @@
   "devDependencies": {
     "@restate/core": "^0.12.0",
     "@types/jest": "^28.1.6",
+    "esbuild": "^0.15.3",
     "jest": "^28.1.3",
     "prettier": "^2.7.1",
     "rxjs": "^7.5.6",

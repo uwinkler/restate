@@ -285,16 +285,6 @@
     "@jridgewell/resolve-uri" "^3.0.3"
     "@jridgewell/sourcemap-codec" "^1.4.10"
 
-"@restate/core@^0.12.0":
-  version "0.12.0"
-  resolved "https://registry.yarnpkg.com/@restate/core/-/core-0.12.0.tgz#fdacdca113c21777353fe7a962b5b4b94a31f06e"
-  integrity sha512-LBQS839E85xoch3M8TLB21XvtOfqd81SNzIzjQcsK3V9FmO3Opw+wDHvnv00OuyPlWsSdLDBdAUmdRzqoPS0jA==
-
-"@restate/dev-tools@^0.12.0":
-  version "0.12.0"
-  resolved "https://registry.yarnpkg.com/@restate/dev-tools/-/dev-tools-0.12.0.tgz#b12f9fe8115d6d2b6dd7a5f237b5c5989866b597"
-  integrity sha512-gL0LPl0f5QuDH173oNTJDxzq3NWwglNNEWnN8gUF4loTjKvNKkGyS90ZsMoiZNI3wwmjXHQXwIcr/q1xtIX6Ag==
-
 "@tanstack/query-core@^4.0.0-beta.1":
   version "4.1.3"
   resolved "https://registry.yarnpkg.com/@tanstack/query-core/-/query-core-4.1.3.tgz#06b24315577971376b5a15124fc132c0b3ebc1b3"

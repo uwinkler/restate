@@ -5,11 +5,12 @@
   "scripts": {
     "clean": "rm -rf build",
     "start": "tsc --watch",
-    "build": "tsc",
+    "build": "esbuild --outdir=build --platform=node --format=cjs src/*.ts && esbuild --outdir=build --platform=node --format=cjs src/*.tsx && esbuild --out-extension:.js=.mjs --outdir=build --platform=node --format=esm src/*.ts && esbuild --out-extension:.js=.mjs --outdir=build --platform=node --format=esm src/*.tsx && tsc --emitDeclarationOnly",
     "test": "jest"
   },
-  "module": "build/index.js",
-  "types": "build/index.d.ts",
+  "main": "./build/index.js",
+  "module": "./build/index.mjs",
+  "typings": "./build/index.d.ts",
   "peerDependencies": {
     "immer": ">=9.0.0",
     "react": ">=18.2.0",
@@ -38,6 +39,7 @@
     "@types/react-dom": "18.0.6",
     "@types/react-test-renderer": "18.0.0",
     "babel-jest": "28.1.3",
+    "esbuild": "^0.15.3",
     "immer": "9.0.15",
     "jest": "28.1.3",
     "prettier": "^2.6.0",
