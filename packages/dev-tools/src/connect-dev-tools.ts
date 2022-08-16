@@ -11,7 +11,9 @@ export function connectDevTools(store: RxStore<any, any>): () => void {
   }
 
   const devTools = devToolsExtension.connect({
-    name: store.options.storeName
+    name: store.options.storeName,
+    trace: false,
+    features: { dispatch: false, test: false, trace: false }
   })
 
   devTools.subscribe((msg: any) => {

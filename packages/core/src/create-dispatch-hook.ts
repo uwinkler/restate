@@ -1,11 +1,8 @@
-import { RxStore } from "./rx-store"
-import { useContext } from "react"
-import { Message } from "./message"
+import { RxStore } from './rx-store'
+import { useContext } from 'react'
+import { Message } from './message'
 
-type CreateUseMessageBusObservableHookProps<
-  S,
-  M extends Message
-> = React.Context<RxStore<S, M>>
+type CreateUseMessageBusObservableHookProps<S, M extends Message> = React.Context<RxStore<S, M>>
 
 export function createDispatchHook<S extends object, M extends Message>(
   provider: CreateUseMessageBusObservableHookProps<S, M>
