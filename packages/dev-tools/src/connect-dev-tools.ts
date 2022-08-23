@@ -33,14 +33,19 @@ export function connectDevTools(store: RxStore<any, any>): () => void {
   devTools.init(store.state)
 
   const storeSub = store.state$.subscribe((pack) => {
-    const { state, message } = pack
+    const { state, message, patches } = pack
     if (message.type.indexOf('@RX_DEV_TOOLS') === -1) {
-      devTools.send({ type: message.type, payload: state }, state)
+      devTools.send({ type: message.type, payload: { patches } }, state)
     }
+  })
+
+  const messageBusSub = store.messageBus$.subscribe((msg) => {
+    devTools.send({ ...msg, channel: 'messageBus' }, store.state)
   })
 
   const cleanup = () => {
     storeSub.unsubscribe()
+    messageBusSub.unsubscribe()
     devToolsExtension.disconnect()
   }
 

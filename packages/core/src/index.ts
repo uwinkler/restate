@@ -1,4 +1,3 @@
-export * from './connect-actions'
 export * from './create-actions-hook'
 export * from './create-dispatch-hook'
 export * from './create-next-hook'

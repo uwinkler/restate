@@ -1,8 +1,13 @@
+import React from 'react'
 import './App.css'
-import { HelloWorld } from './examples/hello-world'
+import { HelloCounter } from './examples/services'
 
 function App() {
-  return <HelloWorld />
+  return (
+    <React.StrictMode>
+      <HelloCounter />
+    </React.StrictMode>
+  )
 }
 
 export default App

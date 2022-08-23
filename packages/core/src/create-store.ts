@@ -31,6 +31,7 @@ export function createStore<STATE, M extends Message>({
   }
 
   const state$ = new BehaviorSubject(initialStatePackage)
+  const messageBus$ = new BehaviorSubject<M>({ type: '@Restate/MessageBus/Init' } as any)
 
-  return RxStore.of(state$, middleware, opts)
+  return RxStore.of(state$, messageBus$, middleware, opts)
 }
