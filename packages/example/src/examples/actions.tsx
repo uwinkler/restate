@@ -11,7 +11,7 @@ type State = {
     age: number
   }
   queries: {
-    todos: UseQueryResult<string[], any>
+    // todos: UseQueryResult<string[], any>
   }
 }
 
@@ -22,7 +22,7 @@ const { useAppState, useNext, store, createActions } = create<State, any>({
       age: 32
     },
     queries: {
-      todos: {}
+      // todos: {}
     }
   }
 })
