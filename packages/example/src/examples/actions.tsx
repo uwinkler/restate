@@ -1,7 +1,6 @@
 import { create } from '@restate/core'
 import { connectDevTools } from '@restate/dev-tools'
 import { QueryClient, QueryClientProvider, useQuery, useQueryClient, UseQueryResult } from '@tanstack/react-query'
-import { useEffect, useMemo } from 'react'
 
 // We create our app state and hooks like this:
 
@@ -35,8 +34,6 @@ function getTodos() {
 
 const queryClient = new QueryClient()
 const useUserActions = createActions('UserActions', (store) => {
-  const query = useQuery(['todos'], getTodos)
-
   return {
     setName: (nextName: string) => {
       store.next((s) => {

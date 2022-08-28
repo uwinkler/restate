@@ -1,4 +1,4 @@
-import { createService, createServiceProvider } from '@restate/di'
+import { createService, combineServiceProvider } from '@restate/di'
 import React, { useContext } from 'react'
 
 // Counter
@@ -25,12 +25,9 @@ function useMockCounterService() {
 // const MyCounterContext = React.createContext(useCounterService)
 // const useMyCounterContext = () => useContext(MyCounterContext)
 
-const [CounterService, useMyCounter] = createService('CounterService', useCounterService)
-const MyServices = createServiceProvider(CounterService())
+const [CounterServiceProvider, useMyCounter] = createService('CounterService', useCounterService)
 
 function Counter() {
-  // const counterService = useMyCounterContext()
-  // const { count } = counterService()
   const { count } = useMyCounter()
 
   const displayValue = count > 100 ? 'large' : count
@@ -38,11 +35,9 @@ function Counter() {
 }
 
 export function HelloCounter() {
-  // <MyCounterContext.Provider value={useMockCounterService}>
-  // </MyCounterContext.Provider>
   return (
-    <MyServices>
+    <CounterServiceProvider>
       <Counter />
-    </MyServices>
+    </CounterServiceProvider>
   )
 }
