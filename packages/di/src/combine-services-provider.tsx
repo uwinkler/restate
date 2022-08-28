@@ -1,6 +1,6 @@
 import React, { FC } from 'react'
 
-type Service = React.FC<Parent>
+type ServiceProvider = React.FC<Parent>
 interface Parent {
   children?: React.ReactNode
 }
@@ -8,7 +8,7 @@ interface Parent {
 /**
  * `createServiceProvider` is a utility to combine multiple services.
  */
-export function createServiceProvider(...services: Service[]) {
+export function combineServiceProvider(...services: ServiceProvider[]) {
   return combineComponents(...services)
 }
 

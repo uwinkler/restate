@@ -8,13 +8,12 @@ export function createService<T>(
   name: string,
   service: () => T
 ): [
-  // The service function.
-  Service<T>,
+  // The ServiceProvider
+  ServiceProvider<T>,
   // The return type of the created useContext hook
   ServiceHook<T>,
-  React.Context<T>,
-  // Th return type of the created ServiceProvider
-  ServiceProvider<T>
+  // The react context
+  React.Context<T>
 ] {
   const Ctx = React.createContext<T>(null as unknown as T)
   Ctx.displayName = name
@@ -28,15 +27,10 @@ export function createService<T>(
   function useService() {
     const ctx = React.useContext(Ctx)
     if (!ctx) {
-      // throw new Error(`:This component should be wrapped by a ${name} service provider`)
+      throw new Error(`:This component should be wrapped by a ${name} service provider`)
     }
     return ctx
   }
 
-  // The Service function returns the React ServiceProvider
-  function Service(implementation?: () => T) {
-    return (props: any) => <ServiceProvider implementation={implementation} {...props} />
-  }
-
-  return [Service, useService, Ctx, ServiceProvider]
+  return [ServiceProvider, useService, Ctx]
 }

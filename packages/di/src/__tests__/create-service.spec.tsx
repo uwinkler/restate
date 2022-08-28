@@ -1,34 +1,27 @@
 import React from 'react'
 import renderer from 'react-test-renderer'
-import { createServiceProvider } from '../create-provider'
+import { combineServiceProvider } from '../combine-services-provider'
 import { createService } from '../create-service'
-
-// Window
-function useWindowService() {
-  return { setInterval, clearInterval }
-}
-const [WindowService, useWindow] = createService('WindowService', useWindowService)
 
 // Counter
 function useCounterService() {
-  const [count, setCount] = React.useState(0)
-  const { setInterval, clearInterval } = useWindow()
-
-  React.useEffect(() => {
-    const counterInterval = setInterval(() => setCount(count + 1), 1000)
-    return () => clearInterval(counterInterval)
-  })
-
+  const count = 12
   return { count }
 }
 const [CounterService, useMyCounter] = createService('CounterService', useCounterService)
 
-const MyServices = createServiceProvider(WindowService(), CounterService())
+const MyServices = combineServiceProvider(CounterService)
 
 function Counter() {
   const { count } = useMyCounter()
   return <>Count is {count}</>
 }
+
+function useMyMockCounterService() {
+  return { count: 0 }
+}
+
+const MockCountService = (props: any) => <CounterService implementation={useMyMockCounterService} {...props} />
 
 test('it should use the default services', () => {
   const Component = (
@@ -40,11 +33,73 @@ test('it should use the default services', () => {
   const container = renderer.create(Component)
 
   expect(container.toJSON()).toMatchInlineSnapshot(`
-    <button
-      className="btn"
-      onClick={[Function]}
-    >
-      1
-    </button>
+    Array [
+      "Count is ",
+      "12",
+    ]
   `)
 })
+
+test('it should use the default services', () => {
+  const Component = (
+    <MyServices>
+      <Counter />
+    </MyServices>
+  )
+
+  const container = renderer.create(Component)
+
+  expect(container.toJSON()).toMatchInlineSnapshot(`
+    Array [
+      "Count is ",
+      "12",
+    ]
+  `)
+})
+
+test('it should use a moc', () => {
+  const Component = (
+    <MockCountService>
+      <Counter />
+    </MockCountService>
+  )
+
+  const container = renderer.create(Component)
+
+  expect(container.toJSON()).toMatchInlineSnapshot(`
+    Array [
+      "Count is ",
+      "0",
+    ]
+  `)
+})
+
+test('the mock should override a services', () => {
+  function useMyMockCounterService() {
+    return { count: 0 }
+  }
+
+  const MockCountService = (props: any) => <CounterService implementation={useMyMockCounterService} {...props} />
+
+  const Component = (
+    <MyServices>
+      <MockCountService>
+        <Counter />
+      </MockCountService>
+    </MyServices>
+  )
+
+  const container = renderer.create(Component)
+
+  expect(container.toJSON()).toMatchInlineSnapshot(`
+    Array [
+      "Count is ",
+      "0",
+    ]
+  `)
+})
+
+// test('it should throw if not wrapped in a service', () => {
+//   const fn = () => renderer.create(<Counter />)
+//   expect(fn).toThrow('nn')
+// })
