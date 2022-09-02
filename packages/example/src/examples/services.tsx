@@ -13,18 +13,6 @@ function useCounterService() {
   return { count }
 }
 
-//
-// Mock
-//
-function useMockCounterService() {
-  return {
-    count: 50
-  }
-}
-
-// const MyCounterContext = React.createContext(useCounterService)
-// const useMyCounterContext = () => useContext(MyCounterContext)
-
 const [CounterServiceProvider, useMyCounter] = createService('CounterService', useCounterService)
 
 function Counter() {
