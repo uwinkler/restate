@@ -27,7 +27,7 @@ export function createService<T>(
   function useService() {
     const ctx = React.useContext(Ctx)
     if (!ctx) {
-      throw new Error(`:This component should be wrapped by a ${name} service provider`)
+      throw new Error(`This component should be wrapped by a ${name} service provider`)
     }
     return ctx
   }
