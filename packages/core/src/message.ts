@@ -1,10 +1,10 @@
 export interface Message {
-  type: any
+  type: string
 }
 
 export enum RestateMessageType {
-  INIT = "@Restate/Core/Init",
-  UPDATE = "@Restate/Core/Update"
+  INIT = '@Restate/Core/Init',
+  UPDATE = '@Restate/Core/Update'
 }
 
 export interface RestateUpdateMessage extends Message {

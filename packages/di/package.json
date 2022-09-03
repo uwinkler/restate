@@ -1,5 +1,5 @@
 {
-  "name": "@restate/core",
+  "name": "@restate/di",
   "version": "0.12.0",
   "license": "MIT",
   "scripts": {
@@ -12,10 +12,8 @@
   "module": "./build/index.mjs",
   "typings": "./build/index.d.ts",
   "peerDependencies": {
-    "immer": ">=9.0.0",
     "react": ">=18.2.0",
-    "react-dom": ">=18.2.0",
-    "rxjs": "^7.5.6"
+    "react-dom": ">=18.2.0"
   },
   "repository": "https://github.com/uwinkler/restate",
   "homepage": "https://restate.netlify.com/",
@@ -32,24 +30,19 @@
     "access": "public"
   },
   "devDependencies": {
-    "@types/history": "5.0.0",
-    "@types/jest": "28.1.6",
-    "@types/lodash": "4.14.182",
+    "@types/jest": "^28.1.7",
     "@types/react": "18.0.17",
     "@types/react-dom": "18.0.6",
     "@types/react-test-renderer": "18.0.0",
     "babel-jest": "28.1.3",
     "esbuild": "^0.15.3",
-    "immer": "9.0.15",
     "jest": "28.1.3",
     "prettier": "^2.6.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-test-renderer": "18.2.0",
-    "rxjs": "^7.5.6",
-    "ts-jest": "^28.0.7",
-    "typescript": "^4.7.4",
-    "utility-types": "^3.7.0"
+    "ts-jest": "^28.0.8",
+    "typescript": "^4.7.4"
   },
   "gitHead": "6aab764342a0936d0de670849c6ab135dcdf265e",
   "dependencies": {}

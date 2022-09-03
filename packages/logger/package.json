@@ -5,20 +5,24 @@
   "scripts": {
     "clean": "rm -rf build",
     "start": "tsc --watch",
-    "build": "tsc",
+    "build": "esbuild --outdir=build --platform=node --format=cjs src/*.ts && esbuild --out-extension:.js=.mjs --outdir=build --platform=node --format=esm src/*.ts && tsc --emitDeclarationOnly",
     "test": "jest --silent"
   },
+  "module": "build/index.mjs",
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "publishConfig": {
     "access": "public"
   },
   "peerDependencies": {
-    "@restate/core": "^0.9.4"
+    "@restate/core": ">=0.12.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.18.10",
     "@restate/core": "^0.12.0",
     "@types/jest": "28.1.6",
+    "babel-jest": "^28.1.3",
+    "esbuild": "^0.15.3",
     "immer": "^9.0.15",
     "jest": "^28.1.3",
     "prettier": "^2.6.0",

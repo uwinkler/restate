@@ -31,6 +31,7 @@ export interface StatePackage<STATE, MESSAGES extends Message> {
 
 export class RxStore<STATE, MESSAGES extends Message> {
   protected _state$: BehaviorSubject<StatePackage<STATE, MESSAGES>>
+  protected _messageBus$: BehaviorSubject<MESSAGES>
 
   protected _options: RxStoreOptions
 
@@ -38,20 +39,23 @@ export class RxStore<STATE, MESSAGES extends Message> {
 
   constructor(
     stateSubject: BehaviorSubject<StatePackage<STATE, MESSAGES>>,
+    messageBus: BehaviorSubject<MESSAGES>,
     middleware: Middleware<STATE, MESSAGES>[],
     options: RxStoreOptions
   ) {
     this._state$ = stateSubject
-    this._options = options
+    this._messageBus$ = messageBus
     this._middleware = middleware
+    this._options = options
   }
 
   static of<S, M extends Message>(
     state: BehaviorSubject<StatePackage<S, M>>,
+    messageBus: BehaviorSubject<M>,
     middleware: Middleware<S, M>[],
     options: RxStoreOptions
   ) {
-    return new RxStore(state, middleware, options)
+    return new RxStore(state, messageBus, middleware, options)
   }
 
   private _next(
@@ -124,10 +128,7 @@ export class RxStore<STATE, MESSAGES extends Message> {
   }
 
   dispatch(message: MESSAGES) {
-    const stack = getStackTrace(this._options.dev)
-    setTimeout(() => {
-      this._next(() => {}, message, stack)
-    }, 0)
+    this._messageBus$.next(message)
   }
 
   get state(): Readonly<STATE> {
@@ -136,6 +137,10 @@ export class RxStore<STATE, MESSAGES extends Message> {
 
   get state$() {
     return this._state$.pipe(observeOn(queueScheduler))
+  }
+
+  get messageBus$() {
+    return this._messageBus$.pipe(observeOn(queueScheduler))
   }
 
   get options() {
