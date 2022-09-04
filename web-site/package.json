@@ -9,7 +9,7 @@
   },
   "scripts": {
     "start": "vitepress dev docs",
-    "build": "vitepress build docs ; cp docs/*.svg docs/.vitepress/dist/",
+    "build": "vitepress build docs ; cp docs/*.svg docs/.vitepress/dist/; mv ./docs/.vitepress/dist public",
     "serve": "vitepress serve docs"
   },
   "dependencies": {
