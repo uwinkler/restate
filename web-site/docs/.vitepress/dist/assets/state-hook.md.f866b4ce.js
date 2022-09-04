@@ -1,0 +1,1 @@
+import{_ as t,c as e,o}from"./app.4a34e433.js";const m=JSON.parse('{"title":"","description":"","frontmatter":{},"headers":[],"relativePath":"state-hook.md"}'),a={name:"state-hook.md"};function s(r,c,n,p,_,d){return o(),e("div")}const f=t(a,[["render",s]]);export{m as __pageData,f as default};

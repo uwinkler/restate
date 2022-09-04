@@ -1,0 +1,86 @@
+:root {
+  --vp-c-brand: #ff5722;
+  --vp-c-brand-light: #ff5722;
+
+  --vp-c-white: #ffffff;
+  --vp-c-white-soft: #f9f9f9;
+  --vp-c-white-mute: #f1f1f1;
+
+  --vp-c-black: #1a1a1a;
+  --vp-c-black-pure: #000000;
+  --vp-c-black-soft: #242424;
+  --vp-c-black-mute: #2f2f2f;
+
+  --vp-c-gray: #8e8e8e;
+  --vp-c-gray-light-1: #aeaeae;
+  --vp-c-gray-light-2: #c7c7c7;
+  --vp-c-gray-light-3: #d1d1d1;
+  --vp-c-gray-light-4: #e5e5e5;
+  --vp-c-gray-light-5: #f2f2f2;
+  --vp-c-gray-dark-1: #636363;
+  --vp-c-gray-dark-2: #484848;
+  --vp-c-gray-dark-3: #3a3a3a;
+  --vp-c-gray-dark-4: #282828;
+  --vp-c-gray-dark-5: #202020;
+
+  --vp-c-divider-light-1: rgba(60, 60, 60, 0.29);
+  --vp-c-divider-light-2: rgba(60, 60, 60, 0.12);
+  --vp-c-divider-dark-1: rgba(84, 84, 84, 0.65);
+  --vp-c-divider-dark-2: rgba(84, 84, 84, 0.48);
+
+  --vp-c-text-light-1: var(--vp-c-indigo);
+  --vp-c-text-light-2: rgba(60, 60, 60, 0.7);
+  --vp-c-text-light-3: rgba(60, 60, 60, 0.33);
+  --vp-c-text-light-4: rgba(60, 60, 60, 0.18);
+
+  --vp-c-text-dark-1: rgba(255, 255, 255, 0.87);
+  --vp-c-text-dark-2: rgba(235, 235, 235, 0.6);
+  --vp-c-text-dark-3: rgba(235, 235, 235, 0.38);
+  --vp-c-text-dark-4: rgba(235, 235, 235, 0.18);
+
+  --vp-c-indigo: #213547;
+  --vp-c-indigo-soft: #476582;
+  --vp-c-indigo-light: #aac8e4;
+  --vp-c-indigo-lighter: #c9def1;
+  --vp-c-indigo-dark: #1d2f3f;
+  --vp-c-indigo-darker: #14212e;
+
+  --vp-c-green: #a63918;
+  --vp-c-green-light: #ff6f43;
+  --vp-c-green-lighter: #ff9474;
+  --vp-c-green-dark: #d1461b;
+  --vp-c-green-darker: #af3d1b;
+  --vp-c-green-dimm-1: rgba(66, 184, 131, 0.5);
+  --vp-c-green-dimm-2: rgba(66, 184, 131, 0.25);
+  --vp-c-green-dimm-3: rgba(66, 184, 131, 0.05);
+
+  --vp-c-yellow: #ffc517;
+  --vp-c-yellow-light: #fcd253;
+  --vp-c-yellow-lighter: #fcfc7c;
+  --vp-c-yellow-dark: #e0ad15;
+  --vp-c-yellow-darker: #ad850e;
+  --vp-c-yellow-dimm-1: rgba(255, 197, 23, 0.5);
+  --vp-c-yellow-dimm-2: rgba(255, 197, 23, 0.25);
+  --vp-c-yellow-dimm-3: rgba(255, 197, 23, 0.05);
+
+  --vp-c-red: #ed3c50;
+  --vp-c-red-light: #f54e82;
+  --vp-c-red-lighter: #fd1d7c;
+  --vp-c-red-dark: #cd2d3f;
+  --vp-c-red-darker: #ab2131;
+  --vp-c-red-dimm-1: rgba(237, 60, 80, 0.5);
+  --vp-c-red-dimm-2: rgba(237, 60, 80, 0.25);
+  --vp-c-red-dimm-3: rgba(237, 60, 80, 0.05);
+}
+
+.VPFeature {
+  max-width: 400px;
+}
+
+.items {
+  flex-direction: row;
+}
+
+.item {
+  width: auto !important;
+}

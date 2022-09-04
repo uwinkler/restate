@@ -1,52 +1,19 @@
 {
-  "name": "restate-www",
-  "description": "restate documentation",
+  "name": "web-site",
   "version": "1.0.0",
-  "dependencies": {
-    "@babel/core": "^7.4.4",
-    "@fontsource/roboto": "^4.5.8",
-    "@fontsource/signika-negative": "^4.5.10",
-    "@material-ui/core": "^4.5.1",
-    "@material-ui/icons": "^4.5.1",
-    "@material-ui/styles": "^4.5.0",
-    "@mdx-js/mdx": "^1.0.19",
-    "@mdx-js/react": "^1.0.16",
-    "@reach/router": "^1.2.1",
-    "@restate/core": "^0.8.2",
-    "@types/classnames": "^2.2.7",
-    "@types/node": "^14.0.0",
-    "@types/prismjs": "^1.16.0",
-    "@types/react": "^18.0.17",
-    "@types/react-dom": "^ 18.0.6",
-    "@types/react-helmet": "^6.1.5",
-    "classnames": "^2.2.6",
-    "gatsby": "^4.20.0",
-    "gatsby-link": "^4.20.0",
-    "gatsby-plugin-google-analytics": "^4.20.0",
-    "gatsby-plugin-manifest": "^4.20.0",
-    "gatsby-plugin-mdx": "^3.20.0",
-    "gatsby-plugin-offline": "^5.20.0",
-    "gatsby-plugin-react-helmet": "^5.20.0",
-    "gatsby-plugin-sitemap": "^5.20.0",
-    "gatsby-plugin-typescript": "^4.20.0",
-    "gatsby-react-router-scroll": "^5.20.0",
-    "prismjs": "^1.28.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-helmet": "^6.1.0"
-  },
-  "keywords": [
-    "gatsby, typescript"
-  ],
+  "main": "index.js",
   "license": "MIT",
-  "main": "n/a",
-  "scripts": {
-    "build": "gatsby build",
-    "start": "gatsby develop",
-    "format": "prettier --parser typescript --trailing-comma es5 --no-semi --single-quote --write \"src/**/*.ts*\""
-  },
   "devDependencies": {
-    "prettier": "^1.8.2"
+    "vitepress": "v1.0.0-alpha.13",
+    "vue": "^3.2.38"
   },
-  "contributors": []
+  "scripts": {
+    "start": "vitepress dev docs",
+    "build": "vitepress build docs ; cp docs/*.svg docs/.vitepress/dist/",
+    "serve": "vitepress serve docs"
+  },
+  "dependencies": {
+    "@types/react": "^18.0.18",
+    "react": "^18.2.0"
+  }
 }
