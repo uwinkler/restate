@@ -7,7 +7,7 @@ hero:
   actions:
     - theme: brand
       text: Get Started
-      link: /introduction
+      link: /guide/introduction
     - theme: alt
       text: View on GitHub
       link: https://github.com/vuejs/vitepress
@@ -27,6 +27,9 @@ features:
   - icon: 🌀
     title: Typesafe
     details: Restate is written in Typescript and therefore fits very nicely in any Typescript project. No worries about missing types.
+  - icon: ✅
+    title: Validation
+    details: Restate provides tooling to validate your state. You never end up an invalidate state, you pick-up errors early, or catch errors at runtime. This will help you to build robust applications.
   - icon: 🚀
     title: Boost your productivity
     details: With restate's dependency injection you can start developing you components, view, and even pages in pure isolation. Hence, it becomes very easy with restate to develop your whole app in using tools like storybook.
