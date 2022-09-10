@@ -4,7 +4,12 @@ import { createDispatchHook } from './create-dispatch-hook'
 import { createNextHook } from './create-next-hook'
 import { createProvider } from './create-provider'
 import { createStateHook } from './create-state-hook'
-import { createStore, CreateStoreProps, RESTATE_STORE_DEFAULT_OPTIONS } from './create-store'
+import {
+  createStore,
+  CreateStoreProps,
+  RESTATE_STORE_DEFAULT_OPTIONS
+} from './create-store'
+import { createStoreHook } from './create-store-hook'
 import { Message } from './message'
 
 /**
@@ -29,11 +34,23 @@ export function create<STATE extends object, M extends Message>({
   const useAppState = createStateHook(AppStateContext)
   const useNext = createNextHook(AppStateContext)
   const useDispatch = createDispatchHook(AppStateContext)
+  const useStore = createStoreHook(AppStateContext)
   const createActions = createActionHooks(AppStateContext)
 
   const StateProvider = (props: { children: React.ReactNode }) => (
-    <AppStateContext.Provider value={store}>{props.children}</AppStateContext.Provider>
+    <AppStateContext.Provider value={store}>
+      {props.children}
+    </AppStateContext.Provider>
   )
 
-  return { AppStateContext, StateProvider, useAppState, useNext, useDispatch, createActions, store }
+  return {
+    AppStateContext,
+    StateProvider,
+    useAppState,
+    useNext,
+    useDispatch,
+    createActions,
+    store,
+    useStore
+  }
 }

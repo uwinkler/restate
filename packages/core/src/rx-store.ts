@@ -1,4 +1,4 @@
-import { createDraft, finishDraft, Patch, enableAllPlugins } from 'immer'
+import { createDraft, enableAllPlugins, finishDraft, Patch } from 'immer'
 import { BehaviorSubject, queueScheduler } from 'rxjs'
 import { observeOn } from 'rxjs/operators'
 import { Message, RESTATE_UPDATE_MESSAGE } from './message'
@@ -13,7 +13,9 @@ interface MiddlewareProps<S, MESSAGE extends Message> {
   message: MESSAGE
 }
 
-export type Middleware<S, MESSAGE extends Message> = (props: MiddlewareProps<S, MESSAGE>) => any
+export type Middleware<S, MESSAGE extends Message> = (
+  props: MiddlewareProps<S, MESSAGE>
+) => any
 
 export interface RxStoreOptions {
   freeze: boolean
@@ -77,7 +79,7 @@ export class RxStore<STATE, MESSAGES extends Message> {
       if (updateFunctionOrNextState instanceof Function) {
         const ret = updateFunctionOrNextState(draft)
         if (ret !== undefined) {
-          draft = createDraft(ret as unknown as STATE) as STATE
+          draft = createDraft(ret as any) as STATE
         }
       }
 
@@ -112,7 +114,10 @@ export class RxStore<STATE, MESSAGES extends Message> {
     }
   }
 
-  next(updateFunctionOrNextState: UpdateFunction<STATE> | STATE, message: MESSAGES = RESTATE_UPDATE_MESSAGE as any) {
+  next(
+    updateFunctionOrNextState: UpdateFunction<STATE> | STATE,
+    message: MESSAGES = RESTATE_UPDATE_MESSAGE as any
+  ) {
     const stack = getStackTrace(this._options.dev)
     this._next(updateFunctionOrNextState, message, stack)
   }

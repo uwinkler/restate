@@ -16,8 +16,7 @@ type CreateNextHookRet<S> = <T extends object>(
   type?: string
 ) => (updateFunction: UpdateFunction<T> | T) => void | T
 
-// not-scoped
-export function createNextHook<S extends object, M extends Message>(
+export function createBindHook<S extends object, M extends Message>(
   provider: AppStoreProvider<S, M>
 ): CreateNextHookRet<S>
 
@@ -31,7 +30,7 @@ export function createNextHook<
   scope: SelectorFunction<S, T>
 ): CreateNextHookRet<T>
 
-export function createNextHook<
+export function createBindHook<
   S extends object,
   T extends object,
   M extends Message
