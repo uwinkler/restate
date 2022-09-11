@@ -1,8 +1,8 @@
-import { BehaviorSubject } from "rxjs"
-import { distinctUntilChanged } from "rxjs/operators"
-import { RxStore } from "./rx-store"
-import { useContext, useEffect, useMemo, useState } from "react"
-import { Message } from "./message"
+import { useContext, useEffect, useMemo, useState } from 'react'
+import { BehaviorSubject } from 'rxjs'
+import { distinctUntilChanged } from 'rxjs/operators'
+import { Message } from './message'
+import { RxStore } from './rx-store'
 
 //
 // Types
@@ -16,9 +16,9 @@ export interface StateHookProps<S> {
   compare?: (previous: S, next: S) => boolean
 }
 
-const identitySelectorFunction: SelectorFunction<any, any> = state => state
+const identitySelectorFunction: SelectorFunction<any, any> = (state) => state
 
-export type UseStoreHook<S> = <T>(
+export type UseSelectorHook<S> = <T>(
   selectorFunction: SelectorFunction<S, T>,
   props?: StateHookProps<T>
 ) => T
@@ -26,19 +26,19 @@ export type UseStoreHook<S> = <T>(
 //
 // createStateHook definition
 //
-export function createStateHook<S, M extends Message>(
+export function createSelectorHook<S, M extends Message>(
   context: React.Context<RxStore<S, M>>
-): UseStoreHook<S>
+): UseSelectorHook<S>
 
-export function createStateHook<S, SUB_STATE, M extends Message>(
+export function createSelectorHook<S, SUB_STATE, M extends Message>(
   context: React.Context<RxStore<S, M>>,
   outerSelector: SelectorFunction<S, SUB_STATE>
-): UseStoreHook<SUB_STATE>
+): UseSelectorHook<SUB_STATE>
 
 //
 // createStateHook implementation
 //
-export function createStateHook<S, SUB_STATE, MESSAGES extends Message>(
+export function createSelectorHook<S, SUB_STATE, MESSAGES extends Message>(
   context: RxStoreContext<S, MESSAGES>,
   outerSelector: SelectorFunction<S, SUB_STATE> = identitySelectorFunction
 ) {
@@ -68,7 +68,7 @@ export function createStateHook<S, SUB_STATE, MESSAGES extends Message>(
     }, [state])
 
     useEffect(() => {
-      const stateSub = _store.state$.subscribe(nextStateValue => {
+      const stateSub = _store.state$.subscribe((nextStateValue) => {
         const nextValue = getSelectedValue(
           nextStateValue.state,
           outerSelector,
@@ -79,7 +79,7 @@ export function createStateHook<S, SUB_STATE, MESSAGES extends Message>(
 
       const outputSub = output$
         .pipe(distinctUntilChanged(_props.compare))
-        .subscribe(nextStateValue => setValue(nextStateValue))
+        .subscribe((nextStateValue) => setValue(nextStateValue))
 
       return function cleanup() {
         stateSub.unsubscribe()

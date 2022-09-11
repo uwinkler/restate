@@ -1,11 +1,11 @@
 import React from 'react'
 import './App.css'
-import { HelloCounter } from './examples/services'
+import { HelloSelectorAndNext } from './examples/hello-next'
 
 function App() {
   return (
     <React.StrictMode>
-      <HelloCounter />
+      <HelloSelectorAndNext />
     </React.StrictMode>
   )
 }

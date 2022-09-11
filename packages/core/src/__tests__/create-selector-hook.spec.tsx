@@ -1,7 +1,7 @@
 import React from 'react'
 import renderer, { act } from 'react-test-renderer'
 import { createProvider } from '../create-provider'
-import { createStateHook } from '../create-state-hook'
+import { createSelectorHook } from '../create-selector-hook'
 import { createNextHook } from '../create-next-hook'
 
 import { createStore } from '../create-store'
@@ -10,7 +10,7 @@ it('should create default hook', () => {
   const state = { value: 1 }
   const store = createStore({ state })
   const AppStoreProvider = createProvider(store)
-  const useAppStore = createStateHook(AppStoreProvider)
+  const useAppStore = createSelectorHook(AppStoreProvider)
 
   const TestComponent: React.FC = () => {
     const x = useAppStore((s) => s)
@@ -33,7 +33,7 @@ it('sub-state 1', () => {
   const state = { value: 1 }
   const store = createStore({ state })
   const AppStoreProvider = createProvider(store)
-  const useAppStore = createStateHook(AppStoreProvider)
+  const useAppStore = createSelectorHook(AppStoreProvider)
 
   const TestComponent = () => {
     const value = useAppStore((s) => s.value)
@@ -56,7 +56,10 @@ it('sub-state 2', () => {
   const state = { subState: { value: 1 } }
   const store = createStore({ state })
   const AppStoreProvider = createProvider(store)
-  const useAppStoreSubState = createStateHook(AppStoreProvider, (s) => s.subState)
+  const useAppStoreSubState = createSelectorHook(
+    AppStoreProvider,
+    (s) => s.subState
+  )
 
   const TestComponent = () => {
     const subState = useAppStoreSubState((s) => s)
@@ -79,7 +82,10 @@ it('sub-state 1+2', () => {
   const state = { subState: { value: 1 } }
   const store = createStore({ state })
   const AppStoreProvider = createProvider(store)
-  const useAppStoreSubState = createStateHook(AppStoreProvider, (s) => s.subState)
+  const useAppStoreSubState = createSelectorHook(
+    AppStoreProvider,
+    (s) => s.subState
+  )
 
   const TestComponent: React.FC = () => {
     const value = useAppStoreSubState((s) => s.value)
@@ -105,7 +111,10 @@ it('should do some computations', () => {
   const state = { subState: { value: 1 } }
   const store = createStore({ state })
   const AppStoreProvider = createProvider(store)
-  const useAppStoreSubState = createStateHook(AppStoreProvider, (s) => s.subState)
+  const useAppStoreSubState = createSelectorHook(
+    AppStoreProvider,
+    (s) => s.subState
+  )
 
   const TestComponent: React.FC = () => {
     const value = useAppStoreSubState((s) => s.value + 1)
@@ -131,7 +140,7 @@ it('should call the selector two time (initialize)', () => {
   const state = { subState: { value: 1 } }
   const store = createStore({ state })
   const AppStoreProvider = createProvider(store)
-  const useAppState = createStateHook(AppStoreProvider, (s) => s)
+  const useAppState = createSelectorHook(AppStoreProvider, (s) => s)
 
   const selector = jest.fn((s) => s.subState.value)
 
@@ -156,7 +165,7 @@ it('should unmount observables', () => {
   const state = { subState: { value: 1 } }
   const store = createStore({ state })
   const AppStoreProvider = createProvider(store)
-  const useAppState = createStateHook(AppStoreProvider, (s) => s)
+  const useAppState = createSelectorHook(AppStoreProvider, (s) => s)
 
   const selector = jest.fn((s) => s.subState.value)
 
@@ -191,7 +200,7 @@ it('should call the selector three times in total time if the state updates', ()
   const state = { subState: { value: 1 } }
   const store = createStore({ state })
   const AppStoreProvider = createProvider(store)
-  const useAppState = createStateHook(AppStoreProvider, (s) => s)
+  const useAppState = createSelectorHook(AppStoreProvider, (s) => s)
 
   const selector = jest.fn((s) => s.subState.value)
 
@@ -220,7 +229,7 @@ it('should be able to use some outer values to do some computations', (done) => 
   const state = { value: 1 }
   const store = createStore({ state })
   const AppStoreProvider = createProvider(store)
-  const useAppState = createStateHook(AppStoreProvider, (s) => s)
+  const useAppState = createSelectorHook(AppStoreProvider, (s) => s)
 
   const TestComponent: React.FC = () => {
     const [add, setAdd] = React.useState(1)
@@ -272,7 +281,7 @@ it('should be able to use multiple app state hooks', (done) => {
   const state = { value: 1 }
   const store = createStore({ state })
   const AppStoreProvider = createProvider(store)
-  const useAppState = createStateHook(AppStoreProvider, (s) => s)
+  const useAppState = createSelectorHook(AppStoreProvider, (s) => s)
 
   const TestComponent: React.FC = () => {
     const [add, setAdd] = React.useState(1)
@@ -330,7 +339,7 @@ it('should be able to use a custom comparator', (done) => {
   const state = { todos: [1] }
   const store = createStore({ state })
   const AppStoreProvider = createProvider(store)
-  const useAppState = createStateHook(AppStoreProvider)
+  const useAppState = createSelectorHook(AppStoreProvider)
   const useNextAppState = createNextHook(AppStoreProvider)
 
   const TestComponent: React.FC = () => {
@@ -341,7 +350,10 @@ it('should be able to use a custom comparator', (done) => {
     return (
       <div>
         <div>{JSON.stringify(todos)}</div>
-        <button className="btn" onClick={() => nextTodos((todos) => todos.push(2))}>
+        <button
+          className="btn"
+          onClick={() => nextTodos((todos) => todos.push(2))}
+        >
           1
         </button>
       </div>

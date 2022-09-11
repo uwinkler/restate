@@ -1,25 +1,14 @@
 import { create } from '@restate/core'
 
-// We create our app state and state hooks like this:
-const { useAppState, useNext } = create({
+// We create our app state and a hook to access the state:
+const { useAppState } = create({
   state: {
     name: 'restate'
   }
 })
 
 export function HelloWorld() {
-  // Select the `name` property
-  // from the current state
-  const name = useAppState((state) => state.name)
-
-  // The `next` function helps to
-  // produce the next state.
-  const next = useNext((state) => state)
-
-  const setName = (name: string) =>
-    next((state) => {
-      state.name = name
-    })
+  const [name, setName] = useAppState((state) => state.name)
 
   return (
     <>

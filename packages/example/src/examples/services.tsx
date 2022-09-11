@@ -1,19 +1,19 @@
-import { createService, combineServiceProvider } from '@restate/di'
-import React, { useContext } from 'react'
+import { createService } from '@restate/di'
+import React from 'react'
 
-// Counter
-function useCounterService() {
-  const [count, setCount] = React.useState(0)
+const [CounterServiceProvider, useMyCounter] = createService(
+  'CounterService',
+  () => {
+    const [count, setCount] = React.useState(0)
 
-  React.useEffect(() => {
-    const counterInterval = setInterval(() => setCount(count + 1), 1000)
-    return () => clearInterval(counterInterval)
-  }, [count, setCount])
+    React.useEffect(() => {
+      const counterInterval = setInterval(() => setCount(count + 1), 1000)
+      return () => clearInterval(counterInterval)
+    }, [count, setCount])
 
-  return { count }
-}
-
-const [CounterServiceProvider, useMyCounter] = createService('CounterService', useCounterService)
+    return { count }
+  }
+)
 
 function Counter() {
   const { count } = useMyCounter()

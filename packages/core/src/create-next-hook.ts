@@ -1,17 +1,18 @@
-import { RxStore } from './rx-store'
+import { current } from 'immer'
 import { useContext } from 'react'
 import { Message, RESTATE_UPDATE_MESSAGE } from './message'
-import { isFunction } from 'lodash'
+import { RxStore } from './rx-store'
+import { isFunction } from './utils'
 
 type AppStoreProvider<S, M extends Message> = React.Context<RxStore<S, M>>
-type SelectorFunction<S, T extends object> = (state: S) => T
+type SelectorFunction<S, T> = (state: S) => T
 type UpdateFunction<S> = (state: S) => void
 
 //
 // useNextHook Definitions
 //
 
-type CreateNextHookRet<S> = <T extends object>(
+type CreateNextHookRet<S> = <T>(
   selector: SelectorFunction<S, T>,
   type?: string
 ) => (updateFunction: UpdateFunction<T> | T) => void | T
@@ -22,26 +23,52 @@ export function createNextHook<S extends object, M extends Message>(
 ): CreateNextHookRet<S>
 
 // scoped
-export function createNextHook<
-  S extends object,
-  T extends object,
-  M extends Message
->(
+export function createNextHook<S extends object, T, M extends Message>(
   provider: AppStoreProvider<S, M>,
   scope: SelectorFunction<S, T>
 ): CreateNextHookRet<T>
 
-export function createNextHook<
-  S extends object,
-  T extends object,
-  M extends Message
->(provider: AppStoreProvider<S, M>, scope?: SelectorFunction<S, T>) {
-  function useNextHook<T extends object>(
+export function createNextHook<S extends object, T, M extends Message>(
+  provider: AppStoreProvider<S, M>,
+  scope?: SelectorFunction<S, T>
+) {
+  function useNextHook<T>(
     selector: SelectorFunction<S, T>,
     type?: string
   ): (updateFunction: UpdateFunction<T>) => void {
     const store = useContext(provider)
     const outerSelector = scope ? scope : (state: S) => state
+
+    function updateNestedState(rootState: any, nextValue: T) {
+      const r = current(rootState)
+      const path: string[] = []
+
+      //
+      const proxyAccess = {
+        get(target: any, key: any): any {
+          if (typeof target[key] === 'object' && target[key] !== null) {
+            path.push(key)
+            return new Proxy(target[key], proxyAccess)
+          } else {
+            path.push(key)
+            return target[key]
+          }
+        }
+      }
+      const proxy = new Proxy(r, proxyAccess)
+      selector(outerSelector(proxy as any) as any)
+
+      function walk(obj: any, p: string[]): void {
+        if (p.length > 1) {
+          const [head, ...tail] = p
+          return walk(obj[head], tail)
+        }
+        const key = p[0]
+        obj[key] = nextValue
+      }
+
+      walk(rootState, path)
+    }
 
     async function updateState(
       updateFunctionOrNextState: UpdateFunction<T> | T
@@ -52,8 +79,10 @@ export function createNextHook<
             const subState = selector(outerSelector(currentState as any) as any)
             return updateFunctionOrNextState(subState)
           } else {
-            const subState = selector(outerSelector(currentState as any) as any)
-            updateNestedState(currentState, subState, updateFunctionOrNextState)
+            updateNestedState(
+              outerSelector(currentState),
+              updateFunctionOrNextState
+            )
           }
         },
         { type: type || RESTATE_UPDATE_MESSAGE.type } as any
@@ -66,36 +95,15 @@ export function createNextHook<
   return useNextHook
 }
 
-//
-// TODO: this is slow in large object trees. What we could do is to get the path
-// to the nested state using immer and memorize the path so we address the
-// state directly
-//
-function updateNestedState(root: object, current: object, next: object) {
-  const entries = Object.entries(root)
-  const r = root as any
-
-  for (let e of entries) {
-    const [key, obj] = e
-    if (obj === current) {
-      r[key] = next
-      return true
+const proxyAccess = {
+  get(target: any, key: any): any {
+    console.log('get:', target, key)
+    if (typeof target[key] === 'object' && target[key] !== null) {
+      console.log('recursive ->', key)
+      return new Proxy(target[key], proxyAccess)
+    } else {
+      console.log('target prop key', key)
+      return target[key]
     }
   }
-
-  for (let e of entries) {
-    const [_, obj] = e
-    if (hasChildren(obj)) {
-      const found = updateNestedState(obj, current, next)
-      if (found) {
-        return true
-      }
-    }
-  }
-
-  return false
-}
-
-function hasChildren(obj: any) {
-  return obj && typeof obj === 'object' && Object.entries.length > 0
 }
