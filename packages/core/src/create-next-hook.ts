@@ -43,7 +43,6 @@ export function createNextHook<S extends object, T, M extends Message>(
       const r = current(rootState)
       const path: string[] = []
 
-      //
       const proxyAccess = {
         get(target: any, key: any): any {
           if (typeof target[key] === 'object' && target[key] !== null) {
@@ -58,16 +57,18 @@ export function createNextHook<S extends object, T, M extends Message>(
       const proxy = new Proxy(r, proxyAccess)
       selector(outerSelector(proxy as any) as any)
 
-      function walk(obj: any, p: string[]): void {
+      function mutateNestedObject(obj: any, p: string[]): void {
         if (p.length > 1) {
           const [head, ...tail] = p
-          return walk(obj[head], tail)
+          return mutateNestedObject(obj[head], tail)
         }
         const key = p[0]
         obj[key] = nextValue
       }
 
-      walk(rootState, path)
+      debugger
+      mutateNestedObject(rootState, path)
+      return rootState
     }
 
     async function updateState(
@@ -79,10 +80,8 @@ export function createNextHook<S extends object, T, M extends Message>(
             const subState = selector(outerSelector(currentState as any) as any)
             return updateFunctionOrNextState(subState)
           } else {
-            updateNestedState(
-              outerSelector(currentState),
-              updateFunctionOrNextState
-            )
+            const nextValue = updateFunctionOrNextState
+            return updateNestedState(outerSelector(currentState), nextValue)
           }
         },
         { type: type || RESTATE_UPDATE_MESSAGE.type } as any

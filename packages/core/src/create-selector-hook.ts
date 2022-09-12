@@ -78,7 +78,7 @@ export function createSelectorHook<S, SUB_STATE, MESSAGES extends Message>(
       })
 
       const outputSub = output$
-        .pipe(distinctUntilChanged(_props.compare))
+        .pipe(distinctUntilChanged())
         .subscribe((nextStateValue) => setValue(nextStateValue))
 
       return function cleanup() {

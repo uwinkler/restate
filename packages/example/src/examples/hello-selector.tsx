@@ -9,12 +9,19 @@ const { useAppState, useSelector, useNext } = create({
 
 export function HelloSelector() {
   const nameInUpperCase = useSelector((s) => s.name.toLocaleUpperCase())
-  const [name, setName] = useAppState((s) => s.name)
+  const [name, setName] = useAppState((s) => s)
 
   return (
     <>
       <h1>Hello {nameInUpperCase}!</h1>
-      <input value={name} onChange={(e) => setName(e.target.value)} />
+      <input
+        value={name.name}
+        onChange={(e) =>
+          setName((s) => {
+            s.name = e.target.value
+          })
+        }
+      />
     </>
   )
 }

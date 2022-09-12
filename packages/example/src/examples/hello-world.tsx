@@ -1,7 +1,7 @@
 import { create } from '@restate/core'
 
 // We create our app state and a hook to access the state:
-const { useAppState } = create({
+const { useAppState, useNext } = create({
   state: {
     name: 'restate'
   }
@@ -9,10 +9,10 @@ const { useAppState } = create({
 
 export function HelloWorld() {
   const [name, setName] = useAppState((state) => state.name)
+  // useNext((s) => s.name)
 
   return (
     <>
-      <h1>Hello {name}!</h1>
       <input value={name} onChange={(e) => setName(e.target.value)} />
     </>
   )

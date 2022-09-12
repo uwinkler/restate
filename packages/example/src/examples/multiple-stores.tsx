@@ -1,6 +1,7 @@
 import { create } from '@restate/core'
+import { connectDevTools } from '@restate/dev-tools'
 
-const { useAppState, useNext, useSelector } = create({
+const { useAppState, useSelector, store, useNext } = create({
   state: {
     user: {
       name: 'John',
@@ -8,6 +9,8 @@ const { useAppState, useNext, useSelector } = create({
     }
   }
 })
+
+connectDevTools(store)
 
 function Name() {
   // We select the user name from the state
@@ -22,25 +25,18 @@ function Age() {
 }
 
 function ChangeName() {
-  // We select the user's `name` property from the state to bind it to the input field
   const [name] = useAppState((state) => state.user.name)
-  const next = useNext((s) => s)
-
-  const handleChange = (nextName: string) =>
-    next((n) => {
-      debugger
-      n.user.name = nextName
-    })
-
-  return <input value={name} onChange={(e) => handleChange(e.target.value)} />
+  const next = useNext((s) => s.user.name)
+  return <input value={name} onChange={(e) => next(e.target.value)} />
 }
 
-export function HelloWorld() {
+export function MultipleStores() {
   return (
     <>
       <Name />
       <Age />
       <ChangeName />
+      {/* <Todos /> */}
     </>
   )
 }
