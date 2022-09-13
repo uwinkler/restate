@@ -8,10 +8,6 @@ type AppStoreProvider<S, M extends Message> = React.Context<RxStore<S, M>>
 type SelectorFunction<S, T> = (state: S) => T
 type UpdateFunction<S> = (state: S) => void
 
-//
-// useNextHook Definitions
-//
-
 type CreateNextHookRet<S> = <T>(
   selector: SelectorFunction<S, T>,
   type?: string
@@ -39,36 +35,10 @@ export function createNextHook<S extends object, T, M extends Message>(
     const store = useContext(provider)
     const outerSelector = scope ? scope : (state: S) => state
 
-    function updateNestedState(rootState: any, nextValue: T) {
-      const r = current(rootState)
-      const path: string[] = []
-
-      const proxyAccess = {
-        get(target: any, key: any): any {
-          if (typeof target[key] === 'object' && target[key] !== null) {
-            path.push(key)
-            return new Proxy(target[key], proxyAccess)
-          } else {
-            path.push(key)
-            return target[key]
-          }
-        }
-      }
-      const proxy = new Proxy(r, proxyAccess)
-      selector(outerSelector(proxy as any) as any)
-
-      function mutateNestedObject(obj: any, p: string[]): void {
-        if (p.length > 1) {
-          const [head, ...tail] = p
-          return mutateNestedObject(obj[head], tail)
-        }
-        const key = p[0]
-        obj[key] = nextValue
-      }
-
-      debugger
-      mutateNestedObject(rootState, path)
-      return rootState
+    function updateNestedState(subState: any, nextValue: T) {
+      const path = getPath({ subState, selector, outerSelector })
+      mutateNestedObject({ obj: subState, path, nextValue })
+      return subState
     }
 
     async function updateState(
@@ -105,4 +75,55 @@ const proxyAccess = {
       return target[key]
     }
   }
+}
+
+function getPath(props: {
+  subState: object
+  selector: (s: any) => any
+  outerSelector: (s: any) => any
+}) {
+  const { subState, selector, outerSelector } = props
+  // we have to "unfreeze" the frozen state, if frozen
+  const unfrozenSupState = Object.isFrozen(subState)
+    ? Object.assign({}, current(subState))
+    : subState
+  const path: string[] = []
+
+  const proxyAccess = {
+    get(target: any, key: any): any {
+      if (typeof target[key] === 'object' && target[key] !== null) {
+        path.push(key)
+        return new Proxy(target[key], proxyAccess)
+      } else {
+        path.push(key)
+        return target[key]
+      }
+    }
+  }
+
+  const proxy = new Proxy(unfrozenSupState, proxyAccess)
+
+  // We "read" the value (get) recursively using proxyAccess
+  // in order to determine the path
+  selector(outerSelector(proxy as any) as any)
+
+  return path
+}
+
+function mutateNestedObject(props: {
+  obj: any
+  path: string[]
+  nextValue: any
+}): void {
+  const { obj, path, nextValue } = props
+  if (path.length > 1) {
+    const [head, ...tail] = path
+    return mutateNestedObject({
+      obj: obj[head],
+      path: tail,
+      nextValue
+    })
+  }
+  const key = path[0]
+  obj[key] = nextValue
 }

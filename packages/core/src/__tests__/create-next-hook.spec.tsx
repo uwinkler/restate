@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import renderer, { act } from 'react-test-renderer'
 import { createNextHook } from '../create-next-hook'
 import { createProvider } from '../create-provider'
@@ -178,7 +178,7 @@ it('should update a scoped state', () => {
   `)
 })
 
-it('should update using an object instead of an function', () => {
+it('should update using an object/value instead of an function', () => {
   const state = { subState: { value: 1 } }
   const store = createStore({ state })
   const AppStoreProvider = createProvider(store)
@@ -186,11 +186,17 @@ it('should update using an object instead of an function', () => {
   const useNextAppState = createNextHook(AppStoreProvider, (state) => state)
 
   const TestComponent = () => {
+    const [counter, setCounter] = useState(0)
     const x = useAppState((s) => s)
     const nextAppState = useNextAppState((s) => s.subState.value)
 
+    const onClick = () => {
+      nextAppState(10 + counter)
+      setCounter(counter + 1)
+    }
+
     return (
-      <button className="btn" onClick={() => nextAppState(10)}>
+      <button className="btn" onClick={onClick}>
         {x.subState.value}
       </button>
     )
@@ -226,6 +232,24 @@ it('should update using an object instead of an function', () => {
       onClick={[Function]}
     >
       10
+    </button>
+  `)
+
+  // Now the state has been frozen by immer. So
+  // we change it again, to check if it works
+  // if a frozen object as well
+  act(() => {
+    container.root.findByType('button').props.onClick()
+    container.update(App)
+  })
+
+  expect(store.state.subState.value).toEqual(11)
+  expect(container.toJSON()).toMatchInlineSnapshot(`
+    <button
+      className="btn"
+      onClick={[Function]}
+    >
+      11
     </button>
   `)
 })

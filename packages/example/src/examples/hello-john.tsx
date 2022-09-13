@@ -28,7 +28,6 @@ function ChangeName() {
 
   const handleChange = (nextName: string) =>
     next((n) => {
-      debugger
       n.user.name = nextName
     })
 

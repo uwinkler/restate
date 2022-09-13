@@ -110,6 +110,7 @@ export class RxStore<STATE, MESSAGES extends Message> {
 
       return nextStatePackage
     } catch (e) {
+      console.error(e)
       return { state: this._state$.value, message }
     }
   }
