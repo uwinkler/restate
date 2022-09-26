@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "lerna": "^5.3.0"
+    "lerna": "^5.5.2"
   },
   "scripts": {
     "publish": "lerna run clean && lerna run build && lerna run test && lerna publish",
