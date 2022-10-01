@@ -1,5 +1,4 @@
 import { create } from '@restate/core'
-import { connectDevTools } from '@restate/dev-tools'
 
 const { useAppState, useSelector, store, useNext } = create({
   state: {
@@ -9,8 +8,6 @@ const { useAppState, useSelector, store, useNext } = create({
     }
   }
 })
-
-connectDevTools(store)
 
 function Name() {
   // We select the user name from the state

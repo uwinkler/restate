@@ -1,6 +1,5 @@
 import { create } from '@restate/core'
-import { connectDevTools } from '@restate/dev-tools'
-import { QueryClient, QueryClientProvider, useQuery, useQueryClient, UseQueryResult } from '@tanstack/react-query'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
 // We create our app state and hooks like this:
 
@@ -25,8 +24,6 @@ const { useAppState, useNext, store, createActions } = create<State, any>({
     }
   }
 })
-
-connectDevTools(store)
 
 function getTodos() {
   return Promise.resolve([1, 2, 3])

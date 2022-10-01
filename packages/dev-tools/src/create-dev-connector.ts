@@ -4,7 +4,7 @@ import { BehaviorSubject, Observable, Subscription } from 'rxjs'
 
 type Disconnect = () => void
 type Service = {
-  ctxObservable: Observable<any>
+  ctxObservable$: Observable<any>
   displayName: string
   (): any
 }
@@ -13,9 +13,7 @@ export function createDevConnector(devToolName: string) {
   const devToolsExtension = (window as any).__REDUX_DEVTOOLS_EXTENSION__
 
   if (!devToolsExtension) {
-    console.warn(
-      'DevTools are not installed. For information see https://react-rx-state.netlify.com/dev-tools'
-    )
+    console.warn('DevTools are not installed.')
 
     // mock function
     return {
@@ -50,20 +48,20 @@ export function createDevConnector(devToolName: string) {
         s[name] = pack.state
       })
       state$.next(nextState)
-      const { state, message, patches } = pack
+      const { message } = pack
       if (message.type.indexOf('@RX_DEV_TOOLS') === -1) {
         devTools.send(
           {
-            source: name + '@state$',
-            msg: { type: message.type, payload: { patches } }
+            type: name + '@state$',
+            payload: pack
           },
-          state
+          state$.value
         )
       }
     })
 
     const messageBusSub = store.messageBus$.subscribe((msg) => {
-      devTools.send({ source: name + '@messageBus$', msg }, state$.value)
+      devTools.send({ type: name + '@messageBus$', payload: msg }, state$.value)
     })
 
     subs.push(storeSub, messageBusSub)
@@ -75,16 +73,17 @@ export function createDevConnector(devToolName: string) {
   }
 
   function connectService(mount: string, service: Service) {
-    const sub = service.ctxObservable.subscribe((msg) => {
+    const sub = service.ctxObservable$.subscribe((msg) => {
       const nextState = produce(state$.value, (s: any) => {
         s[mount] = msg
       })
+
       state$.next(nextState)
 
       devTools.send(
         {
-          source: service.displayName,
-          msg
+          type: service.displayName,
+          payload: msg
         },
         nextState
       )
@@ -103,8 +102,8 @@ export function createDevConnector(devToolName: string) {
 
       devTools.send(
         {
-          source: mount,
-          msg
+          type: mount,
+          payload: msg
         },
         nextState
       )
@@ -139,7 +138,7 @@ export function createDevConnector(devToolName: string) {
   return { connectDev, disconnect }
 }
 
-function isRxStore<S, M>(obj: any): obj is RxStore<S, M> {
+function isRxStore(obj: any): obj is RxStore<any, any> {
   return obj && obj.state$ !== undefined
 }
 

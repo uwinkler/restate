@@ -1,5 +1,6 @@
 import { createService } from '@restate/di'
 import React from 'react'
+import { connectDev } from '../dev'
 
 const [CounterServiceProvider, useMyCounter] = createService(
   'CounterService',
@@ -15,6 +16,8 @@ const [CounterServiceProvider, useMyCounter] = createService(
   }
 )
 
+connectDev('counter', CounterServiceProvider as any)
+
 function Counter() {
   const { count } = useMyCounter()
 
@@ -24,8 +27,10 @@ function Counter() {
 
 export function HelloCounter() {
   return (
-    <CounterServiceProvider>
-      <Counter />
-    </CounterServiceProvider>
+    <div>
+      <CounterServiceProvider>
+        <Counter />
+      </CounterServiceProvider>
+    </div>
   )
 }

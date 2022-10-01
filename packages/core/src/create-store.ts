@@ -1,9 +1,10 @@
-import { enableAllPlugins, setAutoFreeze } from 'immer'
+import { enableAllPlugins, setAutoFreeze, enablePatches } from 'immer'
 import { BehaviorSubject } from 'rxjs'
 import { Message, RESTATE_INIT_MESSAGE } from './message'
 import { Middleware, RxStore, RxStoreOptions, StatePackage } from './rx-store'
 
 enableAllPlugins()
+enablePatches()
 
 export type CreateStoreProps<StateType, M extends Message> = {
   state: StateType
@@ -31,7 +32,9 @@ export function createStore<STATE, M extends Message>({
   }
 
   const state$ = new BehaviorSubject(initialStatePackage)
-  const messageBus$ = new BehaviorSubject<M>({ type: '@Restate/MessageBus/Init' } as any)
+  const messageBus$ = new BehaviorSubject<M>({
+    type: '@Restate/MessageBus/Init'
+  } as any)
 
   return RxStore.of(state$, messageBus$, middleware, opts)
 }

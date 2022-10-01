@@ -579,11 +579,6 @@
     "@jridgewell/resolve-uri" "^3.0.3"
     "@jridgewell/sourcemap-codec" "^1.4.10"
 
-"@restate/core@^0.12.0":
-  version "0.12.0"
-  resolved "https://registry.yarnpkg.com/@restate/core/-/core-0.12.0.tgz#fdacdca113c21777353fe7a962b5b4b94a31f06e"
-  integrity sha512-LBQS839E85xoch3M8TLB21XvtOfqd81SNzIzjQcsK3V9FmO3Opw+wDHvnv00OuyPlWsSdLDBdAUmdRzqoPS0jA==
-
 "@sinclair/typebox@^0.24.1":
   version "0.24.27"
   resolved "https://registry.yarnpkg.com/@sinclair/typebox/-/typebox-0.24.27.tgz#d55643516a1546174e10da681a8aaa81e757452d"
