@@ -8,12 +8,15 @@ function useCounterService() {
   const count = 12
   return { count }
 }
-const [CounterService, useMyCounter] = createService('CounterService', useCounterService)
+const { CounterService, useCounter } = createService(
+  'Counter',
+  useCounterService
+)
 
 const MyServices = combineServiceProvider(CounterService)
 
 function Counter() {
-  const { count } = useMyCounter()
+  const { count } = useCounter()
   return <>Count is {count}</>
 }
 
@@ -21,7 +24,9 @@ function useMyMockCounterService() {
   return { count: 0 }
 }
 
-const MockCountService = (props: any) => <CounterService implementation={useMyMockCounterService} {...props} />
+const MockCountService = (props: any) => (
+  <CounterService implementation={useMyMockCounterService} {...props} />
+)
 
 test('it should use the default services', () => {
   const Component = (
@@ -79,7 +84,9 @@ test('the mock should override a services', () => {
     return { count: 0 }
   }
 
-  const MockCountService = (props: any) => <CounterService implementation={useMyMockCounterService} {...props} />
+  const MockCountService = (props: any) => (
+    <CounterService implementation={useMyMockCounterService} {...props} />
+  )
 
   const Component = (
     <MyServices>

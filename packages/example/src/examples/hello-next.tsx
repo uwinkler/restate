@@ -1,16 +1,12 @@
 import { create } from '@restate/core'
 
-import { connectDev } from '../dev'
-
 // We create our app state and a hook to access the state:
-const { useAppState, useSelector, store } = create({
+const { useAppState, useSelector } = create({
   state: {
     name: 'restate',
     age: 32
   }
 })
-
-connectDev('HelloNext', store)
 
 function Name() {
   const nameInUpperCase = useSelector((s) => s.name.toLocaleUpperCase())

@@ -1,36 +1,82 @@
-import { createService } from '@restate/di'
+import { createService, ServiceRegistry, useServiceRegistry } from '@restate/di'
 import React from 'react'
-import { connectDev } from '../dev'
 
-const [CounterServiceProvider, useMyCounter] = createService(
-  'CounterService',
-  () => {
-    const [count, setCount] = React.useState(0)
+const { CounterService, useCounterSelector } = createService('Counter', () => {
+  const [count, setCount] = React.useState(0)
 
-    React.useEffect(() => {
-      const counterInterval = setInterval(() => setCount(count + 1), 1000)
-      return () => clearInterval(counterInterval)
-    }, [count, setCount])
+  React.useEffect(() => {
+    const counterInterval = setInterval(() => setCount(count + 1), 1000)
+    return () => clearInterval(counterInterval)
+  }, [count])
 
-    return { count }
-  }
-)
-
-connectDev('counter', CounterServiceProvider as any)
+  return { count }
+})
 
 function Counter() {
-  const { count } = useMyCounter()
+  const count = useCounterSelector((s) => {
+    return s.count > 10 ? 'large' : s.count
+  })
 
-  const displayValue = count > 100 ? 'large' : count
-  return <>Count is {displayValue}</>
+  return <div>Count is {count}</div>
 }
 
 export function HelloCounter() {
   return (
     <div>
-      <CounterServiceProvider>
-        <Counter />
-      </CounterServiceProvider>
+      <ServiceRegistry>
+        <RestoreButton />
+        <CounterService>
+          <h1>Counter Service</h1>
+          <Counter />
+          <Deep />
+        </CounterService>
+        <Button />
+      </ServiceRegistry>
+    </div>
+  )
+}
+
+function Deep() {
+  return (
+    <div>
+      <Hello />
+      <Counter />
+    </div>
+  )
+}
+
+function Hello() {
+  return (
+    <div style={{ margin: 20 }}>
+      <button>Hello</button>
+    </div>
+  )
+}
+
+function Button() {
+  const serviceRegistry = useServiceRegistry()
+
+  const handleClick = () => {
+    serviceRegistry.set('Counter', () => ({
+      count: 101
+    }))
+  }
+
+  return (
+    <div>
+      <button onClick={handleClick}>Set to 100</button>
+    </div>
+  )
+}
+
+function RestoreButton() {
+  const serviceRegistry = useServiceRegistry()
+  const handleClick = () => {
+    serviceRegistry.restoreDefault('Counter')
+  }
+  return (
+    <div>
+      <button onClick={handleClick}>Restore</button>
     </div>
   )
 }

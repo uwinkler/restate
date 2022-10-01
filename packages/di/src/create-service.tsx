@@ -1,35 +1,54 @@
 import React from 'react'
 import { BehaviorSubject, Observable } from 'rxjs'
 import { distinctUntilChanged } from 'rxjs/operators'
+import { useServiceRegistry } from './service-registry'
 
 export type ServiceObservable<T> = Observable<T | null>
 
 export type Service<T> = (
   mock?: () => T
 ) => (props: { children?: React.ReactNode }) => JSX.Element
+
 export type ServiceHook<T> = () => T
+
 export type ServiceProvider<T> = (props: {
   children?: React.ReactNode
   implementation?: () => T
 }) => JSX.Element
 
-export function createService<T>(
-  name: string,
-  service: () => T
-): [
-  // The ServiceProvider
-  ServiceProvider<T>,
-  // The return type of the created useContext hook
-  ServiceHook<T>,
-  // The observable context
-  ServiceObservable<T>,
-  // The react context
-  React.Context<T>
-] {
-  const Ctx = React.createContext<T>(null as unknown as T)
-  const ctxObserverInternal$ = new BehaviorSubject<T | null>(null)
+export type ServiceSelector<T> = <U>(
+  sel: (ctx: T) => U,
+  comparator?: (a: U, b: U) => boolean
+) => U
 
-  Ctx.displayName = name
+type CreateServiceProvider<Name extends string, T> = {
+  [key in `${Name}Service`]: ServiceProvider<T>
+}
+
+type CreateServiceHook<Name extends string, T> = {
+  [key in `use${Name}`]: ServiceHook<T>
+}
+
+type CreateServiceSelectorHook<Name extends string, T> = {
+  [key in `use${Name}Selector`]: ServiceSelector<T>
+}
+
+type CreateServiceContext<Name extends string, T> = {
+  [key in `${Name}Context`]: React.Context<T>
+}
+
+type CreateServiceReturn<N extends string, T> = CreateServiceProvider<N, T> &
+  CreateServiceHook<N, T> &
+  CreateServiceSelectorHook<N, T> &
+  CreateServiceContext<N, T>
+
+export function createService<T, N extends string>(
+  name: N,
+  service: () => T
+): CreateServiceReturn<N, T> {
+  const Ctx = React.createContext<T>(null as unknown as T)
+
+  Ctx.displayName = name as string
 
   function ServiceProvider(props: {
     children?: React.ReactNode
@@ -37,7 +56,21 @@ export function createService<T>(
     implementation?: () => T
   }) {
     const { implementation, children } = props
-    const ctx = implementation ? implementation() : service()
+    const registry = useServiceRegistry()
+
+    function getImplementation() {
+      if (implementation) {
+        return implementation
+      }
+      if (registry.has(name)) {
+        return registry.get(name) as () => T
+      } else {
+        registry.registerDefault(name, service)
+        return service
+      }
+    }
+
+    const ctx = getImplementation()()
 
     return <Ctx.Provider value={ctx}>{children}</Ctx.Provider>
   }
@@ -49,23 +82,35 @@ export function createService<T>(
         `This component should be wrapped by a ${name} service provider`
       )
     }
-    ctxObserverInternal$.next({ ctx } as any)
+    // ctxObserverInternal$.next({ ctx } as any)
     return ctx
   }
 
-  const ctxObservable$ = ctxObserverInternal$.pipe(
-    distinctUntilChanged(
-      (oldCtx, newCtx) => JSON.stringify(oldCtx) === JSON.stringify(newCtx)
-    )
-  )
+  function useSelector<U>(
+    selector: (ctx: T) => U,
+    comparator: (a: U, b: U) => boolean = (a, b) => a === b
+  ) {
+    const ctx = React.useContext(Ctx)
+    const [state, setState] = React.useState(selector(ctx))
+
+    React.useEffect(() => {
+      const nextValue = selector(ctx)
+      if (!comparator(state, nextValue)) {
+        setState(nextValue)
+      }
+    }, [ctx, comparator, selector])
+
+    return state
+  }
 
   // We attach the ctx observable to the ServiceProvider so
   // we can have an easy to use `connectDevTools(ServiceProvider)` API.
-  //
-  // We could use the exported ctxObservable$ but - you know ...
-  //
-  ServiceProvider.ctxObservable$ = ctxObservable$
   ServiceProvider.displayName = name
 
-  return [ServiceProvider, useService, ctxObservable$, Ctx]
+  return {
+    [`${name}Service`]: ServiceProvider,
+    [`use${name}`]: useService,
+    [`use${name}Selector`]: useSelector,
+    [`${name}Context`]: Ctx
+  } as CreateServiceReturn<N, T>
 }

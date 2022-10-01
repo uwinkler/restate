@@ -46,9 +46,8 @@ const useUserActions = createActions('UserActions', (store) => {
 })
 
 export function HelloActions() {
-  const name = useAppState((s) => s.user.name)
-  const age = useAppState((s) => s.user.age)
-  const { setName, setAge } = useUserActions()
+  const [name, setName] = useAppState((s) => s.user.name)
+  const [age, setAge] = useAppState((s) => s.user.age)
 
   return (
     <QueryClientProvider client={queryClient}>
