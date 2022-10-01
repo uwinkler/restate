@@ -1,13 +1,20 @@
 import { createService } from './create-service'
 
-const [ServiceRegistry, useServiceRegistry] = createService(
+const registry = new Map<string, Function>()
+
+export const [ServiceRegistry, useServiceRegistry] = createService(
   'RestateServiceRegistry',
   () => {
-    function registerImplementation(props: {
-      implName: 'string'
-      impl: () => any
-    }) {}
-
-    function useImplementation(serviceName, implName)
+    return {
+      register: (name: string, service: Function) => {
+        registry.set(name, service)
+      },
+      get: (name: string) => {
+        return registry.get(name)
+      },
+      has: (name: string) => {
+        return registry.has(name)
+      }
+    }
   }
 )
