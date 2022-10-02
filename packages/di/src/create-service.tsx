@@ -1,7 +1,6 @@
 import React from 'react'
-import { BehaviorSubject, Observable } from 'rxjs'
-import { distinctUntilChanged } from 'rxjs/operators'
-import { useServiceRegistry } from './service-registry'
+import { Observable } from 'rxjs'
+import { useServiceRegistry } from './create-service-registry'
 
 export type ServiceObservable<T> = Observable<T | null>
 
@@ -46,7 +45,7 @@ export function createService<T, N extends string>(
   name: N,
   service: () => T
 ): CreateServiceReturn<N, T> {
-  const Ctx = React.createContext<T>(null as unknown as T)
+  const Ctx = React.createContext<() => T>(null as any)
 
   Ctx.displayName = name as string
 
@@ -58,47 +57,47 @@ export function createService<T, N extends string>(
     const { implementation, children } = props
     const registry = useServiceRegistry()
 
-    function getImplementation() {
+    function getHook() {
       if (implementation) {
         return implementation
       }
       if (registry.has(name)) {
-        return registry.get(name) as () => T
+        return registry.get(name)
       } else {
         registry.registerDefault(name, service)
         return service
       }
     }
 
-    const ctx = getImplementation()()
+    const ctx = getHook() as () => T
 
     return <Ctx.Provider value={ctx}>{children}</Ctx.Provider>
   }
 
   function useService() {
-    const ctx = React.useContext(Ctx)
-    if (!ctx) {
-      throw new Error(
-        `This component should be wrapped by a ${name} service provider`
-      )
+    const registry = useServiceRegistry()
+
+    if (!registry) {
+      throw new Error(`This component should be wrapped by a service registry`)
     }
-    // ctxObserverInternal$.next({ ctx } as any)
-    return ctx
+    if (!registry.has(name)) {
+      registry.registerDefault(name, service)
+    }
+    const serviceHook = registry.get(name) || service
+    return serviceHook()
   }
 
   function useSelector<U>(
     selector: (ctx: T) => U,
     comparator: (a: U, b: U) => boolean = (a, b) => a === b
   ) {
-    const ctx = React.useContext(Ctx)
-    const [state, setState] = React.useState(selector(ctx))
+    const ctx = useService()
+    const next = selector(ctx())
+    const [state, setState] = React.useState(next)
 
-    React.useEffect(() => {
-      const nextValue = selector(ctx)
-      if (!comparator(state, nextValue)) {
-        setState(nextValue)
-      }
-    }, [ctx, comparator, selector])
+    if (!comparator(state, next)) {
+      setState(next)
+    }
 
     return state
   }

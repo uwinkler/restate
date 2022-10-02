@@ -1,7 +1,7 @@
 import { createService, ServiceRegistry, useServiceRegistry } from '@restate/di'
 import React from 'react'
 
-const { CounterService, useCounterSelector } = createService('Counter', () => {
+const { useCounter } = createService('Counter', () => {
   const [count, setCount] = React.useState(0)
 
   React.useEffect(() => {
@@ -12,12 +12,25 @@ const { CounterService, useCounterSelector } = createService('Counter', () => {
   return { count }
 })
 
-function Counter() {
-  const count = useCounterSelector((s) => {
-    return s.count > 10 ? 'large' : s.count
-  })
+function useLarge() {
+  const c = useCounter()
+  const [state, setState] = React.useState(sel())
+  function sel() {
+    return c.count > 100 ? 'large' : c.count
+  }
 
-  return <div>Count is {count}</div>
+  React.useEffect(() => {
+    if (state != sel()) {
+      setState(sel())
+    }
+  }, [c.count])
+
+  return state
+}
+
+function Counter() {
+  const d = useLarge()
+  return <div>Count is {d}</div>
 }
 
 export function HelloCounter() {
@@ -25,11 +38,9 @@ export function HelloCounter() {
     <div>
       <ServiceRegistry>
         <RestoreButton />
-        <CounterService>
-          <h1>Counter Service</h1>
-          <Counter />
-          <Deep />
-        </CounterService>
+        <h1>Counter Service</h1>
+        <Counter />
+        <Deep />
         <Button />
       </ServiceRegistry>
     </div>
