@@ -1,5 +1,7 @@
 import React, { PropsWithChildren } from 'react'
 
+type ServiceMap = Record<string, Function>
+
 function createServiceRegistry(name: string) {
   type ServiceRegistryType = {
     set: (name: string, service: Function) => void
@@ -13,18 +15,13 @@ function createServiceRegistry(name: string) {
   const Ctx = React.createContext<ServiceRegistryType>(null as any)
 
   const ServiceRegistry = (props: PropsWithChildren) => {
-    type ServiceMap = Record<string, Function>
-
     const [serviceMap, setServiceMap] = React.useState<ServiceMap>({})
     const [key, setKey] = React.useState(0) // Using a key to force re-mounting,otherwise we get except
-
-    const weakMap = React.useRef<WeakMap<Function, Function>>(new WeakMap())
-
     const defaultMap = React.useRef<ServiceMap>({})
 
     const incrementKey = () => setKey(key + 1)
 
-    const value = {
+    const context = {
       set: (name: string, service: Function) => {
         setServiceMap({ ...serviceMap, [name]: service })
         incrementKey()
@@ -57,12 +54,13 @@ function createServiceRegistry(name: string) {
     }
 
     return (
-      <Ctx.Provider key={key} value={value}>
+      <Ctx.Provider key={key} value={context}>
         {props.children}
       </Ctx.Provider>
     )
   }
   ServiceRegistry.displayName = name
+
   const useServiceRegistry = () => React.useContext(Ctx)
   return { ServiceRegistry, useServiceRegistry }
 }

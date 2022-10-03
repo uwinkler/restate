@@ -1,7 +1,7 @@
 import { createService, ServiceRegistry, useServiceRegistry } from '@restate/di'
 import React from 'react'
 
-const { useCounter } = createService('Counter', () => {
+const { useCounter, CounterService } = createService('Counter', () => {
   const [count, setCount] = React.useState(0)
 
   React.useEffect(() => {
@@ -12,59 +12,39 @@ const { useCounter } = createService('Counter', () => {
   return { count }
 })
 
-function useLarge() {
-  const c = useCounter()
-  const [state, setState] = React.useState(sel())
-  function sel() {
-    return c.count > 100 ? 'large' : c.count
-  }
-
-  React.useEffect(() => {
-    if (state != sel()) {
-      setState(sel())
-    }
-  }, [c.count])
-
-  return state
-}
+const { useForm, FormService } = createService('Form', () => {
+  const [value, setValue] = React.useState('')
+  return { value, setValue }
+})
 
 function Counter() {
-  const d = useLarge()
-  return <div>Count is {d}</div>
+  const count = useCounter(({ count }) => (count > 5 ? 'large' : count))
+  return <div>Count is {count}</div>
+}
+
+function Form() {
+  const { value, setValue } = useForm()
+  return <input value={value} onChange={(e) => setValue(e.target.value)} />
 }
 
 export function HelloCounter() {
   return (
     <div>
       <ServiceRegistry>
-        <RestoreButton />
+        <CounterService />
+        <FormService />
         <h1>Counter Service</h1>
         <Counter />
-        <Deep />
-        <Button />
+        <hr />
+        <RestoreButton />
+        <Use100 />
+        <Form />
       </ServiceRegistry>
     </div>
   )
 }
 
-function Deep() {
-  return (
-    <div>
-      <Hello />
-      <Counter />
-    </div>
-  )
-}
-
-function Hello() {
-  return (
-    <div style={{ margin: 20 }}>
-      <button>Hello</button>
-    </div>
-  )
-}
-
-function Button() {
+function Use100() {
   const serviceRegistry = useServiceRegistry()
 
   const handleClick = () => {
