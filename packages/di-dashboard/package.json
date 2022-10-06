@@ -1,0 +1,55 @@
+{
+  "name": "@restate/di-dashboard",
+  "version": "0.12.0",
+  "license": "MIT",
+  "scripts": {
+    "clean": "rm -rf build",
+    "start": "tsc --watch",
+    "build": "esbuild --outdir=build --platform=node --format=cjs src/*.ts && esbuild --outdir=build --platform=node --format=cjs src/*.tsx && esbuild --out-extension:.js=.mjs --outdir=build --platform=node --format=esm src/*.ts && esbuild --out-extension:.js=.mjs --outdir=build --platform=node --format=esm src/*.tsx && tsc --emitDeclarationOnly",
+    "test": "jest"
+  },
+  "main": "./build/index.js",
+  "module": "./build/index.mjs",
+  "typings": "./build/index.d.ts",
+  "peerDependencies": {
+    "react": ">=18.2.0",
+    "react-dom": ">=18.2.0"
+  },
+  "repository": "https://github.com/uwinkler/restate",
+  "homepage": "https://restate.netlify.com/",
+  "keywords": [
+    "react",
+    "restate",
+    "state",
+    "manager",
+    "management",
+    "redux",
+    "store"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "devDependencies": {
+    "@restate/di": "^0.12.0",
+    "@types/jest": "^28.1.7",
+    "@types/react": "18.0.17",
+    "@types/react-dom": "18.0.6",
+    "@types/react-test-renderer": "18.0.0",
+    "babel-jest": "28.1.3",
+    "esbuild": "^0.15.3",
+    "jest": "28.1.3",
+    "prettier": "^2.6.0",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-test-renderer": "18.2.0",
+    "ts-jest": "^28.0.8",
+    "typescript": "^4.7.4"
+  },
+  "peerDependenciesMeta": {
+    "@restate/di": {
+      "optional": false
+    }
+  },
+  "gitHead": "6aab764342a0936d0de670849c6ab135dcdf265e",
+  "dependencies": {}
+}

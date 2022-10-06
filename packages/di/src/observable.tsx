@@ -1,6 +1,6 @@
 export type SubscriptionHandler = <T>(v: T) => void
 
-export type Observable = ReturnType<typeof createObservable>
+export type Observable<T> = ReturnType<typeof createObservable<T>>
 
 export function createObservable<T>() {
   let _subscriptions: SubscriptionHandler[] = []

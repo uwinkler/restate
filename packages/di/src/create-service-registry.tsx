@@ -1,23 +1,31 @@
 import React, { PropsWithChildren } from 'react'
+import { createObservable, Observable } from './Observable'
 
-type ServiceMap = Record<string, Function>
+type FunctionMap = Record<string, Function>
+type ObservableMap = Record<string, Observable<any>>
+
+type ServiceRegistryType = {
+  set: (name: string, service: Function) => void
+  get: (name: string) => Function
+  has: (name: string) => boolean
+  remove: (name: string) => void
+  restoreDefault: (name: string) => void
+  registerDefault: (name: string, service: Function) => void
+  registerObservable: (name: string, observable: Observable<any>) => void
+  getObservable: (name: string) => Observable<any>
+  getObservableMap: () => ObservableMap
+  getRegistryObservable: () => Observable<ObservableMap>
+}
 
 function createServiceRegistry(name: string) {
-  type ServiceRegistryType = {
-    set: (name: string, service: Function) => void
-    get: (name: string) => Function
-    has: (name: string) => boolean
-    remove: (name: string) => void
-    restoreDefault: (name: string) => void
-    registerDefault: (name: string, service: Function) => void
-  }
-
   const Ctx = React.createContext<ServiceRegistryType>(null as any)
 
   const ServiceRegistry = (props: PropsWithChildren) => {
-    const [serviceMap, setServiceMap] = React.useState<ServiceMap>({})
-    const [key, setKey] = React.useState(0) // Using a key to force re-mounting,otherwise we get except
-    const defaultMap = React.useRef<ServiceMap>({})
+    const [serviceMap, setServiceMap] = React.useState<FunctionMap>({})
+    const [key, setKey] = React.useState(0) // Using a key to force re-mounting, otherwise we get exceptions
+    const defaultMap = React.useRef<FunctionMap>({})
+    const observableMap = React.useRef<ObservableMap>({})
+    const registryObservable = React.useRef(createObservable<ObservableMap>())
 
     const incrementKey = () => setKey(key + 1)
 
@@ -50,6 +58,19 @@ function createServiceRegistry(name: string) {
       },
       registerDefault: (name: string, service: Function) => {
         defaultMap.current = { ...defaultMap.current, [name]: service }
+      },
+      registerObservable: (name: string, observable: Observable<any>) => {
+        observableMap.current = { ...observableMap.current, [name]: observable }
+        registryObservable.current.next(observableMap.current)
+      },
+      getObservable: (name: string) => {
+        return observableMap.current[name]
+      },
+      getObservableMap: () => {
+        return observableMap.current
+      },
+      getRegistryObservable: () => {
+        return registryObservable.current
       }
     }
 
@@ -59,6 +80,7 @@ function createServiceRegistry(name: string) {
       </Ctx.Provider>
     )
   }
+
   ServiceRegistry.displayName = name
 
   const useServiceRegistry = () => React.useContext(Ctx)

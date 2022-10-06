@@ -1,4 +1,5 @@
 import { createService, ServiceRegistry, useServiceRegistry } from '@restate/di'
+import { Dashboard } from '@restate/di-dashboard'
 import React from 'react'
 
 const { useCounter, CounterService } = createService('Counter', () => {
@@ -31,6 +32,7 @@ export function HelloCounter() {
   return (
     <div>
       <ServiceRegistry>
+        <Dashboard />
         <CounterService />
         <FormService />
         <h1>Counter Service</h1>

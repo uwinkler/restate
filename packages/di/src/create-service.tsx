@@ -1,9 +1,8 @@
 import React, { PropsWithChildren } from 'react'
-import { Observable } from 'rxjs'
 import { useServiceRegistry } from './create-service-registry'
-import { createObservable } from './Observable'
+import { createObservable, Observable } from './Observable'
 
-export type ServiceObservable<T> = Observable<T | null>
+export type ServiceObservable<T> = Observable<T>
 
 export type Service<T> = (
   mock?: () => T
@@ -53,6 +52,7 @@ export function createService<T, N extends string>(
 
     if (registry) {
       registry.registerDefault(name, service)
+      registry.registerObservable(name, observable)
     }
 
     const serviceToUse = props.implementation
