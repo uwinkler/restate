@@ -5,9 +5,7 @@ export function Dashboard() {
   const registry = useServiceRegistry()
 
   React.useEffect(() => {
-    registry.getRegistryObservable().subscribe((v) => {
-      console.log(v)
-    })
+    return registry.getRegistryObservable().subscribe((x) => console.log(x))
   }, [registry])
 
   return <h1>Dashboard</h1>

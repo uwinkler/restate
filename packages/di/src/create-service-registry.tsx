@@ -2,9 +2,12 @@ import React, { PropsWithChildren } from 'react'
 import { createObservable, Observable } from './Observable'
 
 type FunctionMap = Record<string, Function>
+
+// The observable map is a map of observables, where the key is the name of the service
+// and the value is the latest context result for that service
 type ObservableMap = Record<string, Observable<any>>
 
-type ServiceRegistryType = {
+export type ServiceRegistryType = {
   set: (name: string, service: Function) => void
   get: (name: string) => Function
   has: (name: string) => boolean

@@ -9,6 +9,7 @@ export function createObservable<T>() {
   function subscribe(sub: SubscriptionHandler) {
     if (!_subscriptions.includes(sub)) {
       _subscriptions.push(sub)
+      console.log('subscriptions', _subscriptions.length)
     }
 
     // Cleanup function
