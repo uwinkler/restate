@@ -8,42 +8,22 @@ function useCounterService() {
   const count = 12
   return { count }
 }
+
 const { CounterService, useCounter } = createService(
   'Counter',
   useCounterService
 )
-
-const MyServices = combineServiceProvider(CounterService)
 
 function Counter() {
   const { count } = useCounter()
   return <>Count is {count}</>
 }
 
+const MyServices = combineServiceProvider(CounterService)
+
 function useMyMockCounterService() {
   return { count: 0 }
 }
-
-const MockCountService = (props: any) => (
-  <CounterService implementation={useMyMockCounterService} {...props} />
-)
-
-test('it should use the default services', () => {
-  const Component = (
-    <MyServices>
-      <Counter />
-    </MyServices>
-  )
-
-  const container = renderer.create(Component)
-
-  expect(container.toJSON()).toMatchInlineSnapshot(`
-    Array [
-      "Count is ",
-      "12",
-    ]
-  `)
-})
 
 test('it should use the default services', () => {
   const Component = (
@@ -63,6 +43,10 @@ test('it should use the default services', () => {
 })
 
 test('it should use a moc', () => {
+  const MockCountService = (props: any) => (
+    <CounterService implementation={useMyMockCounterService} {...props} />
+  )
+
   const Component = (
     <MockCountService>
       <Counter />

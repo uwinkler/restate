@@ -1,5 +1,5 @@
 import React, { PropsWithChildren } from 'react'
-import { createObservable, Observable } from './Observable'
+import { createObservable, Observable } from './observable'
 
 type FunctionMap = Record<string, Function>
 
