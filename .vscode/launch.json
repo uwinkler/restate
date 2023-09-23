@@ -3,5 +3,19 @@
   // Hover to view descriptions of existing attributes.
   // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
   "version": "0.2.0",
-  "configurations": []
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Jest: current file",
+      "program": "${workspaceFolder}/packages/di/node_modules/jest/bin/jest",
+      "args": [
+        "--config",
+        "${workspaceFolder}/packages/di/jest.config.js",
+        "--silent=false",
+        "${fileBasenameNoExtension}"
+      ],
+      "console": "integratedTerminal"
+    }
+  ]
 }

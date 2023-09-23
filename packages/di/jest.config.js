@@ -1,8 +1,6 @@
+/** @type {import('ts-jest').JestConfigWithTsJest} */
 module.exports = {
-  preset: "ts-jest",
-  testEnvironment: "node",
-  roots: ["<rootDir>/src/"],
-  collectCoverage: true,
-  collectCoverageFrom: ["<rootDir>/src/**/*.{ts,tsx}"],
-  coverageDirectory: "coverage"
+  preset: 'ts-jest',
+  testEnvironment: 'jsdom',
+  modulePathIgnorePatterns: ['build']
 }

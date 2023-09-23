@@ -30,25 +30,10 @@ function getTodos() {
 }
 
 const queryClient = new QueryClient()
-const useUserActions = createActions('UserActions', (store) => {
-  return {
-    setName: (nextName: string) => {
-      store.next((s) => {
-        s.user.name = nextName
-      })
-    },
-    setAge: (nextAge: number) => {
-      store.next((s) => {
-        s.user.age = nextAge
-      })
-    }
-  }
-})
 
 export function HelloActions() {
-  const name = useAppState((s) => s.user.name)
-  const age = useAppState((s) => s.user.age)
-  const { setName, setAge } = useUserActions()
+  const [name, setName] = useAppState((s) => s.user.name)
+  const [age, setAge] = useAppState((s) => s.user.age)
 
   return (
     <QueryClientProvider client={queryClient}>
