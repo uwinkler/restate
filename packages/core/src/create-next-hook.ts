@@ -1,10 +1,9 @@
 import { current } from 'immer'
 import { useContext } from 'react'
-import { Message, RESTATE_UPDATE_MESSAGE } from './message'
 import { RxStore } from './rx-store'
 import { isFunction } from './utils'
 
-type AppStoreProvider<S, M extends Message> = React.Context<RxStore<S, M>>
+type AppStoreProvider<S> = React.Context<RxStore<S>>
 type SelectorFunction<S, T> = (state: S) => T
 type UpdateFunction<S> = (state: S) => void
 
@@ -14,23 +13,22 @@ type CreateNextHookRet<S> = <T>(
 ) => (updateFunction: UpdateFunction<T> | T) => void | T
 
 // not-scoped
-export function createNextHook<S extends object, M extends Message>(
-  provider: AppStoreProvider<S, M>
+export function createNextHook<S extends object>(
+  provider: AppStoreProvider<S>
 ): CreateNextHookRet<S>
 
 // scoped
-export function createNextHook<S extends object, T, M extends Message>(
-  provider: AppStoreProvider<S, M>,
+export function createNextHook<S extends object, T>(
+  provider: AppStoreProvider<S>,
   scope: SelectorFunction<S, T>
 ): CreateNextHookRet<T>
 
-export function createNextHook<S extends object, T, M extends Message>(
-  provider: AppStoreProvider<S, M>,
+export function createNextHook<S extends object, T>(
+  provider: AppStoreProvider<S>,
   scope?: SelectorFunction<S, T>
 ) {
   function useNextHook<T>(
-    selector: SelectorFunction<S, T>,
-    type?: string
+    selector: SelectorFunction<S, T>
   ): (updateFunction: UpdateFunction<T>) => void {
     const store = useContext(provider)
     const outerSelector = scope ? scope : (state: S) => state
@@ -44,18 +42,15 @@ export function createNextHook<S extends object, T, M extends Message>(
     async function updateState(
       updateFunctionOrNextState: UpdateFunction<T> | T
     ) {
-      return store.next(
-        (currentState) => {
-          if (isFunction(updateFunctionOrNextState)) {
-            const subState = selector(outerSelector(currentState as any) as any)
-            return updateFunctionOrNextState(subState)
-          } else {
-            const nextValue = updateFunctionOrNextState
-            return updateNestedState(outerSelector(currentState), nextValue)
-          }
-        },
-        { type: type || RESTATE_UPDATE_MESSAGE.type } as any
-      )
+      return store.next((currentState) => {
+        if (isFunction(updateFunctionOrNextState)) {
+          const subState = selector(outerSelector(currentState as any) as any)
+          return updateFunctionOrNextState(subState)
+        } else {
+          const nextValue = updateFunctionOrNextState
+          return updateNestedState(outerSelector(currentState), nextValue)
+        }
+      })
     }
 
     return updateState

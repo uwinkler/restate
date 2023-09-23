@@ -1,11 +1,11 @@
 import React from 'react'
 import './App.css'
-import { HelloCounter } from './examples/services'
+import { ZodValidation } from './examples/zod-validation'
 
 function App() {
   return (
     <React.StrictMode>
-      <HelloCounter />
+      <ZodValidation />
     </React.StrictMode>
   )
 }

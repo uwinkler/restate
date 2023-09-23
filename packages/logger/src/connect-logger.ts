@@ -8,20 +8,27 @@ interface LoggerProps {
   printStack?: boolean
 }
 
-export function connectLogger(appStore: RxStore<any, any>, props: LoggerProps = {}) {
-  const { color = 'white', backgroundColor = 'DarkOrange', printStack = process.env.NODE_ENV !== 'production' } = props
+export function connectLogger(appStore: RxStore<any>, props: LoggerProps = {}) {
+  const {
+    color = 'white',
+    backgroundColor = 'DarkOrange',
+    printStack = process.env.NODE_ENV !== 'production'
+  } = props
 
   if (printStack) {
     sourceMapSupport.install()
   }
 
-  const name = appStore.options.storeName === '' ? 'RxState' : appStore.options.storeName
+  const name =
+    appStore.options.storeName === '' ? 'RxState' : appStore.options.storeName
 
   appStore.state$.subscribe((update) => {
-    console.groupCollapsed(formatGroupName(name, update), `color: ${color}; background:${backgroundColor};`)
+    console.groupCollapsed(
+      formatGroupName(name, update),
+      `color: ${color}; background:${backgroundColor};`
+    )
     formatPatches(update.patches || [])
     console.log('State: ', update.state)
-    console.log('Message: ', update.message)
 
     if (printStack) {
       formatStack(update)
@@ -30,12 +37,12 @@ export function connectLogger(appStore: RxStore<any, any>, props: LoggerProps = 
   })
 }
 
-function formatStack(update: StatePackage<any, any>) {
+function formatStack(update: StatePackage<any>) {
   const lines = parseStack(update)
   console.log('Source :', lines)
 }
 
-function parseStack(update: StatePackage<any, any>) {
+function parseStack(update: StatePackage<any>) {
   const stack: string | undefined = (update as any).stack
 
   if (!stack) return []
@@ -68,19 +75,11 @@ function parseStack(update: StatePackage<any, any>) {
   return lines
 }
 
-function formatGroupName(name: string, update: StatePackage<any, any>) {
-  const MAX_LEN = 60
-
-  let payload = update.message.payload != null ? JSON.stringify(update.message.payload) : ''
-
-  if (payload.length > MAX_LEN) {
-    payload = payload.substring(0, MAX_LEN - 3) + '...'
-  }
-
+function formatGroupName(name: string, update: StatePackage<any>) {
   const lines = parseStack(update)
   const source = (lines[0] || '').split('/').reverse()[0] || ''
 
-  return `%c [${name}] : ${update.message.type} ${payload} ${source}`
+  return `%c [${name}] :  ${source}`
 }
 
 function formatPatches(patches: Patch[]) {
@@ -88,26 +87,42 @@ function formatPatches(patches: Patch[]) {
     const path = patch.path.join('.')
     switch (patch.op) {
       case 'add': {
-        console.groupCollapsed('%c Add "' + path + '":', 'color: green', patch.value)
+        console.groupCollapsed(
+          '%c Add "' + path + '":',
+          'color: green',
+          patch.value
+        )
         console.log(JSON.stringify(patch.value, null, 2))
         console.groupEnd()
         break
       }
       case 'remove': {
-        console.groupCollapsed('%c Remove "' + path + '":', 'color: red', patch.value)
+        console.groupCollapsed(
+          '%c Remove "' + path + '":',
+          'color: red',
+          patch.value
+        )
         console.log(JSON.stringify(patch.value, null, 2))
         console.groupEnd()
         break
       }
       case 'replace': {
-        console.groupCollapsed('%c Replace "' + path + '":', 'color: #008800', patch.value)
+        console.groupCollapsed(
+          '%c Replace "' + path + '":',
+          'color: #008800',
+          patch.value
+        )
         console.log(JSON.stringify(patch.value, null, 2))
         console.groupEnd()
         break
       }
 
       default: {
-        console.groupCollapsed('%c Default "' + path + '":', 'color: green', patch.value)
+        console.groupCollapsed(
+          '%c Default "' + path + '":',
+          'color: green',
+          patch.value
+        )
         console.log(JSON.stringify(patch.value, null, 2))
         console.groupEnd()
       }

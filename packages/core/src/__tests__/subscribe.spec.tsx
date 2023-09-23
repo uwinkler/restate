@@ -1,17 +1,16 @@
-import React from "react"
-import renderer from "react-test-renderer"
-import { Subscription } from "rxjs"
-import * as Rx from ".."
-import { WithRxStore } from "../create-with-store-hoc"
-import { Message } from "../message"
-import { subscribe } from "../subscribe"
+import React from 'react'
+import renderer from 'react-test-renderer'
+import { Subscription } from 'rxjs'
+import * as Rx from '..'
+import { WithRxStore } from '../create-with-store-hoc'
+import { subscribe } from '../subscribe'
 
 type AppState = {
   servus: string
 }
 
 const defaultAppState: AppState = {
-  servus: "rx-state",
+  servus: 'rx-state'
 }
 
 interface TestComponentState {
@@ -22,18 +21,21 @@ const appStore = Rx.createStore({ state: defaultAppState })
 const TestStoreProvider = Rx.createProvider(appStore)
 const withTestStore = Rx.createWithStoreHoc(TestStoreProvider)
 
-describe("subscribe", () => {
-  test("should subscribe", () => {
-    class TestComponent extends React.Component<WithRxStore<AppState, Message>, TestComponentState> {
+describe('subscribe', () => {
+  test('should subscribe', () => {
+    class TestComponent extends React.Component<
+      WithRxStore<AppState>,
+      TestComponentState
+    > {
       state = {
-        greetings: "",
+        greetings: ''
       }
 
       sub: Subscription | null = null
 
       componentDidMount() {
         this.sub = subscribe(this.props.rxStore)
-          .select((store) => store.servus)
+          .select((store) => (store as any).servus)
           .mount((nextServus) => this.setState({ greetings: nextServus }))
       }
 

@@ -1,7 +1,7 @@
 import { create } from '@restate/core'
 
 // We create our app state and a hook to access the state:
-const { useAppState, useNext } = create({
+const { useAppState } = create({
   state: {
     name: 'restate'
   }
@@ -9,7 +9,6 @@ const { useAppState, useNext } = create({
 
 export function HelloWorld() {
   const [name, setName] = useAppState((state) => state.name)
-  // useNext((s) => s.name)
 
   return (
     <>

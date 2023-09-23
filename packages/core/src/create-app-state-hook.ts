@@ -1,16 +1,11 @@
 import { createNextHook } from './create-next-hook'
 import { createSelectorHook } from './create-selector-hook'
-import { Message } from './message'
 import { RxStore } from './rx-store'
 
 type SelectorFunction<S, T> = (state: S) => T
 
-export function createAppStateHook<
-  S extends object,
-  SUB_STATE extends object,
-  M extends Message
->(
-  context: React.Context<RxStore<S, M>>,
+export function createAppStateHook<S extends object, SUB_STATE extends object>(
+  context: React.Context<RxStore<S>>,
   outerSelector: SelectorFunction<S, SUB_STATE>
 ) {
   const useNext = createNextHook(context, outerSelector)

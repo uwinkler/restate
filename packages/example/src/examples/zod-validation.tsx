@@ -1,21 +1,32 @@
 import { Middleware, create } from '@restate/core'
+import { connectDevTools } from '@restate/dev-tools'
+import { z } from 'zod'
 
-const { useAppState, useSelector, store } = create({
+const stateSchema = z.object({
+  user: z.object({
+    name: z.string(),
+    age: z.number().min(0).max(150)
+  })
+})
+
+type State = z.infer<typeof stateSchema>
+
+// Middleware that throws an ZodError if the next state is invalid.
+// Throwing an exception will cancel the state update
+const validateMiddlewareWithZod: Middleware<State> = ({ nextState }) =>
+  stateSchema.parse(nextState)
+
+const { useAppState, useSelector, store } = create<State>({
   state: {
     user: {
       name: 'John',
       age: 32
     }
-  }
+  },
+  middleware: [validateMiddlewareWithZod]
 })
 
-store.next((s) => {
-  s.user.age = 200
-})
-
-store.state$.subscribe((s) => {
-  console.log('State changed', s)
-})
+connectDevTools(store)
 
 function Name() {
   // We select the user name from the state
@@ -41,7 +52,7 @@ function ChangeAge() {
   return <input value={age} onChange={(e) => setAge(Number(e.target.value))} />
 }
 
-export function HelloJohn() {
+export function ZodValidation() {
   return (
     <>
       <Name />

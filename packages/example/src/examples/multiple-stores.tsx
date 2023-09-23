@@ -1,11 +1,20 @@
 import { create } from '@restate/core'
 
-const { useAppState, useSelector, store, useNext } = create({
+const { useAppState, useSelector, useNext } = create({
   state: {
     user: {
       name: 'John',
       age: 32
     }
+  }
+})
+
+const { useAppState: useTodoAppState, useSelector: useTodoSelector } = create({
+  state: {
+    todos: [
+      { todo: 'Buy Mild', done: false },
+      { todo: 'Buy Eggs', done: false }
+    ]
   }
 })
 
@@ -33,7 +42,6 @@ export function MultipleStores() {
       <Name />
       <Age />
       <ChangeName />
-      {/* <Todos /> */}
     </>
   )
 }

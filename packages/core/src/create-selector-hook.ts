@@ -1,13 +1,12 @@
 import { useContext, useEffect, useMemo, useState } from 'react'
 import { BehaviorSubject } from 'rxjs'
 import { distinctUntilChanged } from 'rxjs/operators'
-import { Message } from './message'
 import { RxStore } from './rx-store'
 
 //
 // Types
 
-type RxStoreContext<S, M extends Message> = React.Context<RxStore<S, M>>
+type RxStoreContext<S> = React.Context<RxStore<S>>
 
 type SelectorFunction<S, T> = (state: S) => T
 
@@ -26,27 +25,27 @@ export type UseSelectorHook<S> = <T>(
 //
 // createStateHook definition
 //
-export function createSelectorHook<S, M extends Message>(
-  context: React.Context<RxStore<S, M>>
+export function createSelectorHook<S>(
+  context: React.Context<RxStore<S>>
 ): UseSelectorHook<S>
 
-export function createSelectorHook<S, SUB_STATE, M extends Message>(
-  context: React.Context<RxStore<S, M>>,
+export function createSelectorHook<S, SUB_STATE>(
+  context: React.Context<RxStore<S>>,
   outerSelector: SelectorFunction<S, SUB_STATE>
 ): UseSelectorHook<SUB_STATE>
 
 //
 // createStateHook implementation
 //
-export function createSelectorHook<S, SUB_STATE, MESSAGES extends Message>(
-  context: RxStoreContext<S, MESSAGES>,
+export function createSelectorHook<S, SUB_STATE>(
+  context: RxStoreContext<S>,
   outerSelector: SelectorFunction<S, SUB_STATE> = identitySelectorFunction
 ) {
   function useAppState<T>(
     selector: SelectorFunction<SUB_STATE, T>,
     props?: StateHookProps<T>
   ): T {
-    const _store: RxStore<S, MESSAGES> = useContext(context)
+    const _store: RxStore<S> = useContext(context)
 
     const _props = {
       deps: [],

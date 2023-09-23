@@ -1,14 +1,13 @@
-import { createStore } from "../create-store"
-import { immerable } from "immer"
-import { Middleware } from "../rx-store"
-import { Message } from "../message"
+import { createStore } from '../create-store'
+import { immerable } from 'immer'
+import { Middleware } from '../rx-store'
 
-it("should be able to set a next state", () => {
+it('should be able to set a next state', () => {
   const orgState = { a: 1 }
 
   const store = createStore({ state: orgState })
 
-  store.next(s => {
+  store.next((s) => {
     s.a = 2
   })
 
@@ -19,7 +18,7 @@ it("should be able to set a next state", () => {
   expect(Object.isFrozen(store.state)).toBe(true)
 })
 
-it("should be able to use non-plain objects (immer style)", () => {
+it('should be able to use non-plain objects (immer style)', () => {
   class State {
     [immerable] = true
     a = 1
@@ -31,7 +30,7 @@ it("should be able to use non-plain objects (immer style)", () => {
 
   const store = createStore({ state })
 
-  store.next(s => {
+  store.next((s) => {
     s.a = 2
   })
 
@@ -43,102 +42,102 @@ it("should be able to use non-plain objects (immer style)", () => {
   expect(nextState.aPlusOne()).toEqual(3)
 })
 
-it("should use middleware", () => {
+it('should use middleware', () => {
   interface State {
     a: number
   }
-  const store = createStore<State, Message>({
+  const store = createStore<State>({
     state: {
       a: 1
     }
   })
 
-  const plusOne: Middleware<State, Message> = ({ nextState }) => {
+  const plusOne: Middleware<State> = ({ nextState }) => {
     nextState.a = nextState.a + 1
   }
 
   store.middleware.push(plusOne)
 
-  store.next(s => {
+  store.next((s) => {
     s.a = 2
   })
 
   expect(store.state.a).toEqual(3)
 })
 
-it("should use multiple middleware", () => {
+it('should use multiple middleware', () => {
   interface State {
     a: number
   }
-  const store = createStore<State, Message>({
+  const store = createStore<State>({
     state: {
       a: 1
     }
   })
 
-  const plusOne: Middleware<State, Message> = ({ nextState }) => {
+  const plusOne: Middleware<State> = ({ nextState }) => {
     nextState.a = nextState.a + 1
   }
 
   store.middleware.push(plusOne, plusOne)
 
-  store.next(s => {
+  store.next((s) => {
     s.a = 2
   })
 
   expect(store.state.a).toEqual(4)
 })
 
-it("should be able to throw within a middleware function", () => {
+it('should be able to throw within a middleware function', () => {
   interface State {
     a: number
   }
 
-  const store = createStore<State, Message>({
+  const store = createStore<State>({
     state: {
       a: 1
     }
   })
 
-  const errorMiddleware: Middleware<State, Message> = () => {
-    throw Error("error!")
+  const errorMiddleware: Middleware<State> = () => {
+    throw Error('error!')
   }
 
   store.middleware.push(errorMiddleware)
 
-  store.next(s => {
+  store.next((s) => {
     s.a = 2
   })
 
   expect(store.state.a).toEqual(1) // no update
 })
 
-it("should return default options", () => {
+it('should return default options', () => {
   const store = createStore({
     state: { value: 1 }
   })
 
   expect(store.options.freeze).toBeTruthy()
-  expect(store.options.storeName).toEqual("STORE")
+  expect(store.options.storeName).toEqual('STORE')
 })
 
-it("should return options", () => {
+it('should return options', () => {
   const store = createStore({
     state: { value: 1 },
-    options: { freeze: true, storeName: "TEST" }
+    options: { freeze: true, storeName: 'TEST' }
   })
 
   expect(store.options.freeze).toBeTruthy()
-  expect(store.options.storeName).toEqual("TEST")
+  expect(store.options.storeName).toEqual('TEST')
 })
 
-it("freeze: should freeze the state if the freeze options is set to true", () => {
+it('freeze: should freeze the state if the freeze options is set to true', () => {
   const store = createStore({
     state: { value: 1 },
     options: { freeze: true }
   })
 
-  store.next(s => {
+  store.next((s) => {
     s.value = 2
   })
 
@@ -149,13 +148,13 @@ it("freeze: should freeze the state if the freeze options is set to true", () =>
   expect(shouldThrow).toThrow()
 })
 
-it("freeze: should not freeze the state if the freeze options is set to false", () => {
+it('freeze: should not freeze the state if the freeze options is set to false', () => {
   const store = createStore({
     state: { value: 1 },
     options: { freeze: false }
   })
 
-  store.next(s => {
+  store.next((s) => {
     s.value = 2
   })
 
@@ -185,11 +184,11 @@ it("should be able to set the state as object, not using immer's imperative way"
   expect(store.state).toEqual({ value: 12 })
 })
 
-it("should be able to update the store using spread", () => {
+it('should be able to update the store using spread', () => {
   const store = createStore({
     state: { value: 1 }
   })
 
-  store.next(state => ({ ...state, value: 12 }))
+  store.next((state) => ({ ...state, value: 12 }))
   expect(store.state).toEqual({ value: 12 })
 })
