@@ -2,6 +2,9 @@ import { Middleware, create } from '@restate/core'
 import { connectDevTools } from '@restate/dev-tools'
 import { z } from 'zod'
 
+//
+// Step 1: Define a schema for the state
+//
 const stateSchema = z.object({
   user: z.object({
     name: z.string(),
@@ -9,10 +12,17 @@ const stateSchema = z.object({
   })
 })
 
+//
+// Step2: Infer the state type from the schema, so we can use it in the app and middleware
+//
 type State = z.infer<typeof stateSchema>
 
-// Middleware that throws an ZodError if the next state is invalid.
-// Throwing an exception will cancel the state update
+// Step3: Write a simple middleware that throws an ZodError if the next state is invalid.
+// Throwing an exception will cancel the state update.
+//
+// Instead of throwing an error, you may also modify
+// the `nextState` state here, if you want to.
+//
 const validateMiddlewareWithZod: Middleware<State> = ({ nextState }) =>
   stateSchema.parse(nextState)
 
@@ -23,13 +33,12 @@ const { useAppState, useSelector, store } = create<State>({
       age: 32
     }
   },
-  middleware: [validateMiddlewareWithZod]
+  middleware: [validateMiddlewareWithZod] // use the middleware
 })
 
 connectDevTools(store)
 
 function Name() {
-  // We select the user name from the state
   const name = useSelector((state) => state.user.name)
   return <h1>Hello {name}!</h1>
 }
