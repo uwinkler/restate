@@ -1,0 +1,22 @@
+{
+	"folders": [
+		{
+			"path": "../../.."
+		}
+	],
+	"settings": {
+		"jest.disabledWorkspaceFolders": [
+			"restate",
+			"restate",
+			"router",
+			"logger",
+			"web-site",
+			"dev-tools",
+			"example",
+			"webapi",
+			"di-dev-tools",
+			"core",
+			"di"
+		]
+	}
+}

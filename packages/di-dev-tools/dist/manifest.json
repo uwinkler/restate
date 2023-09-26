@@ -3,6 +3,24 @@
   "name": "Restate DI",
   "description": "Restate Context Injection DevTools",
   "version": "1.0.0",
+  "icons": {
+    "16": "icon16.png",
+    "48": "icon48.png",
+    "128": "icon128.png"
+  },
   "devtools_page": "devtools.html",
-  "permissions": []
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "run_at": "document_start",
+      "world": "ISOLATED"
+    }
+  ],
+  "host_permissions": ["*://*/"],
+  "permissions": ["storage", "declarativeContent", "activeTab", "scripting"]
 }
