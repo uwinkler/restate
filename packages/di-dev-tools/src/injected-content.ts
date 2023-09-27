@@ -1,11 +1,12 @@
+import { messageContent } from './utils'
+
 function injectedContent() {
   console.log('Injected content script')
 
   window.postMessage(
-    {
-      greeting: 'hello there!',
-      source: 'restate-di-extension'
-    },
+    messageContent({
+      greeting: 'hello from injected content script!'
+    }),
     '*'
   )
 }

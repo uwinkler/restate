@@ -1,13 +1,20 @@
 const path = require('path')
+const CopyPlugin = require('copy-webpack-plugin')
+
+const src = (file) => path.join(__dirname, 'src', file)
 
 module.exports = {
   entry: {
-    popup: path.join(__dirname, 'src/popup/index.tsx'),
-    eventPage: path.join(__dirname, 'src/eventPage.ts')
+    background: src('background.ts'),
+    content: src('content.ts'),
+    devtools: src('devtools.ts'),
+    'injected-content': src('injected-content.ts'),
+    panel: src('panel.tsx')
   },
   output: {
-    path: path.join(__dirname, 'dist/js'),
-    filename: '[name].js'
+    path: path.join(__dirname, 'dist'),
+    filename: '[name].js',
+    clean: true
   },
   module: {
     rules: [
@@ -30,9 +37,30 @@ module.exports = {
             loader: 'sass-loader' // Compiles Sass to CSS
           }
         ]
+      },
+      {
+        test: /\.css$/i,
+        use: ['style-loader', 'css-loader']
       }
     ]
   },
+  plugins: [
+    new CopyPlugin({
+      patterns: [{ from: 'assets', to: 'assets' }]
+    }),
+    new CopyPlugin({
+      patterns: [
+        {
+          from: '*.html',
+          context: 'src'
+        },
+        {
+          from: 'manifest.json',
+          context: 'src'
+        }
+      ]
+    })
+  ],
   resolve: {
     extensions: ['.ts', '.tsx', '.js']
   }

@@ -7,8 +7,10 @@
 //   // To print in tab's console see `chrome.devtools.inspectedWindow.eval`
 //   console.log(msg)
 // })
-
-console.log('panel.js')
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import { Panel } from './panel/Panel'
+import { messageDevTools } from './utils'
 
 var backgroundPageConnection = chrome.runtime.connect({
   name: 'restate'
@@ -18,4 +20,11 @@ backgroundPageConnection.onMessage.addListener(function (message) {
   console.log('panel.js message received:', message)
 })
 
-backgroundPageConnection.postMessage({ hello: 'from panel.js' })
+backgroundPageConnection.postMessage(
+  messageDevTools({
+    hello: 'from panel.js',
+    tabId: chrome.devtools.inspectedWindow.tabId
+  })
+)
+
+ReactDOM.createRoot(document.getElementById('app')).render(<Panel />)
