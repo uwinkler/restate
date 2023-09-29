@@ -7,9 +7,9 @@ type AppStoreProvider<S> = React.Context<RxStore<S>>
 type SelectorFunction<S, T> = (state: S) => T
 type UpdateFunction<S> = (state: S) => void
 
-type CreateNextHookRet<S> = <T>(
+type CreateNextHookRet<S> = <T, TRACE = any>(
   selector: SelectorFunction<S, T>,
-  type?: string
+  trace?: TRACE
 ) => (updateFunction: UpdateFunction<T> | T) => void | T
 
 // not-scoped
@@ -27,8 +27,9 @@ export function createNextHook<S extends object, T>(
   provider: AppStoreProvider<S>,
   scope?: SelectorFunction<S, T>
 ) {
-  function useNextHook<T>(
-    selector: SelectorFunction<S, T>
+  function useNextHook<T, TRACE = any>(
+    selector: SelectorFunction<S, T>,
+    trace?: TRACE
   ): (updateFunction: UpdateFunction<T>) => void {
     const store = useContext(provider)
     const outerSelector = scope ? scope : (state: S) => state
@@ -39,9 +40,7 @@ export function createNextHook<S extends object, T>(
       return subState
     }
 
-    async function updateState(
-      updateFunctionOrNextState: UpdateFunction<T> | T
-    ) {
+    function updateState(updateFunctionOrNextState: UpdateFunction<T> | T) {
       return store.next((currentState) => {
         if (isFunction(updateFunctionOrNextState)) {
           const subState = selector(outerSelector(currentState as any) as any)
@@ -50,7 +49,7 @@ export function createNextHook<S extends object, T>(
           const nextValue = updateFunctionOrNextState
           return updateNestedState(outerSelector(currentState), nextValue)
         }
-      })
+      }, trace)
     }
 
     return updateState

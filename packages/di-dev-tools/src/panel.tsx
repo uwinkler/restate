@@ -22,9 +22,8 @@ backgroundPageConnection.onMessage.addListener(function (message) {
 
 backgroundPageConnection.postMessage(
   messageDevTools({
-    hello: 'from panel.js',
-    tabId: chrome.devtools.inspectedWindow.tabId
+    type: 'get-all-store-updates',
   })
 )
 
-ReactDOM.createRoot(document.getElementById('app')).render(<Panel />)
+ReactDOM.createRoot(document.getElementById('app')!).render(<Panel />)

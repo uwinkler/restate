@@ -1,12 +1,8 @@
-import { isMessageContent, isMessageDevTools } from './utils'
+import { isMessageDevTools } from './utils'
 
 console.log('content script')
 
-const _window = window as any
-
-if (!_window.__RESTATE_DEV_TOOLS__) {
-  _window.__RESTATE_DEV__TOOLS = {}
-}
+let tabId = -1
 
 window.addEventListener('message', function (event) {
   // Only accept messages from the same frame
@@ -14,23 +10,24 @@ window.addEventListener('message', function (event) {
     return
   }
 
-  if (!isMessageContent(event.data)) {
+  if (!event.data || event.data.source !== 'restate-di-content') {
     return
   }
 
-  var message = event.data
+  var msg = { ...event.data, tabId }
 
   if (chrome.runtime?.id) {
-    console.log('content.js: Sending message to dev-tools:', event.data)
-    chrome.runtime.sendMessage(message)
+    console.log('content.js: Sending message to dev-tools:', msg)
+    chrome.runtime.sendMessage(msg)
   } else {
     console.log('content.js: Context invalidated')
   }
 })
 
-chrome.runtime.onMessage.addListener(function (request, _sender) {
-  if (request && isMessageDevTools(request)) {
-    console.log('content.js: message from chrome dev tools:', request)
-    window.postMessage(request)
+chrome.runtime.onMessage.addListener(function (msg, _sender) {
+  if (msg && isMessageDevTools(msg)) {
+    tabId = msg.tabId
+    console.log('content.js: message from chrome dev tools:', msg)
+    window.postMessage(msg)
   }
 })

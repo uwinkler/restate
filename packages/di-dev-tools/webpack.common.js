@@ -1,5 +1,6 @@
 const path = require('path')
 const CopyPlugin = require('copy-webpack-plugin')
+const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin')
 
 const src = (file) => path.join(__dirname, 'src', file)
 
@@ -41,10 +42,21 @@ module.exports = {
       {
         test: /\.css$/i,
         use: ['style-loader', 'css-loader']
+      },
+      {
+        test: /\.m?js/,
+        type: 'javascript/auto'
+      },
+      {
+        test: /\.m?js/,
+        resolve: {
+          fullySpecified: false
+        }
       }
     ]
   },
   plugins: [
+    new MonacoWebpackPlugin(),
     new CopyPlugin({
       patterns: [{ from: 'assets', to: 'assets' }]
     }),
@@ -62,6 +74,6 @@ module.exports = {
     })
   ],
   resolve: {
-    extensions: ['.ts', '.tsx', '.js']
+    extensions: ['.ts', '.tsx', '.js', '.mjs']
   }
 }

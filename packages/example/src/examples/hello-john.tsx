@@ -9,16 +9,7 @@ const { useAppState, useSelector, store } = create({
   }
 })
 
-store.next((s) => {
-  s.user.age = 200
-})
-
-store.state$.subscribe((s) => {
-  console.log('State changed', s)
-})
-
 function Name() {
-  // We select the user name from the state
   const name = useSelector((state) => state.user.name)
   return <h1>Hello {name}!</h1>
 }

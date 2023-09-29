@@ -22,11 +22,11 @@ import { createStoreHook } from './create-store-hook'
  *    }
  * })
  */
-export function create<STATE extends object>({
+export function create<STATE extends object, TRACE = any>({
   state,
   middleware = [],
   options = RESTATE_STORE_DEFAULT_OPTIONS
-}: CreateStoreProps<STATE>) {
+}: CreateStoreProps<STATE, TRACE>) {
   const store = createStore({ state, middleware, options })
   const AppStateContext = createProvider(store)
   const useSelector = createSelectorHook(AppStateContext)

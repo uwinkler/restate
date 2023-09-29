@@ -1,5 +1,5 @@
 import React from 'react'
-import { messageDevTools } from '../utils'
+import { MessageDevTools, messageDevTools } from '../utils'
 
 export function useMessage() {
   const backgroundPageConnection = React.useMemo(
@@ -10,10 +10,10 @@ export function useMessage() {
     []
   )
 
-  function postMessage(msg: any) {
+  function postMessage<T>(msg: Partial<MessageDevTools<T>>) {
     backgroundPageConnection.postMessage(
       messageDevTools({
-        hello: 'from panel.js',
+        ...msg,
         tabId: chrome.devtools.inspectedWindow.tabId
       })
     )

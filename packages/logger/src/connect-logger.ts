@@ -37,12 +37,12 @@ export function connectLogger(appStore: RxStore<any>, props: LoggerProps = {}) {
   })
 }
 
-function formatStack(update: StatePackage<any>) {
+function formatStack(update: StatePackage<any, any>) {
   const lines = parseStack(update)
   console.log('Source :', lines)
 }
 
-function parseStack(update: StatePackage<any>) {
+function parseStack(update: StatePackage<any, any>) {
   const stack: string | undefined = (update as any).stack
 
   if (!stack) return []
@@ -75,7 +75,7 @@ function parseStack(update: StatePackage<any>) {
   return lines
 }
 
-function formatGroupName(name: string, update: StatePackage<any>) {
+function formatGroupName(name: string, update: StatePackage<any, any>) {
   const lines = parseStack(update)
   const source = (lines[0] || '').split('/').reverse()[0] || ''
 

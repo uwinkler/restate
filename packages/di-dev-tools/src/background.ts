@@ -1,29 +1,23 @@
 // Background page -- background.js
 
-import { MessageDevTools } from './utils'
+import { messageContent } from './utils'
 
-var devToolConnections = new Map()
-var reverseMap = new Map()
+const devToolConnections = new Map()
+const reverseMap = new Map()
+
+const messages: any[] = []
 
 chrome.runtime.onConnect.addListener(function (devToolsConnection) {
   // assign the listener function to a variable so we can remove it later
-  var devToolsListener = function (message: any, _sender, _sendResponse) {
-    console.log('message from devTools:', message)
-
-    // Inject a content script into the identified tab
-    if (message.type === 'inject') {
-      ;(chrome as any).scripting.executeScript({
-        target: { tabId: message.tabId },
-        files: [message.scriptToInject]
-      })
-
-      devToolConnections.set(message.tabId, devToolsConnection)
-      reverseMap.set(devToolsConnection, message.tabId)
-    } else {
-      // send other messages to the content.js
-      console.log('Sending message to content.js', message)
-      chrome.tabs.sendMessage(message.tabId, message)
-    }
+  const devToolsListener = function (
+    message: any,
+    _sender: any,
+    _sendResponse: any
+  ) {
+    console.log('message from devTools to content script:', message)
+    devToolConnections.set(message.tabId, devToolsConnection)
+    reverseMap.set(devToolsConnection, message.tabId)
+    chrome.tabs.sendMessage(message.tabId, message)
   }
 
   // add the listener
@@ -44,6 +38,7 @@ chrome.runtime.onConnect.addListener(function (devToolsConnection) {
 // current tab
 chrome.runtime.onMessage.addListener(function (request, sender, _sendResponse) {
   // Messages from content scripts should have sender.tab set
+  console.log('background: from content script', request)
   if (sender.tab) {
     var tabId = sender.tab.id
     const devToolsConnection = devToolConnections.get(tabId)
@@ -55,5 +50,4 @@ chrome.runtime.onMessage.addListener(function (request, sender, _sendResponse) {
   } else {
     console.log('sender.tab not defined.')
   }
-  return true
 })

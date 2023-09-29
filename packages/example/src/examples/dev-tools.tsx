@@ -1,6 +1,7 @@
 import { Middleware, create } from '@restate/core'
-import { connectDevTools } from '@restate/dev-tools'
+
 import { z } from 'zod'
+import { connectDevTools } from './connectDevTools'
 
 //
 // Step 1: Define a schema for the state
@@ -37,12 +38,6 @@ const { useAppState, useSelector, store } = create<State>({
 })
 
 connectDevTools(store)
-
-store.state$.subscribe((s) => {
-  const event = new CustomEvent<State>('State', s.state as any)
-  console.log('Send event')
-  window.dispatchEvent(event)
-})
 
 function Name() {
   const name = useSelector((state) => state.user.name)

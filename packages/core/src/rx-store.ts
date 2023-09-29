@@ -1,4 +1,4 @@
-import { createDraft, finishDraft, Patch, enablePatches } from 'immer'
+import { Patch, createDraft, enablePatches, finishDraft } from 'immer'
 import { BehaviorSubject, queueScheduler } from 'rxjs'
 import { observeOn } from 'rxjs/operators'
 
@@ -19,20 +19,21 @@ export interface RxStoreOptions {
   dev: boolean
 }
 
-export interface StatePackage<STATE> {
+export interface StatePackage<STATE, TRACE> {
   state: Readonly<STATE>
   patches?: Patch[] | null
   inversePatches?: Patch[] | null
+  trace?: TRACE
   stack?: string
 }
 
-export class RxStore<STATE> {
-  protected _state$: BehaviorSubject<StatePackage<STATE>>
+export class RxStore<STATE, TRACE = any> {
+  protected _state$: BehaviorSubject<StatePackage<STATE, TRACE>>
   protected _options: RxStoreOptions
   protected _middleware: Middleware<STATE>[] = []
 
   constructor(
-    stateSubject: BehaviorSubject<StatePackage<STATE>>,
+    stateSubject: BehaviorSubject<StatePackage<STATE, TRACE>>,
     middleware: Middleware<STATE>[],
     options: RxStoreOptions
   ) {
@@ -41,15 +42,18 @@ export class RxStore<STATE> {
     this._options = options
   }
 
-  static of<S>(
-    state: BehaviorSubject<StatePackage<S>>,
+  static of<S, T = any>(
+    state: BehaviorSubject<StatePackage<S, T>>,
     middleware: Middleware<S>[],
     options: RxStoreOptions
   ) {
     return new RxStore(state, middleware, options)
   }
 
-  private _next(updateFunctionOrNextState: UpdateFunction<STATE> | STATE) {
+  private _next(
+    updateFunctionOrNextState: UpdateFunction<STATE> | STATE,
+    trace?: TRACE
+  ) {
     try {
       const currentStatePackage = this._state$.value
       const isUpdateFunction = updateFunctionOrNextState instanceof Function
@@ -82,9 +86,10 @@ export class RxStore<STATE> {
         _inversePatches = inversePatches
       }) as STATE
 
-      const nextStatePackage: StatePackage<STATE> = {
+      const nextStatePackage: StatePackage<STATE, TRACE> = {
         state: nextState,
         patches: _patches,
+        trace: trace,
         inversePatches: _inversePatches
       }
 
@@ -97,13 +102,19 @@ export class RxStore<STATE> {
     }
   }
 
-  next(updateFunctionOrNextState: UpdateFunction<STATE> | STATE) {
-    this._next(updateFunctionOrNextState)
+  next(
+    updateFunctionOrNextState: UpdateFunction<STATE> | STATE,
+    trace?: TRACE
+  ) {
+    this._next(updateFunctionOrNextState, trace)
   }
 
-  nextAsync(updateFunctionOrNextState: UpdateFunction<STATE> | STATE) {
+  nextAsync(
+    updateFunctionOrNextState: UpdateFunction<STATE> | STATE,
+    trace?: TRACE
+  ) {
     setTimeout(() => {
-      this._next(updateFunctionOrNextState)
+      this._next(updateFunctionOrNextState, trace)
     }, 0)
   }
 

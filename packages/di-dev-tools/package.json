@@ -31,7 +31,13 @@
     "@fontsource/roboto": "^5.0.8",
     "@mui/icons-material": "^5.14.11",
     "@mui/material": "^5.14.11",
+    "@restate/core": "^0.12.0",
+    "immer": "^10.0.2",
+    "monaco-editor": "^0.43.0",
+    "monaco-editor-webpack-plugin": "^7.1.0",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "rxjs": "^7.8.1",
+    "zod": "^3.22.2"
   }
 }

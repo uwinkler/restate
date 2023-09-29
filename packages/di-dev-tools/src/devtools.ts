@@ -14,6 +14,11 @@ backgroundPageConnection.postMessage({
   scriptToInject: 'injected-content.js'
 })
 
-chrome.devtools.panels.create('Restate', 'icon16.png', 'panel.html', () => {
-  console.log('user switched to this panel')
-})
+chrome.devtools.panels.create(
+  'Restate',
+  'assets/icon16.png',
+  'panel.html',
+  () => {
+    console.log('user switched to this panel')
+  }
+)
