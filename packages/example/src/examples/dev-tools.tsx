@@ -3,29 +3,17 @@ import { Middleware, create } from '@restate/core'
 import { z } from 'zod'
 import { connectDevTools } from './connectDevTools'
 
-//
-// Step 1: Define a schema for the state
-//
-const stateSchema = z.object({
+const StateSchema = z.object({
   user: z.object({
     name: z.string(),
     age: z.number().min(0).max(150)
   })
 })
 
-//
-// Step2: Infer the state type from the schema, so we can use it in the app and middleware
-//
-type State = z.infer<typeof stateSchema>
+type State = z.infer<typeof StateSchema>
 
-// Step3: Write a simple middleware that throws an ZodError if the next state is invalid.
-// Throwing an exception will cancel the state update.
-//
-// Instead of throwing an error, you may also modify
-// the `nextState` state here, if you want to.
-//
 const validateMiddlewareWithZod: Middleware<State> = ({ nextState }) =>
-  stateSchema.parse(nextState)
+  StateSchema.parse(nextState)
 
 const { useAppState, useSelector, store } = create<State>({
   state: {
@@ -34,10 +22,25 @@ const { useAppState, useSelector, store } = create<State>({
       age: 32
     }
   },
-  middleware: [validateMiddlewareWithZod] // use the middleware
+
+  middleware: [validateMiddlewareWithZod], // use the middleware
+  trace: 'Init',
+  options: { storeName: 'Examples/DevTools' }
 })
 
+store.next((s) => {
+  s.user.age = 33
+}, 'INIT_2')
+
 connectDevTools(store)
+
+const { useAppState: useOtherAppState, store: otherStore } = create({
+  state: { otherName: '' },
+  trace: 'Init',
+  options: { storeName: 'Examples/OtherStore' }
+})
+
+connectDevTools(otherStore)
 
 function Name() {
   const name = useSelector((state) => state.user.name)
@@ -50,14 +53,27 @@ function Age() {
 }
 
 function ChangeName() {
-  const [name, setName] = useAppState((state) => state.user.name)
+  const [name, setName] = useAppState((state) => state.user.name, {
+    trace: 'ChangeName'
+  })
+  const handleChange = (nextName: string) => setName(nextName)
+
+  return <input value={name} onChange={(e) => handleChange(e.target.value)} />
+}
+
+function ChangeOtherName() {
+  const [name, setName] = useOtherAppState((state) => state.otherName, {
+    trace: 'ChangeOtherName'
+  })
   const handleChange = (nextName: string) => setName(nextName)
 
   return <input value={name} onChange={(e) => handleChange(e.target.value)} />
 }
 
 function ChangeAge() {
-  const [age, setAge] = useAppState((state) => state.user.age)
+  const [age, setAge] = useAppState((state) => state.user.age, {
+    trace: 'ChangeAge'
+  })
 
   return <input value={age} onChange={(e) => setAge(Number(e.target.value))} />
 }
@@ -69,6 +85,8 @@ export function DevTools() {
       <Age />
       <ChangeName />
       <ChangeAge />
+      <hr />
+      <ChangeOtherName />
     </>
   )
 }

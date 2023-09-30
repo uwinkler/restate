@@ -11,6 +11,7 @@ export function connectDevTools<STATE, TRACE = any>(
     if (!isMessageDevTools(msg)) {
       return
     }
+
     const type = msg.data.type
     if (type === 'get-all-store-updates') {
       window.postMessage({
@@ -21,6 +22,14 @@ export function connectDevTools<STATE, TRACE = any>(
           updates
         }
       })
+    }
+
+    if (
+      type === 'apply-state' &&
+      msg.data.payload.store === store.options.storeName
+    ) {
+      const { nextState, trace = 'Update from devTools' } = msg.data.payload
+      store.next(nextState, trace)
     }
   })
 

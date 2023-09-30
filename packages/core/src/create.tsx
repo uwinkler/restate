@@ -27,7 +27,7 @@ export function create<STATE extends object, TRACE = any>({
   middleware = [],
   options = RESTATE_STORE_DEFAULT_OPTIONS
 }: CreateStoreProps<STATE, TRACE>) {
-  const store = createStore({ state, middleware, options })
+  const store = createStore({ state, middleware, options, trace: 'INIT' })
   const AppStateContext = createProvider(store)
   const useSelector = createSelectorHook(AppStateContext)
   const useNext = createNextHook(AppStateContext)

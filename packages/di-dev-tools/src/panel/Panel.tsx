@@ -5,34 +5,32 @@ import '@fontsource/roboto/700.css'
 import { Box, Button, CssBaseline, styled } from '@mui/material'
 import React, { ReactNode } from 'react'
 import { Editor } from './editor'
-import { useAppState } from './state'
 import { useMessage } from './use-message'
-
-function Stores() {
-  const [stores] = useAppState((s) => s.stores)
-  return <h1>{stores.length}</h1>
-}
+import { UpdateList } from './update-list'
+import { Toolbar } from './toolbar'
+import { useSelector } from './state'
+import { DiffEditor } from './diff-editor'
 
 const Layout = styled(Box)({
-  display: 'flex',
-  flexDirection: 'column',
-  height: '100%'
+  display: 'grid',
+  gridTemplateColumns: '300px 1fr',
+  gridTemplateRows: 'auto 1fr',
+  gridTemplateAreas: `"header header"
+  "left editor"`,
+  overflow: 'hidden',
+  height: '100vh'
 })
 
 export function Panel(): ReactNode {
-  const { postMessage } = useMessage()
+  const diffMode = useSelector((s) => s.diffMode)
 
   return (
     <>
       <CssBaseline />
       <Layout>
-        <Button
-          id="restate"
-          onClick={() => postMessage({ type: 'get-all-store-updates' })}
-        >
-          Refresh
-        </Button>
-        <Editor />
+        <Toolbar />
+        <UpdateList />
+        {diffMode ? <DiffEditor /> : <Editor />}
       </Layout>
     </>
   )

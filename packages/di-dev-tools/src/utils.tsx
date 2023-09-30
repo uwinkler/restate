@@ -1,4 +1,4 @@
-export type MessageDevToolsType = 'get-all-store-updates'
+export type MessageDevToolsType = 'get-all-store-updates' | 'apply-state'
 
 export type MessageContentType =
   | 'get-all-store-updates-response'

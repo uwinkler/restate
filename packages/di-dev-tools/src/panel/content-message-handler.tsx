@@ -14,7 +14,11 @@ export function contentMessageHandler(store: RxStore<State>) {
       sender.tab?.id === chrome.devtools.inspectedWindow.tabId
     ) {
       store.next((s) => {
-        s.stores.push(msg.payload)
+        s.updates.push({
+          id: crypto.randomUUID(),
+          store: msg.payload.store,
+          ...msg.payload.update
+        })
       })
     }
 
@@ -23,11 +27,12 @@ export function contentMessageHandler(store: RxStore<State>) {
     if (canHandle(msg) && msg.type === 'get-all-store-updates-response') {
       const storeName = msg.payload.store
       const nextStores = msg.payload.updates.map((update: any) => ({
+        id: crypto.randomUUID(),
         ...update,
         store: storeName
       }))
       store.next((s) => {
-        s.stores = nextStores
+        s.updates = nextStores
       })
     }
   })

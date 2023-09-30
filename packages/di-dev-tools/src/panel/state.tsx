@@ -1,29 +1,39 @@
-import { create, RxStore } from '@restate/core'
+import { create, Middleware, RxStore } from '@restate/core'
 import { z } from 'zod'
 import { contentMessageHandler } from './content-message-handler'
 
-const updatesSchema = z.array(
-  z.object({
-    state: z.any(),
-    timestamp: z.number(),
-    inversePatches: z.array(z.any()),
-    patches: z.array(z.any())
-  })
-)
-
-const StoreEntrySchema = z.object({
+const UpdatesSchema = z.object({
+  id: z.string(),
+  state: z.any(),
   store: z.string(),
-  updates: updatesSchema
+  trace: z.any(),
+  patches: z.array(z.any()),
+  inversePatches: z.any(),
+  timestamp: z.number()
 })
 
+export type Update = z.infer<typeof UpdatesSchema>
+
+export const NO_UPDATE_SELECTED = 'NO_UPDATE_SELECTED'
+
 const StateSchema = z.object({
-  stores: z.array(StoreEntrySchema)
+  updates: z.array(UpdatesSchema),
+  selectedUpdateId: z.string().default(NO_UPDATE_SELECTED),
+  diffUpdateId: z.string().default(NO_UPDATE_SELECTED),
+  diffMode: z.boolean()
 })
 
 export type State = z.infer<typeof StateSchema>
 
 const INITIAL_STATE: State = {
-  stores: []
+  updates: [],
+  selectedUpdateId: NO_UPDATE_SELECTED,
+  diffUpdateId: NO_UPDATE_SELECTED,
+  diffMode: false
+}
+
+const validationMiddleware: Middleware<State> = (update) => {
+  StateSchema.parse(update.nextState)
 }
 
 export const {
@@ -33,7 +43,8 @@ export const {
   StateProvider,
   AppStateContext
 } = create<State>({
-  state: INITIAL_STATE
+  state: INITIAL_STATE,
+  middleware: [validationMiddleware]
 })
 
 contentMessageHandler(store)
