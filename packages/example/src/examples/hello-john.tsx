@@ -1,6 +1,6 @@
 import { Middleware, create } from '@restate/core'
 
-const { useAppState, useSelector, store } = create({
+const { useAppState, useSelector } = create({
   state: {
     user: {
       name: 'John',

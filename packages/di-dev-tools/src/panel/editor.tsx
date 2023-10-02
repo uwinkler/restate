@@ -35,6 +35,7 @@ export function Editor() {
       postMessage({
         type: 'apply-state',
         payload: {
+          storeId: update.storeId,
           store: update.store,
           nextState,
           trace: update.trace

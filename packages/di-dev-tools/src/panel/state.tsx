@@ -6,6 +6,7 @@ const UpdatesSchema = z.object({
   id: z.string(),
   state: z.any(),
   store: z.string(),
+  storeId: z.string(),
   trace: z.any(),
   patches: z.array(z.any()),
   inversePatches: z.any(),

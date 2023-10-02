@@ -6,6 +6,7 @@ export function connectDevTools<STATE, TRACE = any>(
   store: RxStore<STATE, TRACE>
 ): CleanupFunction {
   const updates: StatePackage<STATE, TRACE>[] = []
+  const storeId = crypto.randomUUID()
 
   window.addEventListener('message', (msg) => {
     if (!isMessageDevTools(msg)) {
@@ -24,17 +25,14 @@ export function connectDevTools<STATE, TRACE = any>(
       })
     }
 
-    if (
-      type === 'apply-state' &&
-      msg.data.payload.store === store.options.storeName
-    ) {
+    if (type === 'apply-state' && msg.data.payload.storeId === storeId) {
       const { nextState, trace = 'Update from devTools' } = msg.data.payload
       store.next(nextState, trace)
     }
   })
 
   const sub = store.state$.subscribe((s) => {
-    const update = { ...s, timestamp: Date.now() }
+    const update = { ...s, timestamp: Date.now(), storeId }
     updates.push(update)
     window.postMessage({
       store: store.options.storeName,

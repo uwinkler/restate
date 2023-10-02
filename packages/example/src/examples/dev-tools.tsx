@@ -28,10 +28,6 @@ const { useAppState, useSelector, store } = create<State>({
   options: { storeName: 'Examples/DevTools' }
 })
 
-store.next((s) => {
-  s.user.age = 33
-}, 'INIT_2')
-
 connectDevTools(store)
 
 const { useAppState: useOtherAppState, store: otherStore } = create({
