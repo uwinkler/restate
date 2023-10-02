@@ -22,17 +22,26 @@ export function contentMessageHandler(store: RxStore<State>) {
       })
     }
 
-    console.log(msg)
-
     if (canHandle(msg) && msg.type === 'get-all-store-updates-response') {
       const storeName = msg.payload.store
+      const storeId = msg.payload.storeId
+
       const nextStores = msg.payload.updates.map((update: any) => ({
         id: crypto.randomUUID(),
+        patches: [],
+        inversePatches: [],
         ...update,
         store: storeName
       }))
+
       store.next((s) => {
-        s.updates = nextStores
+        const nextUpdates = s.updates.filter(
+          (update) => update.storeId !== storeId
+        )
+        nextUpdates.push(...nextStores)
+        nextUpdates.sort((a, b) => a.timestamp - b.timestamp)
+
+        s.updates = nextUpdates
       })
     }
   })

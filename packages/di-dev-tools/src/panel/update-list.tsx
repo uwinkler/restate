@@ -27,6 +27,16 @@ export function UpdateList() {
   )
 }
 
+function SelectStore() {
+  const allStores = useSelector((s) => {
+    const stores = new Map<string, { id: string; name: string }>()
+    s.updates.forEach((u) => {
+      stores.set(u.storeId, { id: u.storeId, name: u.store })
+    })
+    return Array.from(stores.values())
+  })
+}
+
 function UpdateEntry(props: { update: Update; selected: boolean }) {
   const { update, selected } = props
 

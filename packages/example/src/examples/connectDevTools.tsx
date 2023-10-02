@@ -19,6 +19,7 @@ export function connectDevTools<STATE, TRACE = any>(
         type: 'get-all-store-updates-response',
         source: 'restate-di-content',
         payload: {
+          storeId,
           store: store.options.storeName,
           updates
         }
@@ -35,10 +36,10 @@ export function connectDevTools<STATE, TRACE = any>(
     const update = { ...s, timestamp: Date.now(), storeId }
     updates.push(update)
     window.postMessage({
-      store: store.options.storeName,
       type: 'store-update',
       source: 'restate-di-content',
       payload: {
+        storeId,
         store: store.options.storeName,
         update
       }
