@@ -1,5 +1,6 @@
 import { createServiceRegistry, createService } from '@restate/di'
 import React from 'react'
+import { connectServiceDevTools } from './connectServiceDevTools'
 
 const [useMyCounter, CounterService] = createService('CounterService', () => {
   const [count, _setCount] = React.useState(0)
@@ -16,6 +17,8 @@ const [useMyCounter, CounterService] = createService('CounterService', () => {
 
   return { count, setCount }
 })
+
+connectServiceDevTools()
 
 function Counter() {
   const { count } = useMyCounter()

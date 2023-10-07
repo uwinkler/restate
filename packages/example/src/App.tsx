@@ -1,11 +1,11 @@
 import React from 'react'
 import './App.css'
-import { DevTools } from './examples/dev-tools'
+import { HelloService } from './examples/hello-service'
 
 function App() {
   return (
     <React.StrictMode>
-      <DevTools />
+      <HelloService />
     </React.StrictMode>
   )
 }

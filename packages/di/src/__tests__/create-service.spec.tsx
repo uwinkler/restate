@@ -1,50 +1,49 @@
-import React from "react";
-import renderer from "react-test-renderer";
-import { createService } from "../create-service";
-import { createServiceRegistry } from "../service-registry";
+import React from 'react'
+import renderer from 'react-test-renderer'
+import { createService } from '../create-service'
+import { ServiceRegistry } from '../service-registry'
 
 // Counter
 function counterService() {
-  const count = 12;
-  return { count };
+  const count = 12
+  return { count }
 }
 const [useMyCounter, CounterService] = createService(
-  "CounterService",
+  'CounterService',
   counterService
-);
+)
 
-const [useHello, HelloService] = createService("HelloService", () => {
-  const { count } = useMyCounter();
-  return "Hello World. Count is " + count;
-});
+const [useHello, HelloService] = createService('HelloService', () => {
+  const { count } = useMyCounter()
+  return 'Hello World. Count is ' + count
+})
 
 function Counter() {
-  const { count } = useMyCounter();
-  return <>Count is {count}</>;
+  const { count } = useMyCounter()
+  return <>Count is {count}</>
 }
 
 function Hello() {
-  const message = useHello();
-  return <>{message}</>;
+  const message = useHello()
+  return <>{message}</>
 }
 
 function mockCounterService() {
-  return { count: 0 };
+  return { count: 0 }
 }
 
-test("it should use a combined registry state", () => {
-  const Registry = createServiceRegistry(
-    "ServiceRegistry",
-    [CounterService, HelloService] // <-- order matters
-  );
+test('it should use a combined registry state', () => {
   const Component = (
-    <Registry>
+    <ServiceRegistry
+      name="ServiceRegistry"
+      services={[CounterService, HelloService]}
+    >
       <Counter />
       <Hello />
-    </Registry>
-  );
+    </ServiceRegistry>
+  )
 
-  const container = renderer.create(Component);
+  const container = renderer.create(Component)
 
   expect(container.toJSON()).toMatchInlineSnapshot(`
     [
@@ -52,50 +51,54 @@ test("it should use a combined registry state", () => {
       "12",
       "Hello World. Count is 12",
     ]
-  `);
-});
+  `)
+})
 
-test("it should use a moc", () => {
-  const ServiceRegistry = createServiceRegistry("ServiceRegistry", [
-    { name: "CounterService", service: mockCounterService },
-  ]);
-
+test('it should use a moc', () => {
   const Component = (
-    <ServiceRegistry>
+    <ServiceRegistry
+      name="Service Registry"
+      services={[
+        CounterService,
+        { name: 'CounterService', service: mockCounterService }
+      ]}
+    >
       <Counter />
     </ServiceRegistry>
-  );
+  )
 
-  const container = renderer.create(Component);
+  const container = renderer.create(Component)
 
   expect(container.toJSON()).toMatchInlineSnapshot(`
     [
       "Count is ",
       "0",
     ]
-  `);
-});
+  `)
+})
 
-test("it should use a moc if override is given - also nested", () => {
-  const ServiceRegistry = createServiceRegistry("ServiceRegistry", [
-    CounterService,
-  ]);
-
+test('it should use a moc if override is given - also nested', () => {
   const MockCounterService = {
-    name: "CounterService",
-    service: mockCounterService,
-  };
+    name: 'CounterService',
+    service: mockCounterService
+  }
 
   const Component = (
-    <ServiceRegistry>
+    <ServiceRegistry
+      name="Parent-Service-Registry"
+      services={[HelloService, CounterService]}
+    >
       <Counter />
-      <ServiceRegistry override={[MockCounterService]}>
+      <ServiceRegistry
+        name="Nested-Service-Registry"
+        services={[MockCounterService]}
+      >
         <Counter />
       </ServiceRegistry>
     </ServiceRegistry>
-  );
+  )
 
-  const container = renderer.create(Component);
+  const container = renderer.create(Component)
 
   expect(container.toJSON()).toMatchInlineSnapshot(`
     [
@@ -104,29 +107,20 @@ test("it should use a moc if override is given - also nested", () => {
       "Count is ",
       "0",
     ]
-  `);
-});
+  `)
+})
 
-test("it should be able to use multiple service registries", () => {
-  const CounterServiceRegistry = createServiceRegistry(
-    "CounterServiceRegistry",
-    [CounterService]
-  );
-
-  const HelloServiceRegistry = createServiceRegistry("HelloServiceRegistry", [
-    HelloService,
-  ]);
-
+test('it should be able to use multiple service registries', () => {
   const Component = (
-    <CounterServiceRegistry>
-      <HelloServiceRegistry>
+    <ServiceRegistry name="HelloServices" services={[HelloService]}>
+      <ServiceRegistry name="CounterServices" services={[CounterService]}>
         <Counter />
         <Hello />
-      </HelloServiceRegistry>
-    </CounterServiceRegistry>
-  );
+      </ServiceRegistry>
+    </ServiceRegistry>
+  )
 
-  const container = renderer.create(Component);
+  const container = renderer.create(Component)
 
   expect(container.toJSON()).toMatchInlineSnapshot(`
     [
@@ -134,10 +128,10 @@ test("it should be able to use multiple service registries", () => {
       "12",
       "Hello World. Count is 12",
     ]
-  `);
-});
+  `)
+})
 
-test("it should throw if not wrapped with a ServiceRegistry", () => {
-  const container = () => renderer.create(<Counter />);
-  expect(container).toThrow();
-});
+test('it should throw if not wrapped with a ServiceRegistry', () => {
+  const container = () => renderer.create(<Counter />)
+  expect(container).toThrow()
+})

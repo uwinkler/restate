@@ -10,7 +10,8 @@ module.exports = {
     content: src('content.ts'),
     devtools: src('devtools.ts'),
     'injected-content': src('injected-content.ts'),
-    panel: src('panel.tsx')
+    panel: src('panel.tsx'),
+    service: src('service.tsx')
   },
   output: {
     path: path.join(__dirname, 'dist'),

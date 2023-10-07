@@ -53,44 +53,52 @@ function createContext({
   return { observableMap, getObservable, hasService, name }
 }
 
-export function createServiceRegistry(
-  name: string,
-  services: ServiceRegistryEntry[]
+export function ServiceRegistry(
+  props: React.PropsWithChildren<{
+    services: ServiceRegistryEntry[]
+    name: string
+  }>
 ) {
-  function ServiceRegistry(
-    props: React.PropsWithChildren<{ override?: ServiceRegistryEntry[] }>
-  ) {
-    const parent = useServiceRegistry()
-    const servicesToUse = React.useMemo(() => {
-      const serviceSet = new Set<ServiceRegistryEntry>(services)
-      if (props.override) {
-        props.override.forEach((entry) => serviceSet.add(entry))
-      }
-      return Array.from(serviceSet)
-    }, [])
-    const context = React.useMemo(
-      () => createContext({ services, name, parent }),
-      []
-    )
+  const { name, services } = props
+  const parent = useServiceRegistry()
+  const context = React.useMemo(
+    () => createContext({ services, name, parent }),
+    [services, name, parent]
+  )
 
-    return (
-      <Ctx.Provider value={context}>
-        <HookMount services={servicesToUse}>{props.children}</HookMount>
-      </Ctx.Provider>
-    )
-  }
+  React.useEffect(() => {
+    if ((window as any).__RESTATE_REGISTRY__) {
+    }
 
-  return ServiceRegistry
+    function report() {}
+    window.addEventListener('message', report)
+    return () => window.removeEventListener('message', report)
+  }, [])
+
+  return (
+    <Ctx.Provider value={context}>
+      <HookMount services={services}>{props.children}</HookMount>
+    </Ctx.Provider>
+  )
 }
 
 function HookMount(
   props: React.PropsWithChildren<{ services: ServiceRegistryEntry[] }>
 ) {
   const context = useServiceRegistry()
+
+  const registryObservable = React.useMemo(() => {
+    if (!(window as any).__RESTATE_SERVICE_REGISTRY__) {
+      ;(window as any).__RESTATE_SERVICE_REGISTRY__ = new BehaviorSubject(null)
+    }
+    return (window as any).__RESTATE_SERVICE_REGISTRY__ as BehaviorSubject<any>
+  }, [])
+
   props.services.forEach((entry) => {
     const hookResult = entry.service()
     const observable = context.getObservable(entry.name)
     observable.next(hookResult)
+    registryObservable.next({ name: entry.name, value: hookResult })
   })
 
   return <>{props.children}</>

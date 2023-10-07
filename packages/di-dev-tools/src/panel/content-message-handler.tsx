@@ -1,5 +1,4 @@
 import { RxStore } from '@restate/core'
-import { MessageContent, isMessageContent } from '../utils'
 import type { State } from './state'
 
 export function contentMessageHandler(store: RxStore<State>) {
