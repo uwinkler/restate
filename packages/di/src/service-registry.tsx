@@ -56,28 +56,31 @@ function createContext({
 export function ServiceRegistry(
   props: React.PropsWithChildren<{
     services: ServiceRegistryEntry[]
-    name: string
+    name?: string
   }>
 ) {
-  const { name, services } = props
+  const { name = 'ServiceRegistry', services } = props
   const parent = useServiceRegistry()
+  const [servicesToUse, setServicesToUse] = React.useState(services)
+
   const context = React.useMemo(
-    () => createContext({ services, name, parent }),
-    [services, name, parent]
+    () => createContext({ services: servicesToUse, name, parent }),
+    [servicesToUse, name, parent]
   )
 
   React.useEffect(() => {
-    if ((window as any).__RESTATE_REGISTRY__) {
-    }
-
     function report() {}
     window.addEventListener('message', report)
-    return () => window.removeEventListener('message', report)
+    return () => {
+      window.addEventListener('message', (e) => {
+        console.log('message', e)
+      })
+    }
   }, [])
 
   return (
     <Ctx.Provider value={context}>
-      <HookMount services={services}>{props.children}</HookMount>
+      <HookMount services={servicesToUse}>{props.children}</HookMount>
     </Ctx.Provider>
   )
 }

@@ -1,4 +1,4 @@
-import { createServiceRegistry, createService } from '@restate/di'
+import { ServiceRegistry, createService } from '@restate/di'
 import React from 'react'
 import { connectServiceDevTools } from './connectServiceDevTools'
 
@@ -32,13 +32,9 @@ function ResetButton() {
   return <button onClick={() => setCount(0)}>Reset</button>
 }
 
-const ServiceRegistry = createServiceRegistry('ServiceRegistry', [
-  CounterService
-])
-
 export function HelloCounter() {
   return (
-    <ServiceRegistry>
+    <ServiceRegistry name="ServiceRegistry" services={[CounterService]}>
       <Counter />
       <ResetButton />
     </ServiceRegistry>

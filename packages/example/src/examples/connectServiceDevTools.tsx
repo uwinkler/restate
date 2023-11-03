@@ -1,20 +1,39 @@
-import { MessageContent, isMessageDevTools } from '@restate/di-commons'
+import {
+  MessageContent,
+  ServiceUpdateMessage,
+  ServiceUpdatePayload,
+  isMessageDevTools
+} from '@restate/di-commons'
 import { BehaviorSubject } from 'rxjs'
 import { distinctUntilChanged } from 'rxjs/operators'
 
 type CleanupFunction = () => void
 
-export function connectServiceDevTools(): CleanupFunction {
-  const updates: any[] = []
+function connectServiceDevTools(): CleanupFunction {
+  const updates: ServiceUpdatePayload[] = []
 
   const sub = getObservable()
     .pipe(
-      distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b))
+      distinctUntilChanged(
+        (a, b) =>
+          JSON.stringify(deepCleanObject(a)) ===
+          JSON.stringify(deepCleanObject(b))
+      )
     )
     .subscribe((m) => {
       const id = crypto.randomUUID()
-      const update = { result: m, timestamp: Date.now(), id }
-      updates.push(update)
+      const payload: ServiceUpdatePayload = { ...m, timestamp: Date.now(), id }
+      updates.push(payload)
+
+      if (updates.length > 3) {
+        reset(updates[3])
+      }
+
+      postMessage({
+        type: 'service-update',
+        source: 'restate-di-content',
+        payload: deepCleanObject(payload)
+      })
     })
 
   window.addEventListener('message', (msg) => {
@@ -52,3 +71,26 @@ function getObservable() {
 function postMessage<T>(msg: MessageContent<T>) {
   window.postMessage(msg)
 }
+
+function reset(msg: ServiceUpdatePayload) {
+  console.log('reset', msg)
+  window.dispatchEvent(new CustomEvent('restate-di-reset', { msg } as any))
+}
+
+function deepCleanObject(obj: any) {
+  const newObj: any = {}
+  for (const key in obj) {
+    if (typeof obj[key] === 'object') {
+      newObj[key] = deepCleanObject(obj[key])
+    } else if (typeof obj[key] === 'function') {
+      // newObj[key] = obj[key].name
+    } else if (typeof obj[key] !== 'function') {
+      newObj[key] = obj[key]
+    }
+  }
+  return newObj
+}
+
+// A function that clones an object with all functions
+function deepClone(obj: any) {}
+export { connectServiceDevTools }

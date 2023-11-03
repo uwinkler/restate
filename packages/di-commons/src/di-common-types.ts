@@ -25,10 +25,20 @@ export type MessageDevTools<T> = {
 
 export type Message<T> = MessageContent<T> | MessageDevTools<T>
 
+// Service
+
+export type ServiceUpdatePayload = {
+  name: string
+  value: any
+  timestamp: number
+  id: string
+}
+export type ServiceUpdateMessage = MessageContent<ServiceUpdatePayload>
+
 export function isMessageDevTools(msg: any) {
-  return msg?.data?.source === 'restate-di-devtools'
+  return msg?.source === 'restate-di-devtools'
 }
 
 export function isMessageContent<T>(msg: any): msg is MessageContent<T> {
-  return msg.source === 'restate-di-content'
+  return msg?.source === 'restate-di-content'
 }
