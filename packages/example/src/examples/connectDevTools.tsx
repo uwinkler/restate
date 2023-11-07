@@ -1,10 +1,10 @@
-import { RxStore, StatePackage } from '@restate/core'
+import { RestateStore, StatePackage } from '@restate/core'
 import { BehaviorSubject } from 'rxjs'
 
 type CleanupFunction = () => void
 
 export function connectDevTools<STATE, TRACE = any>(
-  store: RxStore<STATE, TRACE>
+  store: RestateStore<STATE, TRACE>
 ): CleanupFunction {
   const updates: StatePackage<STATE, TRACE>[] = []
   const storeId = crypto.randomUUID()

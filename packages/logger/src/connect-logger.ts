@@ -22,7 +22,7 @@ export function connectLogger(appStore: RxStore<any>, props: LoggerProps = {}) {
   const name =
     appStore.options.storeName === '' ? 'RxState' : appStore.options.storeName
 
-  appStore.state$.subscribe((update) => {
+  appStore.state$.subscribe((update: any) => {
     console.groupCollapsed(
       formatGroupName(name, update),
       `color: ${color}; background:${backgroundColor};`

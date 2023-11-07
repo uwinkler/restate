@@ -3,21 +3,44 @@ import { create } from '@restate/core'
 // We create our app state and a hook to access the state:
 const { useAppState, useSelector } = create({
   state: {
-    name: 'restate'
+    name: 'John',
+    age: 32
   }
 })
 
-export function HelloSelector() {
+function Name() {
+  // useSelector is a hook that takes a selector function
+  // and returns the selected value. We can do some computation
+  // in the selector function:
   const nameInUpperCase = useSelector((s) => s.name.toLocaleUpperCase())
-  const [name, setName] = useAppState((s) => s.name)
+  return <h1>Hello (in uppercase): {nameInUpperCase}!</h1>
+}
 
+function Greeting() {
+  // useSelector is a hook that takes a selector function
+  // and returns the selected value. We can do some computation
+  // in the selector function:
+  const greeting = useSelector((s) =>
+    s.age > 30 ? 'Good day.' : 'Let`s party'
+  )
+  return <h1>{greeting}!</h1>
+}
+
+function AgeInput() {
+  const [age, setAge] = useAppState((s) => s.age)
+  return (
+    <input
+      value={age}
+      onChange={(e) => setAge((s) => Number(e.target.value))}
+    />
+  )
+}
+
+export function HelloSelector() {
   return (
     <>
-      <h1>Hello {nameInUpperCase}!</h1>
-      <input
-        value={name}
-        onChange={(e) => setName((s) => setName(e.target.value))}
-      />
+      <Greeting />
+      <AgeInput />
     </>
   )
 }

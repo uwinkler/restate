@@ -1,11 +1,11 @@
 import React from 'react'
-import { RxStore } from './rx-store'
+import { RestateStore } from './rx-store'
 import { Subtract } from 'utility-types'
 
-type WithStoreHocProps<S> = React.Context<RxStore<S>>
+type WithStoreHocProps<S> = React.Context<RestateStore<S>>
 
 export interface WithRxStore<S> {
-  rxStore: RxStore<S>
+  rxStore: RestateStore<S>
 }
 
 export function createWithStoreHoc<STATE>(Context: WithStoreHocProps<STATE>) {

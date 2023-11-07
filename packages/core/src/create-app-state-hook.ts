@@ -1,6 +1,6 @@
 import { createNextHook } from './create-next-hook'
 import { createSelectorHook } from './create-selector-hook'
-import { RxStore } from './rx-store'
+import { RestateStore } from './rx-store'
 
 type SelectorFunction<S, T> = (state: S) => T
 
@@ -9,7 +9,7 @@ export function createAppStateHook<
   SUB_STATE extends object,
   TRACE
 >(
-  context: React.Context<RxStore<S>>,
+  context: React.Context<RestateStore<S>>,
   outerSelector: SelectorFunction<S, SUB_STATE>
 ) {
   const useNext = createNextHook(context, outerSelector)

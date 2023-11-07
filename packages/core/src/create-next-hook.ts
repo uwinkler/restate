@@ -1,9 +1,9 @@
 import { current } from 'immer'
 import { useContext } from 'react'
-import { RxStore } from './rx-store'
+import { RestateStore } from './rx-store'
 import { isFunction } from './utils'
 
-type AppStoreProvider<S> = React.Context<RxStore<S>>
+type AppStoreProvider<S> = React.Context<RestateStore<S>>
 type SelectorFunction<S, T> = (state: S) => T
 type UpdateFunction<S> = (state: S) => void
 

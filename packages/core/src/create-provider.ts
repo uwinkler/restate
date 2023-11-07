@@ -1,8 +1,8 @@
 import React from 'react'
-import { RxStore } from './rx-store'
+import { RestateStore } from './rx-store'
 
-export type RxStoreContext<S> = React.Context<RxStore<S>>
+export type RxStoreContext<S> = React.Context<RestateStore<S>>
 
-export function createProvider<S>(store: RxStore<S>): RxStoreContext<S> {
+export function createProvider<S>(store: RestateStore<S>): RxStoreContext<S> {
   return React.createContext(store)
 }

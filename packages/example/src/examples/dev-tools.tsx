@@ -22,7 +22,6 @@ const { useAppState, useSelector, store } = create<State>({
       age: 32
     }
   },
-
   middleware: [validateMiddlewareWithZod], // use the middleware
   trace: 'Init',
   options: { storeName: 'Examples/DevTools' }

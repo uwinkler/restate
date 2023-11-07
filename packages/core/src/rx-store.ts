@@ -13,7 +13,7 @@ interface MiddlewareProps<S> {
 
 export type Middleware<S> = (props: MiddlewareProps<S>) => any
 
-export interface RxStoreOptions {
+export interface RestateStoreOptions {
   freeze: boolean
   storeName: string
   dev: boolean
@@ -27,15 +27,15 @@ export interface StatePackage<STATE, TRACE> {
   stack?: string
 }
 
-export class RxStore<STATE, TRACE = any> {
+export class RestateStore<STATE, TRACE = any> {
   protected _state$: BehaviorSubject<StatePackage<STATE, TRACE>>
-  protected _options: RxStoreOptions
+  protected _options: RestateStoreOptions
   protected _middleware: Middleware<STATE>[] = []
 
   constructor(
     stateSubject: BehaviorSubject<StatePackage<STATE, TRACE>>,
     middleware: Middleware<STATE>[],
-    options: RxStoreOptions
+    options: RestateStoreOptions
   ) {
     this._state$ = stateSubject
     this._middleware = middleware
@@ -45,9 +45,9 @@ export class RxStore<STATE, TRACE = any> {
   static of<S, T = any>(
     state: BehaviorSubject<StatePackage<S, T>>,
     middleware: Middleware<S>[],
-    options: RxStoreOptions
+    options: RestateStoreOptions
   ) {
-    return new RxStore(state, middleware, options)
+    return new RestateStore(state, middleware, options)
   }
 
   private _next(

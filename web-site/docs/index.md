@@ -3,7 +3,7 @@ layout: home
 
 hero:
   name: restate
-  tagline: Restate provides an enterprise grade state management library  and DI toolkit for your React apps.
+  tagline: Restate provides an experimental state management library for React apps.
   actions:
     - theme: brand
       text: Get Started

@@ -1,16 +1,4 @@
-To get started, you need to create a store:
+The `create` function returns the store itself. The store is holds an RxJS observable of
+the state and a function to update the state.
 
-```tsx src=https://stackblitz.com/edit/restate-hello-world
-import { createStore } from '@restate/core'
-
-const store = createStore({
-  state: {
-    name: 'John Snow',
-    age: 32
-  }
-})
-```
-
-The `createStore` function takes the initial state, so your application always starts in an specified state.
-
-Learn more about <Link to="/api-create-store">createStore</Link>.
+<<< @/../../packages/example/src/examples/hello-selector.tsx

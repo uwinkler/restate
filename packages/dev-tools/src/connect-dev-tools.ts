@@ -1,6 +1,6 @@
-import { RxStore } from '@restate/core'
+import { RestateStore } from '@restate/core'
 
-export function connectDevTools(store: RxStore<any>): () => void {
+export function connectDevTools(store: RestateStore<any>): () => void {
   const devToolsExtension = (window as any).__REDUX_DEVTOOLS_EXTENSION__
 
   if (!devToolsExtension) {

@@ -1,12 +1,12 @@
 import { useContext, useEffect, useMemo, useState } from 'react'
 import { BehaviorSubject } from 'rxjs'
 import { distinctUntilChanged } from 'rxjs/operators'
-import { RxStore } from './rx-store'
+import { RestateStore } from './rx-store'
 
 //
 // Types
 
-type RxStoreContext<S> = React.Context<RxStore<S>>
+type RxStoreContext<S> = React.Context<RestateStore<S>>
 
 type SelectorFunction<S, T> = (state: S) => T
 
@@ -26,11 +26,11 @@ export type UseSelectorHook<S> = <T>(
 // createStateHook definition
 //
 export function createSelectorHook<S>(
-  context: React.Context<RxStore<S>>
+  context: React.Context<RestateStore<S>>
 ): UseSelectorHook<S>
 
 export function createSelectorHook<S, SUB_STATE>(
-  context: React.Context<RxStore<S>>,
+  context: React.Context<RestateStore<S>>,
   outerSelector: SelectorFunction<S, SUB_STATE>
 ): UseSelectorHook<SUB_STATE>
 
@@ -45,7 +45,7 @@ export function createSelectorHook<S, SUB_STATE>(
     selector: SelectorFunction<SUB_STATE, T>,
     props?: StateHookProps<T>
   ): T {
-    const _store: RxStore<S> = useContext(context)
+    const _store: RestateStore<S> = useContext(context)
 
     const _props = {
       deps: [],

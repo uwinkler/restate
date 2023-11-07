@@ -5,8 +5,7 @@ const { useAppState, useSelector } = create({
   state: {
     name: 'restate',
     age: 32
-  },
-  trace: 'INIT'
+  }
 })
 
 function Name() {

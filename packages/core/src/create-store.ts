@@ -1,17 +1,22 @@
 import { setAutoFreeze, enablePatches } from 'immer'
 import { BehaviorSubject } from 'rxjs'
-import { Middleware, RxStore, RxStoreOptions, StatePackage } from './rx-store'
+import {
+  Middleware,
+  RestateStore,
+  RestateStoreOptions,
+  StatePackage
+} from './rx-store'
 
 enablePatches()
 
 export type CreateStoreProps<STATE, TRACE> = {
   state: STATE
   middleware?: Middleware<STATE>[]
-  options?: Partial<RxStoreOptions>
+  options?: Partial<RestateStoreOptions>
   trace?: TRACE
 }
 
-export const RESTATE_STORE_DEFAULT_OPTIONS: RxStoreOptions = {
+export const RESTATE_STORE_DEFAULT_OPTIONS: RestateStoreOptions = {
   freeze: true,
   storeName: 'STORE',
   dev: process.env.NODE_ENV !== 'production'
@@ -33,5 +38,5 @@ export function createStore<STATE, TRACE = any>({
 
   const state$ = new BehaviorSubject(initialStatePackage)
 
-  return RxStore.of(state$, middleware, opts)
+  return RestateStore.of(state$, middleware, opts)
 }
