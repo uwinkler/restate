@@ -1,54 +1,49 @@
 import { create } from '@restate/core'
 
-// We create our app state and a hook to access the state:
 const { useAppState, useSelector, useNext } = create({
   state: {
-    name: 'restate',
-    age: 32
+    user: {
+      name: 'John',
+      age: 32
+    }
   }
 })
 
-function ResetAgeButton() {
-  const setAge = useNext((s) => s.age)
-  return <button onClick={() => setAge(32)}>Reset</button>
-}
-
-function Name() {
-  const name = useSelector((s) => s.name.toLocaleUpperCase())
-  return <h1>Hello (in uppercase): {name}!</h1>
-}
-
-function Age() {
-  const age = useSelector((s) =>
-    s.age > 50 ? 'You are old, dude.' : 'Let`s party!'
+function Greeting() {
+  const greeting = useSelector((s) =>
+    s.user.age < 30 ? `Hi ${s.user.name}` : `God day Sir`
   )
-  return <div>{age}</div>
+
+  return <h1> {greeting}!</h1>
 }
 
 function AgeInput() {
-  const [name, setName] = useAppState((s) => s.age)
+  const [age, setAge] = useAppState((s) => s.user.age)
   return (
     <input
-      value={name}
+      value={age}
       type="number"
-      onChange={(e) => setName(Number(e.target.value))}
+      onChange={(e) => setAge(Number(e.target.value))}
     />
   )
 }
 
-function NameInput() {
-  const [name, setName] = useAppState((s) => s.name)
-  return <input value={name} onChange={(e) => setName(e.target.value)} />
+function ResetAgeButton() {
+  const setAge = useNext((s) => s.user.age)
+  return (
+    <>
+      <button onClick={() => setAge(32)}>Reset age to 32</button>
+      <button onClick={() => setAge(20)}>Reset age to 20</button>
+    </>
+  )
 }
 
 export function HelloSelectorAndNext() {
   return (
-    <>
-      <Name />
-      <Age />
+    <div className="layout">
+      <Greeting />
       <AgeInput />
       <ResetAgeButton />
-      <NameInput />
-    </>
+    </div>
   )
 }

@@ -73,7 +73,7 @@ export function ServiceRegistry(
     window.addEventListener('message', report)
     return () => {
       window.addEventListener('message', (e) => {
-        console.log('message', e)
+        // console.log('message', e)
       })
     }
   }, [])

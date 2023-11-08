@@ -1,5 +1,5 @@
-import { useAppState } from './app.state'
-
+import { EXAMPLES_MAP, EXAMPLE_NAMES, useAppState } from './app.state'
+import { FormControl, InputLabel, MenuItem, Select } from '@mui/material'
 export function ExampleSwitch() {
   const [value, setValue] = useAppState((s) => s.exampleApp)
 
@@ -7,16 +7,21 @@ export function ExampleSwitch() {
     setValue(e.target.value as any)
 
   return (
-    <div className="example-switch">
-      <select onChange={handleChange}>
-        <option value="hello-restate">Hello Restate</option>
-        <option value="hello-useAppState">useAppState</option>
-        <option value="multiple-useSelector">useSelector</option>
-        <option value="hello-useNext">useNext</option>
-        <option value="hello-store">Store and Observables</option>
-        <option value="hello-middleware">Middleware</option>
-        <option value="hello-zod">Validation with ZOD</option>
-      </select>
-    </div>
+    <FormControl fullWidth>
+      <InputLabel id="demo-simple-select-label">Example</InputLabel>
+      <Select
+        labelId="demo-simple-select-label"
+        id="demo-simple-select"
+        value={value}
+        label="Example"
+        onChange={(e) => setValue(e.target.value as any)}
+      >
+        {EXAMPLE_NAMES.map((name) => (
+          <MenuItem key={name} value={name}>
+            {name}
+          </MenuItem>
+        ))}
+      </Select>
+    </FormControl>
   )
 }

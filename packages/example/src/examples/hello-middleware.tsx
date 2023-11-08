@@ -61,7 +61,7 @@ function ChangeAge() {
   return <input value={age} onChange={(e) => setAge(Number(e.target.value))} />
 }
 
-export function ZodValidation() {
+export function HelloMiddleware() {
   return (
     <>
       <Name />

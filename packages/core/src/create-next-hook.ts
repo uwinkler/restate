@@ -35,8 +35,8 @@ export function createNextHook<S extends object, T>(
     const outerSelector = scope ? scope : (state: S) => state
 
     function updateNestedState(subState: any, nextValue: T) {
-      const path = getPath({ subState, selector, outerSelector })
-      mutateNestedObject({ obj: subState, path, nextValue })
+      const proxy = getProxy({ subState, selector, outerSelector })
+      mutateNestedObject({ proxy, nextValue })
       return subState
     }
 
@@ -47,7 +47,7 @@ export function createNextHook<S extends object, T>(
           return updateFunctionOrNextState(subState)
         } else {
           const nextValue = updateFunctionOrNextState
-          return updateNestedState(outerSelector(currentState), nextValue)
+          return updateNestedState(currentState, nextValue)
         }
       }, trace)
     }
@@ -58,20 +58,7 @@ export function createNextHook<S extends object, T>(
   return useNextHook
 }
 
-const proxyAccess = {
-  get(target: any, key: any): any {
-    console.log('get:', target, key)
-    if (typeof target[key] === 'object' && target[key] !== null) {
-      console.log('recursive ->', key)
-      return new Proxy(target[key], proxyAccess)
-    } else {
-      console.log('target prop key', key)
-      return target[key]
-    }
-  }
-}
-
-function getPath(props: {
+function getProxy(props: {
   subState: object
   selector: (s: any) => any
   outerSelector: (s: any) => any
@@ -81,43 +68,54 @@ function getPath(props: {
   const unfrozenSupState = Object.isFrozen(subState)
     ? Object.assign({}, current(subState))
     : subState
-  const path: string[] = []
 
-  const proxyAccess = {
+  let path: any = []
+
+  const proxyAccess = (parent: any) => ({
     get(target: any, key: any): any {
+      if (Array.isArray(target) && isNaN(key)) {
+        return target[key]
+      }
+
+      path.push({
+        parent,
+        target,
+        key,
+        idx: Array.isArray(parent) ? parent.indexOf(target) : -1
+      })
+
+      if (key === '___restate_parent___') {
+        return parent
+      }
+      // if (key === '__parent__') {
+      // return parent
       if (typeof target[key] === 'object' && target[key] !== null) {
-        path.push(key)
-        return new Proxy(target[key], proxyAccess)
+        return new Proxy(target[key], proxyAccess(target))
+      } else if (Array.isArray(target) && !isNaN(key)) {
+        return new Proxy(target[key], proxyAccess(target))
       } else {
-        path.push(key)
         return target[key]
       }
     }
+  })
+
+  const proxy = new Proxy(unfrozenSupState, proxyAccess(unfrozenSupState))
+  const target = selector(outerSelector(proxy) as any)
+  if (Array.isArray(target.___restate_parent___)) {
+    return {
+      ...path.at(-1),
+      isArray: true
+    }
   }
-
-  const proxy = new Proxy(unfrozenSupState, proxyAccess)
-
-  // We "read" the value (get) recursively using proxyAccess
-  // in order to determine the path
-  selector(outerSelector(proxy as any) as any)
-
-  return path
+  return { ...path.at(-1), isArray: false, idx: -1 }
 }
 
-function mutateNestedObject(props: {
-  obj: any
-  path: string[]
-  nextValue: any
-}): void {
-  const { obj, path, nextValue } = props
-  if (path.length > 1) {
-    const [head, ...tail] = path
-    return mutateNestedObject({
-      obj: obj[head],
-      path: tail,
-      nextValue
-    })
+function mutateNestedObject(props: { proxy: any; nextValue: any }): void {
+  const { proxy, nextValue } = props
+  const { target, key, isArray, idx, parent } = proxy
+  if (isArray && typeof parent[idx] === typeof nextValue) {
+    parent[idx] = nextValue
+  } else {
+    target[key] = nextValue
   }
-  const key = path[0]
-  obj[key] = nextValue
 }
