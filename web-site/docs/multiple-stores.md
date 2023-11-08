@@ -1,64 +1,27 @@
----
-title: Multiple Stores
-path: /multiple-stores/
----
+# Multiple Stores
 
-import { Link } from "gatsby"
-import { MdxLayout } from "../layouts/mdx-layout"
-import { InfoPanel, WarningPanel } from "../components/panel"
-export default MdxLayout
+You can easily have more than one store in your application by calling `create` multiple times and renaming the `useAppState` hook.
 
-You can easily have more than one store in your application. See the multiple store example on [BlitzStack!](https://stackblitz.com/edit/restate-multiple-stores-toggle?file=index.tsx)
+```tsx
+import { create } from '@restate/core'
 
-```tsx src=https://stackblitz.com/edit/restate-multiple-stores-toggle?file=index.tsx
-
-const store1 = createStore<State>({
+const { useAppState: useUserAppState } = create({
   state: {
-    user: {
-      name: 'John Snow',
-      age: 32,
-    },
+    name: 'John Snow',
+    age: 32
   }
 })
 
-const store2 = createStore<State>({
+const { useAppState: useTodoAppState } = create({
   state: {
-    user: {
-      name: 'Arya Stark',
-      age: 25,
-    },
+    todos: [
+      { todo: 'Buy Mild', done: false },
+      { todo: 'Buy Eggs', done: false }
+    ]
   }
 })
-
-const AppStoreProvider = createProvider<State>(null);
-//const AppStoreProvider = createProvider<State>(store1); would also work
-
-
-...
-
-const ToggleStore = props => {
-  const [store, setStore] = React.useState(store1)
-
-  return (
-    <div>
-      <button onClick={() => setStore(store1)}>Store 1</button>
-      <button onClick={() => setStore(store2)}>Store 2</button>
-      <AppStoreProvider.Provider value={store}>
-        {props.children}
-      </AppStoreProvider.Provider>
-
-    </div>
-  )
-}
-
-const App: React.FC = () => (
-  <ToggleStore>
-    <Hello />
-    <Age />
-    <NameForm />
-  </ToggleStore>
-);
-
-
-render(<App />, document.getElementById('root'));
 ```
+
+# Example
+
+<<< @/../../packages/example/src/examples/multiple-stores.tsx

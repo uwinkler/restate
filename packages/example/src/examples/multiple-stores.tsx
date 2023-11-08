@@ -12,8 +12,8 @@ const { useAppState, useSelector, useNext } = create({
 const { useAppState: useTodoAppState, useSelector: useTodoSelector } = create({
   state: {
     todos: [
-      { todo: 'Buy Mild', done: false },
-      { todo: 'Buy Eggs', done: false }
+      { todo: 'Buy milk', done: false },
+      { todo: 'Buy eggs', done: false }
     ]
   }
 })

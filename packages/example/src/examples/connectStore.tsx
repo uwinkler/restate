@@ -1,4 +1,11 @@
 import { RestateStore, create } from '@restate/core'
+import {
+  debounceTime,
+  distinctUntilChanged,
+  map,
+  pairwise,
+  startWith
+} from 'rxjs/operators'
 
 const { store } = create({
   state: {
@@ -9,6 +16,7 @@ const { store } = create({
   }
 })
 
+// Out
 // Using the `next` method to update the state
 // in an imperative way. Please note, that
 // the state is immutable, but we are using immer
@@ -34,15 +42,18 @@ console.log(store.state)
 // like this:
 store.state$.subscribe((state) => console.log(state))
 
-// ... and with RxJs that we can do some cool stuff,
+// ... and with RxJs we can do some cool stuff,
 // like this:
+//
 store.state$
   .pipe(
+    map((update) => update.state), // the update object contains the state
     map((state) => state.user.name), // select the name
     distinctUntilChanged(), // only emit when the name changes
     debounceTime(1000), // wait 1s before emitting
     pairwise() // emit the previous and the next name
   )
-  .subscribe((previousName, nextName) =>
+  .subscribe(([previousName, nextName]) =>
+    // log the previous and the next name
     console.log(`${previousName} -> ${nextName}`)
   )

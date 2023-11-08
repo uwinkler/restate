@@ -14,16 +14,13 @@ hero:
 features:
   - icon: 🤩
     title: Easy to use
-    details: Restate is a library you will love. It is the state management library and dependency injection toolkit for React you were missing all the time.
+    details: Restate is a library you will love. It is the state management library for React you were missing all the time. As simple as the useState hook, but with all the power you need.
   - icon: 🎓
     title: Easy to learn
     details: Learning new library is not always easy. We aimed to make restate as user friendly as possible by keeping it simple - and the learning curve as shallow as possible.
   - icon: 💯
     title: Easy to test
     details: Using some very simple patterns, restate applications are very easy to test. In fact, restate provides dependency injection tools to allow for a good testing experience without any mocking library.
-  - icon: ✍️
-    title: Simple and minimal, always
-    details: Going to stackoverflow a lot? Not with restate - we keep things simple and tiny. Hence you don't have to memorize to much.
   - icon: 🌀
     title: Typesafe
     details: Restate is written in Typescript and therefore fits very nicely in any Typescript project. No worries about missing types.

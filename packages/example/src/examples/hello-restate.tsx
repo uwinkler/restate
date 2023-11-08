@@ -1,6 +1,6 @@
 import { create } from '@restate/core'
 
-// We use the `create` function to create our app state
+// The `create` function creates the app state
 //  and a hook `useAppState` to access the state:
 const { useAppState } = create({
   state: {
@@ -9,10 +9,11 @@ const { useAppState } = create({
 })
 
 export function HelloRestate() {
-  // Use the hook to access the state and get
-  // a setter function `setMessage` to update the state.
+  // Use the hook to select a property of your state.
+  // The hook will return the value and a setter function.
   //
   // You know, just like the `useState` hook does. Nice, right?  🤩
+  //
   const [message, setMessage] = useAppState((state) => state.message)
 
   return (

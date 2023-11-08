@@ -3,9 +3,9 @@
 To get started, you need to create a store:
 
 ```tsx
-import { createStore } from '@restate/core'
+import { create } from '@restate/core'
 
-const { useAppState } = createStore({
+const { useAppState } = create({
   state: {
     name: 'John Snow',
     age: 32
@@ -19,8 +19,6 @@ Then, you can use the `useAppState` hook to select properties from the store and
 
 ```tsx
 const Hello = () => {
-  // select a property from the state, and get a function to
-  // update the store
   const [name, setName] = useAppState((state) => state.name)
 
   return (

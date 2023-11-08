@@ -10,7 +10,6 @@ export default {
     siteTitle: false,
     nav: [
       { text: 'Guide', link: '/introduction' },
-      { text: 'API', link: '/api' },
       { text: 'Imprint', link: '/imprint' }
     ],
     footer: {
@@ -28,14 +27,10 @@ export default {
           { text: 'Hello Restate', link: '/introduction' },
           { text: 'Installation', link: '/installation' },
           { text: 'useAppState', link: '/quick-useAppState' },
-          { text: 'useSelector', link: '/quick-useSelector' }
-          // { text: 'Provider', link: '/quick-provider' },
-          // { text: 'App State Hook', link: '/quick-state-hook' },
-          // { text: 'Next Hook', link: '/quick-next-hook' },
-          // { text: 'Actions', link: '/quick-actions' },
-          // { text: 'Connectors', link: '/quick-glue' },
-          // { text: 'Middleware', link: '/quick-middleware' },
-          // { text: 'DevTools', link: '/quick-dev-tools' }
+          { text: 'useSelector', link: '/quick-useSelector' },
+          { text: 'useNext', link: '/quick-useNext' },
+          { text: 'store', link: '/quick-store' },
+          { text: 'Middleware', link: '/quick-middleware' }
         ]
       },
       {
@@ -49,8 +44,9 @@ export default {
           // { text: 'App State Hook', link: '/quick-state-hook' },
           // { text: 'Next Hook', link: '/quick-next-hook' },
           // { text: 'Actions', link: '/quick-actions' },
-          { text: 'Connectors', link: '/quick-glue' },
-          { text: 'Middleware', link: '/quick-middleware' },
+          { text: 'Connectors', link: '/connectors' },
+          { text: 'Multiple Stores', link: '/multiple-stores' },
+          { text: 'Zod Middleware', link: '/zod-middleware' },
           { text: 'DevTools', link: '/quick-dev-tools' }
         ]
       }

@@ -1,7 +1,17 @@
 # Hello restate
 
-This is `HelloWorld` with restate:
+This is `Hello World` with restate.
 
 <<< @/../../packages/example/src/examples/hello-restate.tsx
 
-And that's it (mostly)! Easy and simple. You can see the full code on [StackBlitz](https://stackblitz.com/edit/restate-hello-world).
+First, we have to use the `create` function to create and initialize our store and
+to obtain the `useAppState` hook.
+
+The `useAppState` hook takes one argument, a selector function: `state => state.message`.
+The selector function is used to select a property from the state,
+in this example the `message` property.
+
+The `useAppState` hook returns an array with two elements: the selected property and
+a function to update the state. Just like the `useState` hook. Nice and simple. Isn't it?
+
+And that's it (mostly)! Easy and simple.
