@@ -1,5 +1,5 @@
 import { Patch } from 'immer'
-import { RxStore, StatePackage } from '@restate/core'
+import { RestateStore, StatePackage } from '@restate/core'
 import sourceMapSupport from 'source-map-support'
 
 interface LoggerProps {
@@ -8,7 +8,10 @@ interface LoggerProps {
   printStack?: boolean
 }
 
-export function connectLogger(appStore: RxStore<any>, props: LoggerProps = {}) {
+export function connectLogger(
+  appStore: RestateStore<any>,
+  props: LoggerProps = {}
+) {
   const {
     color = 'white',
     backgroundColor = 'DarkOrange',
@@ -20,9 +23,11 @@ export function connectLogger(appStore: RxStore<any>, props: LoggerProps = {}) {
   }
 
   const name =
-    appStore.options.storeName === '' ? 'RxState' : appStore.options.storeName
+    appStore.options.storeName === ''
+      ? 'RestateStore'
+      : appStore.options.storeName
 
-  appStore.state$.subscribe((update: any) => {
+  const subscription = appStore.state$.subscribe((update: any) => {
     console.groupCollapsed(
       formatGroupName(name, update),
       `color: ${color}; background:${backgroundColor};`
@@ -35,6 +40,8 @@ export function connectLogger(appStore: RxStore<any>, props: LoggerProps = {}) {
     }
     console.groupEnd()
   })
+
+  return () => subscription.unsubscribe()
 }
 
 function formatStack(update: StatePackage<any, any>) {

@@ -61,7 +61,7 @@ export function ServiceRegistry(
 ) {
   const { name = 'ServiceRegistry', services } = props
   const parent = useServiceRegistry()
-  const [servicesToUse, setServicesToUse] = React.useState(services)
+  const [servicesToUse, _setServicesToUse] = React.useState(services)
 
   const context = React.useMemo(
     () => createContext({ services: servicesToUse, name, parent }),
@@ -72,7 +72,7 @@ export function ServiceRegistry(
     function report() {}
     window.addEventListener('message', report)
     return () => {
-      window.addEventListener('message', (e) => {
+      window.addEventListener('message', (_e) => {
         // console.log('message', e)
       })
     }
