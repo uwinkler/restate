@@ -25,9 +25,14 @@ function Age {
 }
 ```
 
+Even the code above looks like plain Javascript, it is indeed Typescript. Go on [StackBlitz](https://stackblitz.com/edit/restate-hello-world) and
+make some changes to the state, for example change the property `user.name` to `user.firstName`. You will see how Typescript is
+able to pick up those changes and gives you nice error messages.
+
+# About
+
 _Restate_ is inspired by the [principles of Redux](https://redux.js.org/introduction/three-principles):
 
-- Single source of truth (but you can have multiple stores though)
 - State is read only
 - Changes are pure, but made in a convenient way using [immer.js](https://github.com/immerjs/immer)
 
@@ -42,305 +47,263 @@ Futhermore, Restate
 - dev-tools
 - easy to learn and easy to test
 
-## What it looks like...
-
-```ts
-const { useAppState } = create({
-  state: {
-    name: 'John Snow',
-    age: 32
-  }
-})
-
-const Name = () => {
-  const [name, setName] = useAppState((state) => state.name)
-  return <input value={name} onChange={(e) => setName(e.target.value)} />
-}
-
-const Age = () => {
-  const [(name, setName)] = useAppState((state) => state.age)
-  return <input value={name} onChange={(e) => setName(Number(e.target.value))} />
-}
-```
-
-Even the code above looks like JS, it is indeed Typescript. Go on [StackBlitz](https://stackblitz.com/edit/restate-hello-world) and
-make some changes to the state, for example change the property `user.name` to `user.firstName`. You will see how Typescript is
-able to pick up those changes and gives you nice error messages.
-
 ## Installation
 
 With NPM:
 
 ```bash
-npm install @restate/core --save
+npm install @restate/core immer rxjs --save
 ```
 
 or with YARN:
 
 ```bash
-yarn add @restate/core
+yarn add @restate/core immer rxjs
 ```
 
-## Store
+`rxjs` and `immer` are peer dependencies of `@restate/core`.
 
-To get started, you need to create a store and a `useAppStateHook`:
+## useAppState Hook
 
-```ts
-import { create } from '@restate/core'
-
-const { useAppState } = create({
-  state: {
-    name: 'John Snow',
-    age: 32
-  }
-})
-```
-
-Try on [StackBlitz](https://stackblitz.com/edit/restate-hello-world)!
-
-## Read from the state
-
-To read from the state _Restate_ provides you `useAppState` hook.
-
-- select properties from your state
-- change the state using the setter function
+To read and write you can use the `useAppState` hook.
 
 ```ts
 const store = createStore({
   state: {
     user: { name: 'John  Snow', age: 32 },
-    todos: 0
+    todos: []
   }
 })
 
+function Hello() {
+  const [name, setName] = useAppState((state) => state.name)
 
+  return (
+    <>
+      <h1>Hello {name}</h1>
+      <input value={name} onChange={(e) => setName(e.target.value)} />
+    </>
   )
 }
 ```
 
-Try on [StackBlitz](https://stackblitz.com/edit/restate-hello-world)!
+Try on a full example on [StackBlitz](https://stackblitz.com/edit/hello-restate?file=src%2FApp.tsx)!
 
-## Change the state - using hooks
+## useSelector
 
-To change the state, we use a Next-Hook.
+The `create` function also returns another hook, the `useSelector` hook.
 
-```ts
-import { createNextHook } from '@restate/core'
-
-// create a next-hook
-const useNextAppState = createNextHook(AppStoreProvider)
-```
-
-The `useNextAppState` hook takes a selector function to scope
-the access to our state. In this example the scope is the `user` object.
-
-The `useNextAppState` returns a custom`next` function, which
-can be use to change the `user` object:
+In many scenarios, the primary need is to either display a specific value or derive a display value from the current state. For such situations, opting for the `useSelector` hook is advisable. This choice is more performant compared to the `useAppState` hook, as it triggers a re-render only when there's a change in the computed value.
 
 ```ts
-const NameForm = () => {
-  const name = useAppState((state) => state.user.name)
+import { create } from '@restate/core'
 
-  // Creates a `next` function to change the user
-  const next = useNextAppState((state) => state.user)
-
-  function setName(nextName: string) {
-    // The next function provides the current user object as parameter, which we can modify.
-    next((user) => (user.name = nextName))
-  }
-
-  return <input value={name} onChange={(e) => setName(e.target.value)} />
-}
-```
-
-Try on [StackBlitz](https://stackblitz.com/edit/restate-hello-world)!
-
-## Change the state - using actions
-
-Another way to modify your state are **Actions**.
-
-Actions are forged in an _ActionFactory_. The _ActionFactory_ is a function that
-receives - among other things - the `next()` function to update the store.
-
-An _ActionFactory_ returns a object that holds
-the all the actions to change the state. Think about actions as "member functions" of your state.
-
-Actions can be asynchronous.
-
-```ts
-// Action factory
-const userActionsFactory = ({ next }: ActionFactoryProps<User>) => ({
-  incrementAge() {
-    next((user) => user.age++)
-  },
-  decrementAge() {
-    next((user) => user.age--)
-  },
-  async fetchData(userId: string) {
-    const data = await serverFetchUserData(userId)
-    next((user) => (user.data = data))
+// We create our app state hook as well as a "read-only" selector hook to access the state:
+const { useAppState, useSelector } = create({
+  state: {
+    name: 'John',
+    age: 32
   }
 })
-```
 
-The _ActionFactory_ is hooked into `React` using the `createActionsHook`:
+function Greeting() {
+  // With the useSelect hook we can compute a value from the state and only
+  // re-render when the computed value changes.
+  const greeting = useSelector((s) =>
+    s.age > 30 ? 'Good day Sir!' : `Hey there, ${s.name}!`
+  )
+  return <h1>{greeting}!</h1>
+}
 
-```ts
-const useUserActions = createActionsHook(
-  AppStoreProvider,
-  (state) => state.user,
-  userActionsFactory
-)
+function AgeInput() {
+  const [age, setAge] = useAppState((s) => s.age)
+  return <input value={age} onChange={(e) => setAge(Number(e.target.value))} />
+}
 
-const Age = () => {
-  const userActions = useUserActions()
+export function HelloUseSelector() {
   return (
-    <div>
-      <button onClick={userActions.incrementAge}>+</button>
-      <button onClick={userActions.decrementAge}>-</button>
+    <div className="layout">
+      <Greeting />
+      <AgeInput />
+      <Hint />
     </div>
   )
 }
 ```
 
-Try on [StackBlitz](https://stackblitz.com/edit/restate-actions?file=index.tsx)
+Try on [StackBlitz](https://stackblitz.com/edit/hello-restate?file=src%2FApp.tsx)!
 
-## Change the state - using `store.next()`
+## useNext
 
-Outside of your component tree you can change the store like this:
-
-```ts
-store.next((state) => {
-  state.user.name = 'John'
-})
-```
-
-## Middleware
-
-Middleware are small synchronous functions which intercept state updates. Middleware functions receiving the `currentState` as well as the `nextState`.
-They can change the `nextState`, if required. If a middleware throws an exception, the state update will be canceled.
-
-Take the `ageValidator` middleware for example.
-It ensures, that the `user.age` property never gets negative.
+If your goal is to exclusively modify the state without the necessity to read from the store, consider using the `useNext` hook.
 
 ```ts
-// Ensures the age will never be < 0
-const ageValidator: Middleware<State> = ({ nextState, currentState }) => {
-  nextState.age =
-    nextState.user.age < 0 ? currentState.user.age : nextState.user.age
-}
-
-const store = createStore({
+const { useNext } = create({
   state: {
-    name: 'John Snow',
+    name: 'John',
     age: 32
-  },
-  middleware: [ageValidator]
+  }
 })
 
-store.next((s) => (s.user.age = -1)) // will be intercepted by the ageValidator middleware.
-```
+function ResetButton() {
+  const setAge = useNext((s) => s.age)
 
-Try on [StackBlitz](https://stackblitz.com/edit/restate-middleware)
-
-## Connectors
-
-Connectors "glue" your store to other parts of the application, for example to your server, database, ...
-
-Connectors can
-
-- observer the state and react to state changes using the `store.state$` observable
-- change the state using the `store.next()` function
-- listen to events dispatched on the `state.messageBus$` observable. The messages are similar to redux actions.
--
-
-#### Observe `store.state$`
-
-Here is an very simple logger example, that observes the state and logs all state changes:
-
-```ts
-function connectLogger(store: RxStore<any>) {
-  store.state$.subscribe((nextState) => {
-    console.log('STATE:', JSON.stringify(nextState.payload, null, 2))
-  })
+  return <button onClick={() => setAge(32)}>Reset</button>
 }
-
-connectLogger(store)
 ```
 
-Try on [StackBlitz](https://stackblitz.com/edit/restate-hello-quick-glue?file=index.tsx)
+## The `store` object
 
-#### Change the state with `store.next()`
+If you need to access the store outside of a React
+component tree, you can use the `store` object.
 
-Another example of glue code could be a <a href="https://socket.io">socket.io</a> adapter, that receives chat
-messages from a server and adds them to the application state:
+The `create` function returns the store object.
 
-```ts
-function connectSocket(store: RxStore<any>) {
-  socket.on('chat message', (msg) => {
-    store.next((state) => {
-      state.messages.push(msg)
-    })
-  })
-}
-
-connectSocket(store)
-```
-
-#### Listen to events
-
-Connectors can also receive messages from the application - redux style.
-
-Here is a simple UNDO example. The undo-connector records the history of the app state using the `store.state$` observable.
-
-The undo-connector also listens to the `UNDO` events by subscribing to `store.messageBus$`.
-If the connector receives a `UNDO` event, the connector rewinds the state history by one.
-
-```ts
-  const history = []
-
-  // record state history
-  store.state$.subscribe(nextState => {
-    history.push(nextState);
-  })
-
-  // listen to UNDO events
-  store.messageBus$.subscribe( msg => {
-    if(msg.type === 'UNDO' && history.length > 1) {
-      history.pop()  // remove current state
-      const prevState = history.pop();
-      store.next(prevState);
+```tsx
+const { store } = create({
+  state: {
+    user: {
+      name: 'John',
+      age: 32
     }
+  }
+})
+```
+
+The store object provides the following properties and methods:
+
+- `state` - the current state
+- `next` - a method to update the state
+- `state$` - the state observable
+
+### Reading from the store
+
+You can read the current state from the store using the `store.state` property:
+
+```tsx
+console.log(store.state)
+```
+
+### Updating the store
+
+You can update the state using the `store.next` function:
+
+```tsx
+store.next({
+  user: {
+    name: 'John',
+    age: 33
+  }
+})
+```
+
+...or in an imperative way:
+
+```tsx
+store.next((s) => {
+  s.user.age = 33
+})
+```
+
+Note: the store is immutable. You can't change the state directly. So this will not work:
+
+```tsx
+🚨 WILL NOT WORK 🚨
+store.state.user.age = 33
+```
+
+### Observing the store
+
+The store holds an RxJS observable. You can subscribe to the `store.state$` observable to get state updates.
+
+You may want to observe the store to reactively execute some effects, such as: make some server calls, log some state changes, or write
+some data to the local storage.
+
+Here is a simple logger that logs name changes, but in a debounced way:
+
+```tsx
+function connectNameLogger() {
+  store.state$
+    .pipe(
+      // the update object contains the state
+      map((update) => update.state.user.name),
+      // only emit when the name changes
+      // and we ignore other state changes
+      distinctUntilChanged(),
+      // debounce for 1s
+      debounceTime(1000),
+      // emit the previous and the next name together
+      pairwise()
+    )
+    .subscribe(([previousName, nextName]) =>
+      // log the previous and the next name, so
+      // we can see the change
+      console.log(`${previousName} -> ${nextName}`)
+    )
+}
+```
+
+## Using Zod validation and middleware
+
+### About ZOD
+
+ZOD is a TypeScript-first schema declaration and validation library. We can use ZOD to define a schema for our state and use ZOD to validate all state updates - to make sure the state is always in a good shape and valid.
+
+This is especially useful during development, because it helps us to find bugs early. If for example, a server response is not in the expected format, we can detect invalid state updates early and fix the bug.
+
+[https://github.com/colinhacks/zod]()
+
+### Step 1: Define a schema for the state
+
+First we have to define a schema for our state. We can use ZOD for that.
+
+```tsx
+import { Middleware, create } from '@restate/core'
+import { z } from 'zod'
+
+const stateSchema = z.object({
+  user: z.object({
+    name: z.string(),
+    age: z.number().min(0).max(150)
   })
-}
-
-connectUndo(store);
+})
 ```
 
-The application uses `createDispatchHook` to create a dispatch hook. With a dispatch hook, a component can dispatch an `UNDO` event, like so:
+### Step 2: Infer the state type
 
-```ts
-const useDispatch = createDispatchHook(AppStoreProvider)
+We can ZOD to infer the state type from the schema, so we can use it in the app and middleware.
 
-function useUndo() {
-  const dispatch = useDispatch()
-  return () => dispatch({ type: 'UNDO' })
-}
-
-const UndoButton = () => {
-  const undo = useUndo()
-  return <button onClick={undo}>UNDO</button>
-}
+```tsx
+type State = z.infer<typeof stateSchema>
 ```
 
-Try the UNDO example on [StackBlitz!](https://stackblitz.com/edit/restate-glue-undo?file=index.tsx)
+### Step 3: Validation Middleware
 
-## DevTools
+We write a simple middleware that use the `stateSchema` to validate the `nextState`. `stateSchema` throws an ZodError if the next state is invalid. And if a middleware throws an exception, the state update will be canceled. Hence, if the state is invalid, the state update will be canceled.
+
+```tsx
+const validateMiddlewareWithZod: Middleware<State> = ({ nextState }) =>
+  stateSchema.parse(nextState)
+```
+
+Finally, we can use the middleware in our store:
+
+```tsx
+const { useAppState, useSelector, store } = create<State>({
+  state: {
+    user: {
+      name: 'John',
+      age: 32
+    }
+  },
+  middleware: [validateMiddlewareWithZod]
+})
+```
+
+## Redux-DevTools
 
 `restate` uses the
 excellent <a href="https://github.com/zalmoxisus/redux-devtools-extension" target="https://github.com/zalmoxisus/redux-devtools-extension">ReduxDevTools</a> to provide power-ups for your development workflow.
-
-![DevTools screenshot](https://raw.githubusercontent.com/uwinkler/restate/dev/web-site/src/pages/dev-tools-screenshot.png)
 
 #### Installation
 

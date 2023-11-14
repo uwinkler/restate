@@ -33,7 +33,7 @@ We can ZOD to infer the state type from the schema, so we can use it in the app 
 type State = z.infer<typeof stateSchema>
 ```
 
-## Step 3: Validation Middlewar
+## Step 3: Validation Middleware
 
 We write a simple middleware that use the `stateSchema` to validate the `nextState`. `stateSchema` throws an ZodError if the next state is invalid. And if a middleware throws an exception, the state update will be canceled.
 
