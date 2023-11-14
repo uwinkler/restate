@@ -1,6 +1,6 @@
 {
   "name": "@restate/di-commons",
-  "version": "0.12.0",
+  "version": "0.13.0",
   "license": "MIT",
   "private": true,
   "scripts": {
@@ -48,6 +48,5 @@
     "typescript": "^5.2.2",
     "zod": "^3.22.2"
   },
-  "gitHead": "6aab764342a0936d0de670849c6ab135dcdf265e",
-  "dependencies": {}
+  "gitHead": "6aab764342a0936d0de670849c6ab135dcdf265e"
 }

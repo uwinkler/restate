@@ -1,6 +1,6 @@
 {
   "name": "@restate/core",
-  "version": "0.12.0",
+  "version": "0.13.0",
   "license": "MIT",
   "scripts": {
     "clean": "rm -rf build",
@@ -50,6 +50,5 @@
     "typescript": "^5.2.2",
     "utility-types": "^3.7.0"
   },
-  "gitHead": "6aab764342a0936d0de670849c6ab135dcdf265e",
-  "dependencies": {}
+  "gitHead": "6aab764342a0936d0de670849c6ab135dcdf265e"
 }

@@ -1,6 +1,6 @@
 {
   "name": "@restate/di-dev-tools",
-  "version": "0.12.0",
+  "version": "0.13.0",
   "description": "Chrome dev tools for restate",
   "private": true,
   "scripts": {
@@ -11,12 +11,12 @@
   "author": "Joe Martella",
   "license": "MIT",
   "devDependencies": {
+    "@restate/di-commons": "^0.13.0",
     "@types/chrome": "^0.0.246",
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
     "@types/webpack": "^5.28.3",
     "copy-webpack-plugin": "^11.0.0",
-    "@restate/di-commons": "^0.12.0",
     "css-loader": "^6.8.1",
     "node-sass": "^9.0.0",
     "sass-loader": "^13.3.0",
@@ -33,7 +33,7 @@
     "@fontsource/roboto": "^5.0.8",
     "@mui/icons-material": "^5.14.11",
     "@mui/material": "^5.14.11",
-    "@restate/core": "^0.12.0",
+    "@restate/core": "^0.13.0",
     "immer": "^10.0.2",
     "monaco-editor": "^0.43.0",
     "monaco-editor-webpack-plugin": "^7.1.0",
