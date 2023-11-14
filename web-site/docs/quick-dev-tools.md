@@ -22,7 +22,7 @@ yarn add @restate/dev-tools
 ```ts
 import { connectDevTools } from '@restate/dev-tools'
 
-const store = createStore({
+const { store } = create({
   state: {
     name: 'John Snow',
     age: 32

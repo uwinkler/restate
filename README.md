@@ -65,10 +65,10 @@ yarn add @restate/core immer rxjs
 
 ## useAppState Hook
 
-To read and write you can use the `useAppState` hook.
+To read and write your state can use the `useAppState` hook.
 
 ```ts
-const store = createStore({
+const { useAppState } = create({
   state: {
     user: { name: 'John  Snow', age: 32 },
     todos: []
@@ -76,7 +76,7 @@ const store = createStore({
 })
 
 function Hello() {
-  const [name, setName] = useAppState((state) => state.name)
+  const [name, setName] = useAppState((state) => state.user.name)
 
   return (
     <>
@@ -101,8 +101,10 @@ import { create } from '@restate/core'
 // We create our app state hook as well as a "read-only" selector hook to access the state:
 const { useAppState, useSelector } = create({
   state: {
-    name: 'John',
-    age: 32
+    user: {
+      name: 'John',
+      age: 32
+    }
   }
 })
 
@@ -110,13 +112,13 @@ function Greeting() {
   // With the useSelect hook we can compute a value from the state and only
   // re-render when the computed value changes.
   const greeting = useSelector((s) =>
-    s.age > 30 ? 'Good day Sir!' : `Hey there, ${s.name}!`
+    s.user.age > 30 ? 'Good day Sir!' : `Hey there, ${s.user.name}!`
   )
   return <h1>{greeting}!</h1>
 }
 
 function AgeInput() {
-  const [age, setAge] = useAppState((s) => s.age)
+  const [age, setAge] = useAppState((s) => s.user.age)
   return <input value={age} onChange={(e) => setAge(Number(e.target.value))} />
 }
 
@@ -140,14 +142,15 @@ If your goal is to exclusively modify the state without the necessity to read fr
 ```ts
 const { useNext } = create({
   state: {
-    name: 'John',
-    age: 32
+    user: {
+      name: 'John',
+      age: 32
+    }
   }
 })
 
 function ResetButton() {
-  const setAge = useNext((s) => s.age)
-
+  const setAge = useNext((s) => s.use.age)
   return <button onClick={() => setAge(32)}>Reset</button>
 }
 ```
@@ -255,7 +258,7 @@ This is especially useful during development, because it helps us to find bugs e
 
 ### Step 1: Define a schema for the state
 
-First we have to define a schema for our state. We can use ZOD for that.
+First we have to define a schema for our state using ZOD:
 
 ```tsx
 import { Middleware, create } from '@restate/core'
@@ -271,7 +274,7 @@ const stateSchema = z.object({
 
 ### Step 2: Infer the state type
 
-We can ZOD to infer the state type from the schema, so we can use it in the app and middleware.
+We can use ZOD to infer the state type from the schema:
 
 ```tsx
 type State = z.infer<typeof stateSchema>
@@ -279,14 +282,14 @@ type State = z.infer<typeof stateSchema>
 
 ### Step 3: Validation Middleware
 
-We write a simple middleware that use the `stateSchema` to validate the `nextState`. `stateSchema` throws an ZodError if the next state is invalid. And if a middleware throws an exception, the state update will be canceled. Hence, if the state is invalid, the state update will be canceled.
+We write a simple middleware that use the `stateSchema` to validate the `nextState`. `stateSchema` throws an ZodError if the next state is invalid. If a middleware throws an exception, the state update will be canceled.
 
 ```tsx
 const validateMiddlewareWithZod: Middleware<State> = ({ nextState }) =>
   stateSchema.parse(nextState)
 ```
 
-Finally, we can use the middleware in our store:
+Finally, we can use this ZOD middleware in our store:
 
 ```tsx
 const { useAppState, useSelector, store } = create<State>({
