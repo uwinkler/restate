@@ -5,11 +5,11 @@
   "scripts": {
     "clean": "rm -rf build",
     "start": "tsc --watch",
-    "build": "rm -rf build && esbuild --outdir=build/cjs --format=cjs src/*.ts && esbuild --outdir=build/cjs --format=cjs src/*.tsx && esbuild --out-extension:.js=.mjs --outdir=build --format=esm src/*.ts && esbuild --out-extension:.js=.mjs --outdir=build --platform=node --format=esm src/*.tsx && tsc --emitDeclarationOnly",
+    "build": "rm -rf build && esbuild --outdir=build/cjs --format=cjs src/*.ts && esbuild --outdir=build/cjs --format=cjs src/*.tsx && esbuild --out-extension:.js=.js --outdir=build --format=esm src/*.ts && esbuild --out-extension:.js=.js --outdir=build --platform=node --format=esm src/*.tsx && tsc --emitDeclarationOnly",
     "test": "jest"
   },
   "main": "./build/cjs/index.js",
-  "module": "./build/index.mjs",
+  "module": "./build/index.js",
   "typings": "./build/index.d.ts",
   "peerDependencies": {
     "immer": ">=9.0.0",
