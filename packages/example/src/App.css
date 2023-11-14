@@ -1,6 +1,25 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+body {
+  font-family: 'Roboto', sans-serif;
+}
+
+@keyframes reRender {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.layout {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
 }

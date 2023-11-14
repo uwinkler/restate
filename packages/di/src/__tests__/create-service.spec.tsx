@@ -1,105 +1,137 @@
 import React from 'react'
 import renderer from 'react-test-renderer'
-import { combineServiceProvider } from '../combine-services-provider'
 import { createService } from '../create-service'
+import { ServiceRegistry } from '../service-registry'
 
 // Counter
-function useCounterService() {
+function counterService() {
   const count = 12
   return { count }
 }
-const [CounterService, useMyCounter] = createService('CounterService', useCounterService)
+const [useMyCounter, CounterService] = createService(
+  'CounterService',
+  counterService
+)
 
-const MyServices = combineServiceProvider(CounterService)
+const [useHello, HelloService] = createService('HelloService', () => {
+  const { count } = useMyCounter()
+  return 'Hello World. Count is ' + count
+})
 
 function Counter() {
   const { count } = useMyCounter()
   return <>Count is {count}</>
 }
 
-function useMyMockCounterService() {
+function Hello() {
+  const message = useHello()
+  return <>{message}</>
+}
+
+function mockCounterService() {
   return { count: 0 }
 }
 
-const MockCountService = (props: any) => <CounterService implementation={useMyMockCounterService} {...props} />
-
-test('it should use the default services', () => {
+test('it should use a combined registry state', () => {
   const Component = (
-    <MyServices>
+    <ServiceRegistry
+      name="ServiceRegistry"
+      services={[CounterService, HelloService]}
+    >
       <Counter />
-    </MyServices>
+      <Hello />
+    </ServiceRegistry>
   )
 
   const container = renderer.create(Component)
 
   expect(container.toJSON()).toMatchInlineSnapshot(`
-    Array [
+    [
       "Count is ",
       "12",
-    ]
-  `)
-})
-
-test('it should use the default services', () => {
-  const Component = (
-    <MyServices>
-      <Counter />
-    </MyServices>
-  )
-
-  const container = renderer.create(Component)
-
-  expect(container.toJSON()).toMatchInlineSnapshot(`
-    Array [
-      "Count is ",
-      "12",
+      "Hello World. Count is 12",
     ]
   `)
 })
 
 test('it should use a moc', () => {
   const Component = (
-    <MockCountService>
+    <ServiceRegistry
+      name="Service Registry"
+      services={[
+        CounterService,
+        { name: 'CounterService', service: mockCounterService }
+      ]}
+    >
       <Counter />
-    </MockCountService>
+    </ServiceRegistry>
   )
 
   const container = renderer.create(Component)
 
   expect(container.toJSON()).toMatchInlineSnapshot(`
-    Array [
+    [
       "Count is ",
       "0",
     ]
   `)
 })
 
-test('the mock should override a services', () => {
-  function useMyMockCounterService() {
-    return { count: 0 }
+test('it should use a moc if override is given - also nested', () => {
+  const MockCounterService = {
+    name: 'CounterService',
+    service: mockCounterService
   }
 
-  const MockCountService = (props: any) => <CounterService implementation={useMyMockCounterService} {...props} />
-
   const Component = (
-    <MyServices>
-      <MockCountService>
+    <ServiceRegistry
+      name="Parent-Service-Registry"
+      services={[HelloService, CounterService]}
+    >
+      <Counter />
+      <ServiceRegistry
+        name="Nested-Service-Registry"
+        services={[MockCounterService]}
+      >
         <Counter />
-      </MockCountService>
-    </MyServices>
+      </ServiceRegistry>
+    </ServiceRegistry>
   )
 
   const container = renderer.create(Component)
 
   expect(container.toJSON()).toMatchInlineSnapshot(`
-    Array [
+    [
+      "Count is ",
+      "12",
       "Count is ",
       "0",
     ]
   `)
 })
 
-// test('it should throw if not wrapped in a service', () => {
-//   const fn = () => renderer.create(<Counter />)
-//   expect(fn).toThrow('nn')
-// })
+test('it should be able to use multiple service registries', () => {
+  const Component = (
+    <ServiceRegistry name="HelloServices" services={[HelloService]}>
+      <ServiceRegistry name="CounterServices" services={[CounterService]}>
+        <Counter />
+        <Hello />
+      </ServiceRegistry>
+    </ServiceRegistry>
+  )
+
+  const container = renderer.create(Component)
+
+  expect(container.toJSON()).toMatchInlineSnapshot(`
+    [
+      "Count is ",
+      "12",
+      "Hello World. Count is 12",
+    ]
+  `)
+})
+
+test('it should throw if not wrapped with a ServiceRegistry', () => {
+  const container = () => renderer.create(<Counter />)
+  expect(container).toThrow()
+})

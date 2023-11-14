@@ -10,7 +10,7 @@ jobs:
   build:
     docker:
       # specify the version you desire here
-      - image: circleci/node:latest
+      - image: cimg/node:21.1.0
 
     working_directory: ~/repo
 
@@ -18,7 +18,7 @@ jobs:
       - checkout
 
       - run: # test what branch we're on.
-          name: "What branch am I on?"
+          name: 'What branch am I on?'
           command: echo ${CIRCLE_BRANCH}
 
       - run: yarn
@@ -26,5 +26,5 @@ jobs:
       - run: yarn run build
 
       - run:
-          name: "tests"
+          name: 'tests'
           command: yarn run test

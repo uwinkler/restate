@@ -1,19 +1,24 @@
-import { createService, combineServiceProvider } from '@restate/di'
-import React, { useContext } from 'react'
+import { ServiceRegistry, createService } from '@restate/di'
+import React from 'react'
+import { connectServiceDevTools } from './connectServiceDevTools'
 
-// Counter
-function useCounterService() {
-  const [count, setCount] = React.useState(0)
+const [useMyCounter, CounterService] = createService('CounterService', () => {
+  const [count, _setCount] = React.useState(0)
 
   React.useEffect(() => {
-    const counterInterval = setInterval(() => setCount(count + 1), 1000)
+    const counterInterval = setInterval(() => _setCount(count + 1), 1000)
     return () => clearInterval(counterInterval)
   }, [count, setCount])
 
-  return { count }
-}
+  function setCount(nextValue: number) {
+    console.log(count, '->', nextValue)
+    _setCount(nextValue)
+  }
 
-const [CounterServiceProvider, useMyCounter] = createService('CounterService', useCounterService)
+  return { count, setCount }
+})
+
+connectServiceDevTools()
 
 function Counter() {
   const { count } = useMyCounter()
@@ -22,10 +27,16 @@ function Counter() {
   return <>Count is {displayValue}</>
 }
 
+function ResetButton() {
+  const { setCount } = useMyCounter()
+  return <button onClick={() => setCount(0)}>Reset</button>
+}
+
 export function HelloCounter() {
   return (
-    <CounterServiceProvider>
+    <ServiceRegistry services={[CounterService]}>
       <Counter />
-    </CounterServiceProvider>
+      <ResetButton />
+    </ServiceRegistry>
   )
 }

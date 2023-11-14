@@ -1,146 +1,122 @@
-import { createDraft, finishDraft, Patch, enableAllPlugins } from 'immer'
-import { BehaviorSubject, queueScheduler } from 'rxjs'
-import { observeOn } from 'rxjs/operators'
-import { Message, RESTATE_UPDATE_MESSAGE } from './message'
-
-enableAllPlugins()
+import { Draft, createDraft, finishDraft } from 'immer'
+import { BehaviorSubject, Observable, Subject, queueScheduler } from 'rxjs'
+import { observeOn, takeUntil } from 'rxjs/operators'
 
 export type UpdateFunction<S> = (subState: S) => void
 
-interface MiddlewareProps<S, MESSAGE extends Message> {
+interface MiddlewareProps<S> {
   nextState: S
   currentState: S
-  message: MESSAGE
 }
 
-export type Middleware<S, MESSAGE extends Message> = (props: MiddlewareProps<S, MESSAGE>) => any
+export type Middleware<S> = (props: MiddlewareProps<S>) => any
 
-export interface RxStoreOptions {
+export interface RestateStoreOptions {
   freeze: boolean
   storeName: string
   dev: boolean
 }
 
-export interface StatePackage<STATE, MESSAGES extends Message> {
+export interface StatePackage<STATE, TRACE> {
   state: Readonly<STATE>
-  message: MESSAGES
-  patches?: Patch[] | null
-  inversePatches?: Patch[] | null
+  trace?: TRACE
   stack?: string
 }
 
-export class RxStore<STATE, MESSAGES extends Message> {
-  protected _state$: BehaviorSubject<StatePackage<STATE, MESSAGES>>
-  protected _messageBus$: BehaviorSubject<MESSAGES>
-
-  protected _options: RxStoreOptions
-
-  protected _middleware: Middleware<STATE, MESSAGES>[] = []
+export class RestateStore<STATE extends Object, TRACE = any> {
+  protected _state$: BehaviorSubject<StatePackage<STATE, TRACE>>
+  protected _close$ = new Subject<string>()
+  protected _options: RestateStoreOptions
+  protected _middleware: Middleware<STATE>[] = []
 
   constructor(
-    stateSubject: BehaviorSubject<StatePackage<STATE, MESSAGES>>,
-    messageBus: BehaviorSubject<MESSAGES>,
-    middleware: Middleware<STATE, MESSAGES>[],
-    options: RxStoreOptions
+    stateSubject: BehaviorSubject<StatePackage<STATE, TRACE>>,
+    middleware: Middleware<STATE>[],
+    options: RestateStoreOptions
   ) {
     this._state$ = stateSubject
-    this._messageBus$ = messageBus
     this._middleware = middleware
     this._options = options
   }
 
-  static of<S, M extends Message>(
-    state: BehaviorSubject<StatePackage<S, M>>,
-    messageBus: BehaviorSubject<M>,
-    middleware: Middleware<S, M>[],
-    options: RxStoreOptions
+  static of<S extends Object, T = any>(
+    state: BehaviorSubject<StatePackage<S, T>>,
+    middleware: Middleware<S>[],
+    options: RestateStoreOptions
   ) {
-    return new RxStore(state, messageBus, middleware, options)
+    return new RestateStore(state, middleware, options)
   }
 
   private _next(
     updateFunctionOrNextState: UpdateFunction<STATE> | STATE,
-    message: MESSAGES = RESTATE_UPDATE_MESSAGE as any,
-    stack: string | undefined
+    trace?: TRACE
   ) {
     try {
-      const currentStatePackage = this._state$.value
       const isUpdateFunction = updateFunctionOrNextState instanceof Function
 
-      // we accept either a new state object or a update function
-      // a) If we receive an object, we create a draft from that object. The draft will be used in the middleware
-      // b) If we receive an function, we create a draft from the current state.
-      let draft = isUpdateFunction
-        ? (createDraft(currentStatePackage.state) as STATE)
-        : (createDraft(updateFunctionOrNextState) as STATE)
-
-      if (updateFunctionOrNextState instanceof Function) {
-        const ret = updateFunctionOrNextState(draft)
-        if (ret !== undefined) {
-          draft = createDraft(ret as unknown as STATE) as STATE
+      function useUpdateFunction(state: STATE): Draft<STATE> {
+        const ret = createDraft(state)
+        if (isUpdateFunction) {
+          const update: STATE | void = updateFunctionOrNextState(ret as STATE)
+          return update == null ? ret : createDraft(update)
+        } else {
+          throw new Error('We should not be here')
         }
       }
 
-      recursiveMiddlewareHandler<STATE, MESSAGES>({
+      const nextStateDraft = isUpdateFunction
+        ? useUpdateFunction(this.state)
+        : createDraft(updateFunctionOrNextState)
+
+      recursiveMiddlewareHandler<STATE>({
         middleware: this._middleware,
-        nextState: draft,
-        currentState: this.state,
-        message
+        nextState: nextStateDraft as STATE,
+        currentState: this.state
       })
 
-      let _patches: Patch[] | null = null
-      let _inversePatches: Patch[] | null = null
+      const nextState = finishDraft(nextStateDraft) as STATE
 
-      const nextState = finishDraft(draft, (patches, inversePatches) => {
-        _patches = patches
-        _inversePatches = inversePatches
-      }) as STATE
-
-      const nextStatePackage: StatePackage<STATE, MESSAGES> = {
-        message,
+      const nextStatePackage: StatePackage<STATE, TRACE> = {
         state: nextState,
-        patches: _patches,
-        inversePatches: _inversePatches,
-        stack: this._options.dev ? stack : undefined
+        trace: trace
       }
 
       this._state$.next(nextStatePackage)
 
       return nextStatePackage
     } catch (e) {
-      return { state: this._state$.value, message }
+      console.error(e)
+      return { state: this._state$.value }
     }
   }
 
-  next(updateFunctionOrNextState: UpdateFunction<STATE> | STATE, message: MESSAGES = RESTATE_UPDATE_MESSAGE as any) {
-    const stack = getStackTrace(this._options.dev)
-    this._next(updateFunctionOrNextState, message, stack)
+  next(
+    updateFunctionOrNextState: UpdateFunction<STATE> | STATE,
+    trace?: TRACE
+  ) {
+    this._next(updateFunctionOrNextState, trace)
   }
 
   nextAsync(
     updateFunctionOrNextState: UpdateFunction<STATE> | STATE,
-    message: MESSAGES = RESTATE_UPDATE_MESSAGE as any
+    trace?: TRACE
   ) {
-    const stack = getStackTrace(this._options.dev)
     setTimeout(() => {
-      this._next(updateFunctionOrNextState, message, stack)
+      this._next(updateFunctionOrNextState, trace)
     }, 0)
-  }
-
-  dispatch(message: MESSAGES) {
-    this._messageBus$.next(message)
   }
 
   get state(): Readonly<STATE> {
     return this._state$.value.state
   }
 
-  get state$() {
-    return this._state$.pipe(observeOn(queueScheduler))
+  close() {
+    this._close$.next('closing the store')
+    this._close$.complete()
   }
 
-  get messageBus$() {
-    return this._messageBus$.pipe(observeOn(queueScheduler))
+  get state$(): Observable<StatePackage<STATE, TRACE>> {
+    return this._state$.pipe(takeUntil(this._close$), observeOn(queueScheduler))
   }
 
   get options() {
@@ -152,19 +128,17 @@ export class RxStore<STATE, MESSAGES extends Message> {
   }
 }
 
-interface RecursiveMiddlewareHandlerProps<STATE, MESSAGES extends Message> {
-  middleware: Middleware<STATE, MESSAGES>[]
+interface RecursiveMiddlewareHandlerProps<STATE> {
+  middleware: Middleware<STATE>[]
   nextState: STATE
   currentState: STATE
-  message: MESSAGES
 }
 
-function recursiveMiddlewareHandler<STATE, MESSAGES extends Message>({
+function recursiveMiddlewareHandler<STATE>({
   middleware,
   nextState,
-  currentState,
-  message
-}: RecursiveMiddlewareHandlerProps<STATE, MESSAGES>): any {
+  currentState
+}: RecursiveMiddlewareHandlerProps<STATE>): any {
   if (middleware.length === 0) {
     return
   }
@@ -173,8 +147,7 @@ function recursiveMiddlewareHandler<STATE, MESSAGES extends Message>({
 
   nextMiddleware({
     nextState,
-    currentState,
-    message
+    currentState
   })
 
   const remainingMiddleware = middleware.slice(1, middleware.length)
@@ -182,15 +155,6 @@ function recursiveMiddlewareHandler<STATE, MESSAGES extends Message>({
   return recursiveMiddlewareHandler({
     middleware: remainingMiddleware,
     nextState,
-    currentState,
-    message
+    currentState
   })
-}
-
-function getStackTrace(dev: boolean) {
-  if (dev) {
-    return new Error().stack
-  } else {
-    return undefined
-  }
 }
