@@ -5,10 +5,10 @@
   "scripts": {
     "clean": "rm -rf build",
     "start": "tsc --watch",
-    "build": "esbuild --outdir=build --platform=node --format=cjs src/*.ts && esbuild --outdir=build --platform=node --format=cjs src/*.tsx && esbuild --out-extension:.js=.mjs --outdir=build --platform=node --format=esm src/*.ts && esbuild --out-extension:.js=.mjs --outdir=build --platform=node --format=esm src/*.tsx && tsc --emitDeclarationOnly",
+    "build": "esbuild --outdir=build/cjs --format=cjs src/*.ts && esbuild --outdir=build/cjs --format=cjs src/*.tsx && esbuild --out-extension:.js=.mjs --outdir=build --format=esm src/*.ts && esbuild --out-extension:.js=.mjs --outdir=build --platform=node --format=esm src/*.tsx && tsc --emitDeclarationOnly",
     "test": "jest"
   },
-  "main": "./build/index.js",
+  "main": "./build/cjs/index.js",
   "module": "./build/index.mjs",
   "typings": "./build/index.d.ts",
   "peerDependencies": {
@@ -50,5 +50,5 @@
     "typescript": "^5.2.2",
     "utility-types": "^3.7.0"
   },
-  "gitHead": "6aab764342a0936d0de670849c6ab135dcdf265e"
+  "gitHead": "77a4516a4f23a89f15f8de5bd6f0b5fcc50f468c"
 }

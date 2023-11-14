@@ -6,11 +6,11 @@
   "scripts": {
     "clean": "rm -rf build",
     "start": "tsc --watch",
-    "build": "esbuild --outdir=build --platform=node --format=cjs src/*.ts && esbuild --out-extension:.js=.mjs --outdir=build --platform=node --format=esm src/*.ts && tsc --emitDeclarationOnly",
+    "build": "esbuild --outdir=build/cjs --platform=node --format=cjs src/*.ts && esbuild --out-extension:.js=.mjs --outdir=build --platform=node --format=esm src/*.ts && tsc --emitDeclarationOnly",
     "test": "jest --silent"
   },
+  "main": "build/cjs/index.js",
   "module": "build/index.mjs",
-  "main": "build/index.js",
   "types": "build/index.d.ts",
   "publishConfig": {
     "access": "public"
@@ -34,7 +34,7 @@
     "typescript": "^4.7.4",
     "utility-types": "^3.10.0"
   },
-  "gitHead": "6aab764342a0936d0de670849c6ab135dcdf265e",
+  "gitHead": "77a4516a4f23a89f15f8de5bd6f0b5fcc50f468c",
   "dependencies": {
     "@types/source-map-support": "^0.5.0",
     "source-map-support": "^0.5.16"
