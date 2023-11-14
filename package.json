@@ -1,11 +1,10 @@
 {
   "dependencies": {
-    "lerna": "^5.5.2"
+    "lerna": "^7.4.2"
   },
   "scripts": {
     "publish": "lerna run clean && lerna run build && lerna run test && lerna publish",
     "netlify": "cd packages/www && yarn install && yarn build",
-    "postinstall": "lerna bootstrap",
     "build": "lerna run build",
     "test": "lerna run test"
   },
