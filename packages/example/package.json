@@ -1,6 +1,6 @@
 {
   "name": "example",
-  "private": false,
+  "private": true,
   "version": "0.13.0",
   "type": "module",
   "scripts": {
