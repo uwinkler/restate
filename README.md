@@ -25,9 +25,9 @@ function Age {
 }
 ```
 
-Even the code above looks like plain Javascript, it is indeed Typescript. Go on [StackBlitz](https://stackblitz.com/edit/restate-hello-world) and
-make some changes to the state, for example change the property `user.name` to `user.firstName`. You will see how Typescript is
-able to pick up those changes and gives you nice error messages.
+Even the code above looks like plain Javascript, it is indeed Typescript.
+
+There is a full example on [StackBlitz](https://stackblitz.com/edit/hello-restate?file=src%2FApp.tsx).
 
 # About
 
