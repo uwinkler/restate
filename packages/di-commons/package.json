@@ -2,6 +2,7 @@
   "name": "@restate/di-commons",
   "version": "0.12.0",
   "license": "MIT",
+  "private": true,
   "scripts": {
     "clean": "rm -rf build",
     "start": "tsc --watch",

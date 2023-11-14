@@ -2,6 +2,7 @@
   "name": "@restate/di",
   "version": "0.12.0",
   "license": "MIT",
+  "private": true,
   "scripts": {
     "clean": "rm -rf build",
     "start": "tsc --watch",
@@ -46,6 +47,5 @@
     "typescript": "^4.9.5"
   },
   "gitHead": "6aab764342a0936d0de670849c6ab135dcdf265e",
-  "dependencies": {
-  }
+  "dependencies": {}
 }

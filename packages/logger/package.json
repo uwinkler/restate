@@ -1,6 +1,7 @@
 {
   "name": "@restate/logger",
   "version": "0.12.0",
+  "private": false,
   "license": "MIT",
   "scripts": {
     "clean": "rm -rf build",
