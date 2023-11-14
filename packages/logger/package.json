@@ -16,7 +16,7 @@
     "access": "public"
   },
   "peerDependencies": {
-    "@restate/core": ">=0.12.0"
+    "@restate/core": ">=0.13.0"
   },
   "devDependencies": {
     "@babel/core": "^7.18.10",

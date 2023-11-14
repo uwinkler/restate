@@ -28,7 +28,7 @@
     "dev-tools"
   ],
   "peerDependencies": {
-    "@restate/core": "^0.9.0",
+    "@restate/core": ">=0.13.0",
     "immer": ">=9.0.0",
     "rxjs": ">=7.5.6"
   },
