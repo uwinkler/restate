@@ -6,7 +6,7 @@ import { RestateStore } from './rx-store'
 //
 // Types
 
-type RxStoreContext<S> = React.Context<RestateStore<S>>
+type RxStoreContext<S extends Object> = React.Context<RestateStore<S>>
 
 type SelectorFunction<S, T> = (state: S) => T
 
@@ -25,11 +25,11 @@ export type UseSelectorHook<S> = <T>(
 //
 // createStateHook definition
 //
-export function createSelectorHook<S>(
+export function createSelectorHook<S extends Object>(
   context: React.Context<RestateStore<S>>
 ): UseSelectorHook<S>
 
-export function createSelectorHook<S, SUB_STATE>(
+export function createSelectorHook<S extends Object, SUB_STATE>(
   context: React.Context<RestateStore<S>>,
   outerSelector: SelectorFunction<S, SUB_STATE>
 ): UseSelectorHook<SUB_STATE>
@@ -37,7 +37,7 @@ export function createSelectorHook<S, SUB_STATE>(
 //
 // createStateHook implementation
 //
-export function createSelectorHook<S, SUB_STATE>(
+export function createSelectorHook<S extends Object, SUB_STATE>(
   context: RxStoreContext<S>,
   outerSelector: SelectorFunction<S, SUB_STATE> = identitySelectorFunction
 ) {
