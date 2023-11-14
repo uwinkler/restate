@@ -1,6 +1,6 @@
 {
   "name": "@restate/logger",
-  "version": "0.13.3",
+  "version": "0.13.4",
   "private": false,
   "license": "MIT",
   "scripts": {
@@ -20,7 +20,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.18.10",
-    "@restate/core": "^0.13.3",
+    "@restate/core": "^0.13.4",
     "@types/jest": "28.1.6",
     "babel-jest": "^28.1.3",
     "esbuild": "^0.15.3",
