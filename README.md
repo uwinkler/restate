@@ -27,7 +27,7 @@ function Age {
 }
 ```
 
-Even the code above looks like plain Javascript, it is indeed Typescript.
+Even if the code above looks like plain Javascript, it is indeed Typescript.
 
 There is a full example on [StackBlitz](https://stackblitz.com/edit/hello-restate?file=src%2FApp.tsx).
 
