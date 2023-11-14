@@ -46,6 +46,7 @@ store.state$.subscribe((state) => console.log(state))
 // like this:
 //
 store.state$
+
   .pipe(
     map((update) => update.state), // the update object contains the state
     map((state) => state.user.name), // select the name
@@ -54,6 +55,5 @@ store.state$
     pairwise() // emit the previous and the next name
   )
   .subscribe(([previousName, nextName]) =>
-    // log the previous and the next name
     console.log(`${previousName} -> ${nextName}`)
   )

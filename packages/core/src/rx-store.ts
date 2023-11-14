@@ -1,8 +1,6 @@
-import { Patch, createDraft, enablePatches, finishDraft } from 'immer'
-import { BehaviorSubject, queueScheduler } from 'rxjs'
-import { observeOn } from 'rxjs/operators'
-
-enablePatches()
+import { Draft, createDraft, finishDraft } from 'immer'
+import { BehaviorSubject, Observable, Subject, queueScheduler } from 'rxjs'
+import { observeOn, takeUntil } from 'rxjs/operators'
 
 export type UpdateFunction<S> = (subState: S) => void
 
@@ -21,14 +19,13 @@ export interface RestateStoreOptions {
 
 export interface StatePackage<STATE, TRACE> {
   state: Readonly<STATE>
-  patches?: Patch[] | null
-  inversePatches?: Patch[] | null
   trace?: TRACE
   stack?: string
 }
 
-export class RestateStore<STATE, TRACE = any> {
+export class RestateStore<STATE extends Object, TRACE = any> {
   protected _state$: BehaviorSubject<StatePackage<STATE, TRACE>>
+  protected _close$ = new Subject<string>()
   protected _options: RestateStoreOptions
   protected _middleware: Middleware<STATE>[] = []
 
@@ -42,7 +39,7 @@ export class RestateStore<STATE, TRACE = any> {
     this._options = options
   }
 
-  static of<S, T = any>(
+  static of<S extends Object, T = any>(
     state: BehaviorSubject<StatePackage<S, T>>,
     middleware: Middleware<S>[],
     options: RestateStoreOptions
@@ -55,42 +52,33 @@ export class RestateStore<STATE, TRACE = any> {
     trace?: TRACE
   ) {
     try {
-      const currentStatePackage = this._state$.value
       const isUpdateFunction = updateFunctionOrNextState instanceof Function
 
-      // we accept either a new state object or a update function
-      // a) If we receive an object, we create a draft from that object. The draft will be used in the middleware
-      // b) If we receive an function, we create a draft from the current state.
-      let draft = isUpdateFunction
-        ? (createDraft(currentStatePackage.state) as STATE)
-        : (createDraft(updateFunctionOrNextState as any) as STATE)
-
-      if (updateFunctionOrNextState instanceof Function) {
-        const ret = updateFunctionOrNextState(draft)
-        if (ret !== undefined) {
-          draft = createDraft(ret as any) as STATE
+      function useUpdateFunction(state: STATE): Draft<STATE> {
+        const ret = createDraft(state)
+        if (isUpdateFunction) {
+          const update: STATE | void = updateFunctionOrNextState(ret as STATE)
+          return update == null ? ret : createDraft(update)
+        } else {
+          throw new Error('We should not be here')
         }
       }
 
+      const nextStateDraft = isUpdateFunction
+        ? useUpdateFunction(this.state)
+        : createDraft(updateFunctionOrNextState)
+
       recursiveMiddlewareHandler<STATE>({
         middleware: this._middleware,
-        nextState: draft,
+        nextState: nextStateDraft as STATE,
         currentState: this.state
       })
 
-      let _patches: Patch[] | null = null
-      let _inversePatches: Patch[] | null = null
-
-      const nextState = finishDraft(draft, (patches, inversePatches) => {
-        _patches = patches
-        _inversePatches = inversePatches
-      }) as STATE
+      const nextState = finishDraft(nextStateDraft) as STATE
 
       const nextStatePackage: StatePackage<STATE, TRACE> = {
         state: nextState,
-        patches: _patches,
-        trace: trace,
-        inversePatches: _inversePatches
+        trace: trace
       }
 
       this._state$.next(nextStatePackage)
@@ -122,8 +110,13 @@ export class RestateStore<STATE, TRACE = any> {
     return this._state$.value.state
   }
 
-  get state$() {
-    return this._state$.pipe(observeOn(queueScheduler))
+  close() {
+    this._close$.next('closing the store')
+    this._close$.complete()
+  }
+
+  get state$(): Observable<StatePackage<STATE, TRACE>> {
+    return this._state$.pipe(takeUntil(this._close$), observeOn(queueScheduler))
   }
 
   get options() {

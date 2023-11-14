@@ -1,4 +1,5 @@
 import { create } from '@restate/core'
+import { connectDevTools } from './connectDevTools'
 
 const { useAppState } = create({
   state: {

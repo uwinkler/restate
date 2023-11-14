@@ -1,4 +1,4 @@
-import { Middleware, create } from '@restate/core'
+import { create } from '@restate/core'
 
 const { useAppState, useSelector } = create({
   state: {

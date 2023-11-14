@@ -1,4 +1,4 @@
-import { Middleware, create } from '@restate/core'
+import { Middleware, RestateStore, create } from '@restate/core'
 import { z } from 'zod'
 import { connectDevTools } from './examples/connectDevTools'
 import { HelloSelectorAndNext } from './examples/hello-next'
@@ -9,12 +9,15 @@ import React from 'react'
 import { HelloUseAppState } from './examples/hello-use-app-state'
 import { HelloUseSelector } from './examples/hello-use-selector'
 import { HelloMiddleware } from './examples/hello-middleware'
+import { HelloDevTools } from './examples/hello-dev-tools'
+import { map, distinctUntilChanged } from 'rxjs/operators'
 
 const AppNameSchema = z.union([
   z.literal('hello-useAppState'),
   z.literal('hello-useSelector'),
   z.literal('hello-useNext'),
   z.literal('hello-stores'),
+  z.literal('hello-dev-tools'),
   z.literal('hello-middleware'),
   z.literal('hello-zod-validation')
 ])
@@ -27,6 +30,7 @@ export const EXAMPLES_MAP = {
   'hello-useNext': <HelloSelectorAndNext />,
   'hello-stores': <HelloStores />,
   'hello-middleware': <HelloMiddleware />,
+  'hello-dev-tools': <HelloDevTools />,
   'hello-zod-validation': <HelloZodValidation />
 }
 
@@ -48,4 +52,29 @@ export const { useAppState, store, useSelector } = create<AppState>({
   middleware: [validateMiddlewareWithZod]
 })
 
+function connectSimpleHashRouter(store: RestateStore<AppState>) {
+  const onHashChange = () => {
+    const hash = window.location.hash.replace(/^#/, '').trim()
+    if (EXAMPLE_NAMES.includes(hash as AppName)) {
+      store.next((s) => {
+        s.exampleApp = hash as AppName
+      })
+    }
+  }
+
+  store.state$
+    .pipe(
+      map((update) => update.state.exampleApp),
+      distinctUntilChanged()
+    )
+    .subscribe((exampleApp) => {
+      window.location.hash = '#' + exampleApp
+    })
+
+  onHashChange()
+
+  window.addEventListener('hashchange', onHashChange)
+}
+
 connectDevTools(store)
+connectSimpleHashRouter(store)

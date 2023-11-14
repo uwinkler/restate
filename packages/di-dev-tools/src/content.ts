@@ -1,4 +1,4 @@
-import { isMessageDevTools } from './utils'
+import { isMessageDevTools } from '@restate/di-commons'
 
 console.log('content script')
 

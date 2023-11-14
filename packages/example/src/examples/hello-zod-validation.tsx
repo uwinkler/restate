@@ -1,5 +1,5 @@
+import { Grid } from '@mui/material'
 import { Middleware, create } from '@restate/core'
-import { connectDevTools } from '@restate/dev-tools'
 import { z } from 'zod'
 
 //
@@ -23,8 +23,9 @@ type State = z.infer<typeof stateSchema>
 // Instead of throwing an error, you may also modify
 // the `nextState` state here, if you want to.
 //
-const validateMiddlewareWithZod: Middleware<State> = ({ nextState }) =>
+const validateMiddlewareWithZod: Middleware<State> = ({ nextState }) => {
   stateSchema.parse(nextState)
+}
 
 const { useAppState, useSelector, store } = create<State>({
   state: {
@@ -36,38 +37,48 @@ const { useAppState, useSelector, store } = create<State>({
   middleware: [validateMiddlewareWithZod] // use the middleware
 })
 
-connectDevTools(store)
-
 function Name() {
   const name = useSelector((state) => state.user.name)
   return <h1>Hello {name}!</h1>
 }
 
-function Age() {
-  const ageInDays = useSelector((state) => state.user.age * 365)
-  return <div>You are {ageInDays} days old.</div>
-}
-
 function ChangeName() {
   const [name, setName] = useAppState((state) => state.user.name)
-  const handleChange = (nextName: string) => setName(nextName)
 
-  return <input value={name} onChange={(e) => handleChange(e.target.value)} />
+  return (
+    <>
+      <label>Name:</label>
+      <input value={name} onChange={(e) => setName(e.target.value)} />
+    </>
+  )
 }
 
 function ChangeAge() {
   const [age, setAge] = useAppState((state) => state.user.age)
 
-  return <input value={age} onChange={(e) => setAge(Number(e.target.value))} />
+  return (
+    <>
+      <label>Age:</label>
+      <input value={age} onChange={(e) => setAge(Number(e.target.value))} />
+    </>
+  )
 }
 
 export function HelloZodValidation() {
   return (
     <>
       <Name />
-      <Age />
-      <ChangeName />
-      <ChangeAge />
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: '1fr 1fr',
+          gap: '0.5rem',
+          maxWidth: '200px'
+        }}
+      >
+        <ChangeName />
+        <ChangeAge />
+      </div>
     </>
   )
 }

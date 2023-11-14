@@ -1,7 +1,8 @@
-import { RxStore } from '@restate/core'
+import { RestateStore } from '@restate/core'
+import { MessageContent, isMessageContent } from '@restate/di-commons'
 import type { State } from './state'
 
-export function contentMessageHandler(store: RxStore<State>) {
+export function contentMessageHandler(store: RestateStore<State>) {
   console.log('contentMessageHandler')
 
   chrome.runtime.onMessage.addListener(function (msg, sender) {

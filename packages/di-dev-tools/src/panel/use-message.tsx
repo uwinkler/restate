@@ -1,4 +1,5 @@
-import { MessageDevTools, messageDevTools } from '../utils'
+import { MessageDevTools } from '@restate/di-commons'
+import { messageDevTools } from '../utils'
 
 export function useMessage() {
   function postMessage<T>(msg: Partial<MessageDevTools<T>>) {

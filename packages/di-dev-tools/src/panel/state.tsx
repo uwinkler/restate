@@ -1,4 +1,4 @@
-import { create, Middleware, RxStore } from '@restate/core'
+import { create, Middleware, RestateStore } from '@restate/core'
 import { z } from 'zod'
 import { contentMessageHandler } from './content-message-handler'
 
@@ -21,7 +21,8 @@ const StateSchema = z.object({
   updates: z.array(StateUpdatesSchema),
   selectedUpdateId: z.string().default(NO_UPDATE_SELECTED),
   diffUpdateId: z.string().default(NO_UPDATE_SELECTED),
-  diffMode: z.boolean()
+  diffMode: z.boolean(),
+  scrollMode: z.boolean()
 })
 
 export type State = z.infer<typeof StateSchema>
@@ -30,7 +31,8 @@ const INITIAL_STATE: State = {
   updates: [],
   selectedUpdateId: NO_UPDATE_SELECTED,
   diffUpdateId: NO_UPDATE_SELECTED,
-  diffMode: false
+  diffMode: false,
+  scrollMode: true
 }
 
 const validationMiddleware: Middleware<State> = (update) => {
@@ -51,7 +53,7 @@ export const {
 contentMessageHandler(store)
 connectLogger(store)
 
-function connectLogger(store: RxStore<State>) {
+function connectLogger(store: RestateStore<State>) {
   store.state$.subscribe((update) => {
     console.log('State:', update.state)
   })

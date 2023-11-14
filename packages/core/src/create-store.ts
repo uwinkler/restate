@@ -9,7 +9,7 @@ import {
 
 enablePatches()
 
-export type CreateStoreProps<STATE, TRACE> = {
+export type CreateStoreProps<STATE extends Object, TRACE> = {
   state: STATE
   middleware?: Middleware<STATE>[]
   options?: Partial<RestateStoreOptions>
@@ -22,7 +22,7 @@ export const RESTATE_STORE_DEFAULT_OPTIONS: RestateStoreOptions = {
   dev: process.env.NODE_ENV !== 'production'
 }
 
-export function createStore<STATE, TRACE = any>({
+export function createStore<STATE extends Object, TRACE = any>({
   state,
   middleware = [],
   options = RESTATE_STORE_DEFAULT_OPTIONS,

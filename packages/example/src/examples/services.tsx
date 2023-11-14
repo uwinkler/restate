@@ -34,7 +34,7 @@ function ResetButton() {
 
 export function HelloCounter() {
   return (
-    <ServiceRegistry name="ServiceRegistry" services={[CounterService]}>
+    <ServiceRegistry services={[CounterService]}>
       <Counter />
       <ResetButton />
     </ServiceRegistry>

@@ -3,7 +3,7 @@ import { useContext } from 'react'
 import { RestateStore } from './rx-store'
 import { isFunction } from './utils'
 
-type AppStoreProvider<S> = React.Context<RestateStore<S>>
+type AppStoreProvider<S extends Object> = React.Context<RestateStore<S>>
 type SelectorFunction<S, T> = (state: S) => T
 type UpdateFunction<S> = (state: S) => void
 

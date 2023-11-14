@@ -7,6 +7,7 @@ export function Toolbar() {
   return (
     <Box sx={{ gridArea: 'header', padding: (t) => t.spacing(1) }}>
       <ToggleDiffModeButton />
+      <ScrollButton />
     </Box>
   )
 }
@@ -20,6 +21,26 @@ function ToggleDiffModeButton() {
       <IconButton
         onClick={() => setDiffMode(!diffMode)}
         color={diffMode ? 'primary' : 'default'}
+      >
+        <DifferenceIcon />
+      </IconButton>
+    </Tooltip>
+  )
+}
+
+function ScrollButton() {
+  const [scrollMode, setScrollMode] = useAppState((s) => s.scrollMode)
+  const [diffMode] = useAppState((s) => s.diffMode)
+
+  if (diffMode) {
+    return null
+  }
+
+  return (
+    <Tooltip title={scrollMode ? 'Stay on top.' : `Don't scroll.`}>
+      <IconButton
+        onClick={() => setScrollMode(!scrollMode)}
+        color={scrollMode ? 'primary' : 'default'}
       >
         <DifferenceIcon />
       </IconButton>

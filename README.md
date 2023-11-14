@@ -2,12 +2,32 @@
 
 # Restate
 
+_Restate_ is the application wide state management lib for React you always wanted. Easy to use, easy to integrate, reactive and typesafe.
 
-_Restate_ is a predictable, easy to use, easy to integrate, typesafe state container for [React](https://reactjs.org/).
+This is what it looks like:
 
-_Restate_ follows the [three principles of Redux](https://redux.js.org/introduction/three-principles):
+```tsx
+const { useAppState } = create({
+  state: {
+    name: 'John Snow',
+    age: 32
+  }
+})
 
-- Single source of truth
+function Name {
+  const [name, setName] = useAppState((state) => state.name)
+  return <input value={name} onChange={(e) => setName(e.target.value)} />
+}
+
+function Age {
+  const [age, setAge] = useAppState((state) => state.age)
+  return <input value={age} onChange={(e) => setAge(Number(e.target.value))} />
+}
+```
+
+_Restate_ is inspired by the [principles of Redux](https://redux.js.org/introduction/three-principles):
+
+- Single source of truth (but you can have multiple stores though)
 - State is read only
 - Changes are pure, but made in a convenient way using [immer.js](https://github.com/immerjs/immer)
 
@@ -18,45 +38,34 @@ Futhermore, Restate
 - provide means to develop asynchronous state changes without the drama
 - makes it easy integrate other components (server, logger, database, router,...) as
   the state is [reactive](https://github.com/ReactiveX/rxjs).
+- provides means to validate state changes (checkout the ZOD example - you will be amazed)
 - dev-tools
 - easy to learn and easy to test
-
-## Documentation
-
-The documentation is also available on Netlify: [https://restate.netlify.com/](https://restate.netlify.com/).
 
 ## What it looks like...
 
 ```ts
-const store = createStore({
+const { useAppState } = create({
   state: {
-    name: "John Snow",
+    name: 'John Snow',
     age: 32
   }
 })
 
-const AppStoreProvider = createProvider(store);
-const useAppState = createStateHook(AppStoreProvider);
-const useNextAppState = createNextHook(AppStoreProvider);
-
 const Name = () => {
-  const name = useAppState(state => state.user.name)
-  const next = useNextAppState(state => state.user)
+  const [name, setName] = useAppState((state) => state.name)
+  return <input value={name} onChange={(e) => setName(e.target.value)} />
+}
 
-  function setName(nextName:string) {
-    next(user => user.name = nextName)
-  }
-
-  return <input value={name} onChange={e => setName(e.target.value)} />
+const Age = () => {
+  const [(name, setName)] = useAppState((state) => state.age)
+  return <input value={name} onChange={(e) => setName(Number(e.target.value))} />
 }
 ```
 
 Even the code above looks like JS, it is indeed Typescript. Go on [StackBlitz](https://stackblitz.com/edit/restate-hello-world) and
 make some changes to the state, for example change the property `user.name` to `user.firstName`. You will see how Typescript is
-able to pick up those changes and gives you nice error messages. 
-
-
-
+able to pick up those changes and gives you nice error messages.
 
 ## Installation
 
@@ -74,14 +83,14 @@ yarn add @restate/core
 
 ## Store
 
-To get started, you need to create a store:
+To get started, you need to create a store and a `useAppStateHook`:
 
 ```ts
-import { createStore } from "@restate/core"
+import { create } from '@restate/core'
 
-const store = createStore({
+const { useAppState } = create({
   state: {
-    name: "John Snow",
+    name: 'John Snow',
     age: 32
   }
 })
@@ -89,60 +98,22 @@ const store = createStore({
 
 Try on [StackBlitz](https://stackblitz.com/edit/restate-hello-world)!
 
-## Provider
-
-To connect our store to the React component tree we need a `Provider`:
-
-```ts
-import { createProvider } from "@restate/core"
-
-const AppStoreProvider = createProvider(store) // to provide the store to react
-
-const App: React.FC = () => (
-  <AppStoreProvider.Provider value={store}>
-    <Hello />
-    <Age />
-    <NameForm />
-  </AppStoreProvider.Provider>
-)
-```
-
-Try it on [StackBlitz](https://stackblitz.com/edit/restate-hello-world)!
-
-You can use [multiple stores](https://stackblitz.com/edit/restate-multiple-stores-toggle?file=index.tsx) as well.
-
 ## Read from the state
 
-To read from the state _Restate_ provides you _AppStateHooks_.
-
-AppStateHooks hooks are use to
+To read from the state _Restate_ provides you `useAppState` hook.
 
 - select properties from your state
-- do some basic computations / transformations
+- change the state using the setter function
 
 ```ts
 const store = createStore({
   state: {
-    user: { name: "John Doe", age: 32 },
+    user: { name: 'John  Snow', age: 32 },
     todos: 0
   }
 })
 
-const AppStoreProvider = createProvider(store)
 
-// create a `scoped state hook` (we select the `user` object)
-const useUserState = createStateHook(AppStoreProvider, state => state.user)
-
-const Hello = () => {
-  // select a property from the state
-  const name = useUserState(user => user.name)
-  // do some basic views/computations/transformations
-  const days = useUserState(user => user.age * 365)
-
-  return (
-    <h1>
-      Hello {name}, you are {days} days old
-    </h1>
   )
 }
 ```
@@ -154,7 +125,7 @@ Try on [StackBlitz](https://stackblitz.com/edit/restate-hello-world)!
 To change the state, we use a Next-Hook.
 
 ```ts
-import { createNextHook } from "@restate/core"
+import { createNextHook } from '@restate/core'
 
 // create a next-hook
 const useNextAppState = createNextHook(AppStoreProvider)
@@ -168,17 +139,17 @@ can be use to change the `user` object:
 
 ```ts
 const NameForm = () => {
-  const name = useAppState(state => state.user.name)
+  const name = useAppState((state) => state.user.name)
 
   // Creates a `next` function to change the user
-  const next = useNextAppState(state => state.user)
+  const next = useNextAppState((state) => state.user)
 
   function setName(nextName: string) {
     // The next function provides the current user object as parameter, which we can modify.
-    next(user => (user.name = nextName))
+    next((user) => (user.name = nextName))
   }
 
-  return <input value={name} onChange={e => setName(e.target.value)} />
+  return <input value={name} onChange={(e) => setName(e.target.value)} />
 }
 ```
 
@@ -200,14 +171,14 @@ Actions can be asynchronous.
 // Action factory
 const userActionsFactory = ({ next }: ActionFactoryProps<User>) => ({
   incrementAge() {
-    next(user => user.age++)
+    next((user) => user.age++)
   },
   decrementAge() {
-    next(user => user.age--)
+    next((user) => user.age--)
   },
   async fetchData(userId: string) {
     const data = await serverFetchUserData(userId)
-    next(user => (user.data = data))
+    next((user) => (user.data = data))
   }
 })
 ```
@@ -217,7 +188,7 @@ The _ActionFactory_ is hooked into `React` using the `createActionsHook`:
 ```ts
 const useUserActions = createActionsHook(
   AppStoreProvider,
-  state => state.user,
+  (state) => state.user,
   userActionsFactory
 )
 
@@ -239,8 +210,8 @@ Try on [StackBlitz](https://stackblitz.com/edit/restate-actions?file=index.tsx)
 Outside of your component tree you can change the store like this:
 
 ```ts
-store.next(state => {
-  state.user.name = "John"
+store.next((state) => {
+  state.user.name = 'John'
 })
 ```
 
@@ -261,35 +232,36 @@ const ageValidator: Middleware<State> = ({ nextState, currentState }) => {
 
 const store = createStore({
   state: {
-    name: "John Snow",
+    name: 'John Snow',
     age: 32
   },
   middleware: [ageValidator]
 })
 
-store.next(s => (s.user.age = -1)) // will be intercepted by the ageValidator middleware.
+store.next((s) => (s.user.age = -1)) // will be intercepted by the ageValidator middleware.
 ```
 
 Try on [StackBlitz](https://stackblitz.com/edit/restate-middleware)
 
 ## Connectors
 
-Connectors  "glue" your store to other parts of the application, for example to your server, database, ...
+Connectors "glue" your store to other parts of the application, for example to your server, database, ...
 
 Connectors can
 
 - observer the state and react to state changes using the `store.state$` observable
 - change the state using the `store.next()` function
 - listen to events dispatched on the `state.messageBus$` observable. The messages are similar to redux actions.
-- 
+-
+
 #### Observe `store.state$`
 
 Here is an very simple logger example, that observes the state and logs all state changes:
 
 ```ts
 function connectLogger(store: RxStore<any>) {
-  store.state$.subscribe(nextState => {
-    console.log("STATE:", JSON.stringify(nextState.payload, null, 2))
+  store.state$.subscribe((nextState) => {
+    console.log('STATE:', JSON.stringify(nextState.payload, null, 2))
   })
 }
 
@@ -305,8 +277,8 @@ messages from a server and adds them to the application state:
 
 ```ts
 function connectSocket(store: RxStore<any>) {
-  socket.on("chat message", msg => {
-    store.next(state => {
+  socket.on('chat message', (msg) => {
+    store.next((state) => {
       state.messages.push(msg)
     })
   })
@@ -321,7 +293,7 @@ Connectors can also receive messages from the application - redux style.
 
 Here is a simple UNDO example. The undo-connector records the history of the app state using the `store.state$` observable.
 
-The undo-connector also listens to the `UNDO` events by subscribing to  `store.messageBus$`.
+The undo-connector also listens to the `UNDO` events by subscribing to `store.messageBus$`.
 If the connector receives a `UNDO` event, the connector rewinds the state history by one.
 
 ```ts
@@ -352,7 +324,7 @@ const useDispatch = createDispatchHook(AppStoreProvider)
 
 function useUndo() {
   const dispatch = useDispatch()
-  return () => dispatch({ type: "UNDO" })
+  return () => dispatch({ type: 'UNDO' })
 }
 
 const UndoButton = () => {
@@ -386,15 +358,15 @@ yarn add @restate/dev-tools
 #### Usage
 
 ```ts
-import { connectDevTools } from "@restate/dev-tools"
+import { connectDevTools } from '@restate/dev-tools'
 
 const store = createStore({
   state: {
-    name: "John Snow",
+    name: 'John Snow',
     age: 32
   },
   options: {
-    storeName: "MY APP STORE" // <-- will show up in the instance selector
+    storeName: 'MY APP STORE' // <-- will show up in the instance selector
   }
 })
 
