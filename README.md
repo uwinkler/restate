@@ -150,7 +150,7 @@ const { useNext } = create({
 })
 
 function ResetButton() {
-  const setAge = useNext((s) => s.use.age)
+  const setAge = useNext((s) => s.user.age)
   return <button onClick={() => setAge(32)}>Reset</button>
 }
 ```
