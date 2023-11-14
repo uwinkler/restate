@@ -24,4 +24,4 @@ const { useAppState: useTodoAppState } = create({
 
 # Example
 
-<<< @/../../packages/example/src/examples/multiple-stores.tsx
+<<< @/../../packages/example/src/examples/hello-stores.tsx

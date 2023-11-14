@@ -60,4 +60,4 @@ const { useAppState, useSelector, store } = create<State>({
 
 See the full example here:
 
-<<< @/../../packages/example/src/examples/zod-validation.tsx
+<<< @/../../packages/example/src/examples/hello-zod-validation.tsx
