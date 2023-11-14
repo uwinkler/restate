@@ -9,18 +9,20 @@ This is what it looks like:
 ```tsx
 const { useAppState } = create({
   state: {
-    name: 'John Snow',
-    age: 32
+    user: {
+      name: 'John Snow',
+      age: 32
+    }
   }
 })
 
-function Name {
-  const [name, setName] = useAppState((state) => state.name)
+function NameInput() {
+  const [name, setName] = useAppState((state) => state.user.name)
   return <input value={name} onChange={(e) => setName(e.target.value)} />
 }
 
 function Age {
-  const [age, setAge] = useAppState((state) => state.age)
+  const [age, setAge] = useAppState((state) => state.user.age)
   return <input value={age} onChange={(e) => setAge(Number(e.target.value))} />
 }
 ```
@@ -43,6 +45,7 @@ Futhermore, Restate
 - provides a nice React-Hook based API to read and update the state
 - is using Typescript to make your application more robust and your development experience more enjoyable
 - provide means to develop asynchronous state changes without the drama
+- multiple stores
 - makes it easy integrate other components (server, logger, database, router,...) as
   the state is [reactive](https://github.com/ReactiveX/rxjs).
 - provides means to validate state changes (checkout the ZOD example - you will be amazed)
@@ -339,6 +342,30 @@ const store = createStore({
 })
 
 connectDevTools(store)
+```
+
+## Multiple Stores
+
+You can easily have more than one store in your application by calling `create` multiple times and renaming the `useAppState` hook.
+
+```tsx
+import { create } from '@restate/core'
+
+const { useAppState: useUserAppState } = create({
+  state: {
+    name: 'John Snow',
+    age: 32
+  }
+})
+
+const { useAppState: useTodoAppState } = create({
+  state: {
+    todos: [
+      { todo: 'Buy Milk', done: false },
+      { todo: 'Buy Eggs', done: false }
+    ]
+  }
+})
 ```
 
 ## License
