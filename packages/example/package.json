@@ -1,7 +1,7 @@
 {
   "name": "example",
   "private": true,
-  "version": "0.13.2",
+  "version": "0.13.3",
   "type": "module",
   "scripts": {
     "start": "vite",
@@ -14,8 +14,8 @@
     "@fireworks-js/react": "^2.10.7",
     "@fontsource/roboto": "^5.0.8",
     "@mui/material": "^5.14.17",
-    "@restate/core": "^0.13.2",
-    "@restate/dev-tools": "^0.13.2",
+    "@restate/core": "^0.13.3",
+    "@restate/dev-tools": "^0.13.3",
     "@restate/di": "^0.13.2",
     "@restate/di-commons": "^0.13.2",
     "@tanstack/react-query": "^4.1.3",
