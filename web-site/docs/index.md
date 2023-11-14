@@ -10,8 +10,7 @@ hero:
       link: /introduction
     - theme: alt
       text: View on GitHub
-      link: https://github.com/vuejs/vitepress
-features:
+      link: https://github.com/uwinkler/restate
   - icon: 🤩
     title: Easy to use
     details: Restate is a library you will love. It is the state management library for React you were missing all the time. As simple as the useState hook, but with all the power you need.
