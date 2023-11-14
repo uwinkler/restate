@@ -3,7 +3,7 @@ import { BehaviorSubject } from 'rxjs'
 
 type CleanupFunction = () => void
 
-export function connectDevTools<STATE, TRACE = any>(
+export function connectDevTools<STATE extends Object, TRACE = any>(
   store: RestateStore<STATE, TRACE>
 ): CleanupFunction {
   const updates: StatePackage<STATE, TRACE>[] = []

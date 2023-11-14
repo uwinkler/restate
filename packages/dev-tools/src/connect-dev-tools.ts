@@ -35,12 +35,12 @@ export function connectDevTools(store: RestateStore<any>): () => void {
   devTools.init(store.state)
 
   const storeSub = store.state$.subscribe((pack) => {
-    const { state, patches } = pack
+    const { state } = pack
     devTools.send(
       {
         type: 'restate',
         payload: {
-          patches
+          state
         }
       },
       state
