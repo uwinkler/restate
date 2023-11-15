@@ -34,3 +34,5 @@ const { store } = create({
 
 connectDevTools(store)
 ```
+
+Full example on https://stackblitz.com/edit/hello-restate

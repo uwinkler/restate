@@ -15,3 +15,7 @@ The `nextHook` does not trigger a re-renders if the state changes (but the `useA
 ## Example
 
 <<< @/../../packages/example/src/examples/hello-next.tsx
+
+---
+
+Full example on https://stackblitz.com/edit/hello-restate

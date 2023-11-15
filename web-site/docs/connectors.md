@@ -33,3 +33,7 @@ function connectSocket(store: RestateStore<any>) {
 
 connectSocket(store)
 ```
+
+---
+
+Full example on https://stackblitz.com/edit/hello-restate

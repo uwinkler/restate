@@ -93,3 +93,7 @@ function connectNameLogger() {
 Here is an complete example:
 
 <<< @/../../packages/example/src/examples/connectStore.tsx
+
+---
+
+Full example on https://stackblitz.com/edit/hello-restate

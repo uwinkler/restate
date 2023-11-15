@@ -107,7 +107,12 @@ This make it very easy for connectors to observe and react to state changes:
 function connectLogger(store: RxStore<any>) {
   store.state$.pipe(pairwise()).subscribe((props) => {
     const [oldState, newState] = props
-    console.log('State:', JSON.stringify(oldState.payload), ' -> ', JSON.stringify(newState.payload))
+    console.log(
+      'State:',
+      JSON.stringify(oldState.payload),
+      ' -> ',
+      JSON.stringify(newState.payload)
+    )
   })
 }
 
@@ -182,3 +187,7 @@ const Login = () => {
   )
 
 ```
+
+---
+
+Full example on https://stackblitz.com/edit/hello-restate

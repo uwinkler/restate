@@ -29,3 +29,7 @@ const Hello = () => {
   )
 }
 ```
+
+---
+
+Full example on https://stackblitz.com/edit/hello-restate

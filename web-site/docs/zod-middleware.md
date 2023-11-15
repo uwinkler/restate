@@ -61,3 +61,7 @@ const { useAppState, useSelector, store } = create<State>({
 See the full example here:
 
 <<< @/../../packages/example/src/examples/hello-zod-validation.tsx
+
+---
+
+Full example on https://stackblitz.com/edit/hello-restate

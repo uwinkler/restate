@@ -17,3 +17,5 @@ a function to update the state. Just like the `useState` hook. Nice and simple. 
 And that's it (mostly)! Easy and simple.
 
 There is an advanced example on [Stackblitz](https://stackblitz.com/edit/hello-restate?file=src%2FApp.tsx) you can play with.
+
+---

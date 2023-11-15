@@ -25,3 +25,7 @@ const { useAppState: useTodoAppState } = create({
 # Example
 
 <<< @/../../packages/example/src/examples/hello-stores.tsx
+
+---
+
+Full example on https://stackblitz.com/edit/hello-restate

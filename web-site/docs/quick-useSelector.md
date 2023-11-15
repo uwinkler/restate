@@ -9,3 +9,7 @@ only re-renders when the computed value changes.
 <<< @/../../packages/example/src/examples/hello-use-selector.tsx
 
 Use `useSelector` if you only want to display the value or compute a value from the state.
+
+---
+
+Full example on https://stackblitz.com/edit/hello-restate

@@ -33,3 +33,8 @@ Keep in mind:
 - You should use middleware wisely. Error handling of user input should be done within React components.
 - Middleware state updates have to be done in a synchronously way.
 - "Traditional" middleware, like loggers, are better written using connectors.
+
+
+---
+
+Full example on https://stackblitz.com/edit/hello-restate

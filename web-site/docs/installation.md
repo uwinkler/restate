@@ -11,3 +11,7 @@ yarn add @restate/core immer rxjs
 ```
 
 If you want, you can also instal the [dev tools](/quick-dev-tools)
+
+---
+
+Full example on https://stackblitz.com/edit/hello-restate
