@@ -2,9 +2,9 @@
 
 # Restate
 
-_Restate_ is the application wide state management lib for React you always wanted. Easy to use, easy to integrate, reactive and typesafe.
+_Restate_ is the React state management library you've always desired: user-friendly, seamlessly integratable, reactive, and typesafe.
 
-This is what it looks like:
+Here's a glimpse of its simplicity:
 
 ```tsx
 const { useAppState } = create({
@@ -27,9 +27,10 @@ function Age {
 }
 ```
 
-Even if the code above looks like plain Javascript, it is indeed Typescript.
+Even if the code above looks like plain Javascript, it is indeed Typescript. The `setAge` function
+is typed and will only accept a number. The `setName` function will only accept a string.
 
-There is a full example on [StackBlitz](https://stackblitz.com/edit/hello-restate?file=src%2FApp.tsx).
+There is a full example on [StackBlitz](https://stackblitz.com/edit/hello-restate?file=src%2FApp.tsx) you can play with.
 
 The documentation is also available [here](https://master--restate.netlify.app/).
 
@@ -96,9 +97,9 @@ Try on a full example on [StackBlitz](https://stackblitz.com/edit/hello-restate?
 
 ## useSelector
 
-The `create` function also returns another hook, the `useSelector` hook.
+The create function not only generates the `useAppState` hook but also provides access to another hook: the `useSelector` hook.
 
-In many scenarios, the primary need is to either display a specific value or derive a display value from the current state. For such situations, opting for the `useSelector` hook is advisable. This choice is more performant compared to the `useAppState` hook, as it triggers a re-render only when there's a change in the computed value.
+In various scenarios, the primary requirement often revolves around displaying a specific value or deriving a display value based on the current state. In such cases, leveraging the `useSelector` hook is recommended. The `useSelector` hook triggers a re-render only when there's a change in the computed value, optimizing efficiency in your application.
 
 ```ts
 import { create } from '@restate/core'
