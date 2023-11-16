@@ -36,7 +36,7 @@
   },
   "gitHead": "cacaf4df34cb05d18598f901e42edaf4bc3d1c46",
   "dependencies": {
-    "@types/source-map-support": "^0.5.0",
+    "@types/source-map-support": "^0.5.9",
     "source-map-support": "^0.5.16"
   }
 }
