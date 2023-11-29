@@ -34,7 +34,7 @@
     "typescript": "^4.7.4",
     "utility-types": "^3.10.0"
   },
-  "gitHead": "cacaf4df34cb05d18598f901e42edaf4bc3d1c46",
+  "gitHead": "6b4f152c0002c20e03f6021f0f49855c643debe5",
   "dependencies": {
     "@types/source-map-support": "^0.5.9",
     "source-map-support": "^0.5.16"
