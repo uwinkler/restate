@@ -446,3 +446,63 @@ it('should access items in an array deeply', async () => {
     </ul>
   `)
 })
+
+it('should set and update objects', async () => {
+  const state = {
+    user: {
+      name: 'John',
+      age: 32
+    }
+  }
+  const { useAppState, store } = create({ state })
+
+  const TestComponent = () => {
+    const [user, setUser] = useAppState((s) => s.user)
+
+    return (
+      <ul>
+        {user.name} {user.age}
+        <button id="btn" onClick={() => setUser({ name: 'Jane', age: 100 })}>
+          Change
+        </button>
+      </ul>
+    )
+  }
+
+  const container = renderer.create(<TestComponent />)
+
+  expect(container.toJSON()).toMatchInlineSnapshot(`
+    <ul>
+      John
+       
+      32
+      <button
+        id="btn"
+        onClick={[Function]}
+      >
+        Change
+      </button>
+    </ul>
+  `)
+
+  act(() => {
+    container.root.findByType('button').props.onClick()
+    container.update(<TestComponent />)
+  })
+
+  expect(store.state.user).toEqual({ name: 'Jane', age: 100 })
+
+  expect(container.toJSON()).toMatchInlineSnapshot(`
+    <ul>
+      Jane
+       
+      100
+      <button
+        id="btn"
+        onClick={[Function]}
+      >
+        Change
+      </button>
+    </ul>
+  `)
+})

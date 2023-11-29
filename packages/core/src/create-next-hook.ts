@@ -77,6 +77,10 @@ function getProxy(props: {
         return target[key]
       }
 
+      if (key === '___restate_parent___') {
+        return parent
+      }
+
       path.push({
         parent,
         target,
@@ -84,11 +88,6 @@ function getProxy(props: {
         idx: Array.isArray(parent) ? parent.indexOf(target) : -1
       })
 
-      if (key === '___restate_parent___') {
-        return parent
-      }
-      // if (key === '__parent__') {
-      // return parent
       if (typeof target[key] === 'object' && target[key] !== null) {
         return new Proxy(target[key], proxyAccess(target))
       } else if (Array.isArray(target) && !isNaN(key)) {
