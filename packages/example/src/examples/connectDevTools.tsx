@@ -1,5 +1,4 @@
 import { RestateStore, StatePackage } from '@restate/core'
-import { BehaviorSubject } from 'rxjs'
 
 type CleanupFunction = () => void
 

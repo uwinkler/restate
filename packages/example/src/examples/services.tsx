@@ -1,8 +1,8 @@
-import { ServiceRegistry, createService } from '@restate/di'
+import { ServiceRegistry, useHook } from '@restate/di'
 import React from 'react'
 import { connectServiceDevTools } from './connectServiceDevTools'
 
-const [useMyCounter, CounterService] = createService('CounterService', () => {
+const [useMyCounter, CounterService] = useHook('CounterService', () => {
   const [count, _setCount] = React.useState(0)
 
   React.useEffect(() => {

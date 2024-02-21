@@ -1,4 +1,5 @@
-import { ServiceHook, ServiceRegistry, createService } from '@restate/di'
+import { create } from '@restate/core'
+import { ServiceRegistry, useHook } from '@restate/di'
 import React from 'react'
 import Odometer from 'react-odometerjs'
 import { connectServiceDevTools } from './connectServiceDevTools'
@@ -6,26 +7,21 @@ import './odometer.css'
 
 const WINNING_NUMBERS = [111, 222, 333, 444, 555, 666, 777, 888, 999]
 
-const [useSlotMachine, SlotMachineService] = createService(
-  'slot-machine',
-  () => {
-    const [value, setValue] = React.useState(random())
-
-    function next() {
-      const nextNumbers = random()
-      setValue(nextNumbers)
-      if (WINNING_NUMBERS.includes(nextNumbers)) {
-        setTimeout(() => {})
-      }
-    }
-
-    function random() {
-      return Math.floor(Math.random() * 900) + 100
-    }
-
-    return { value, next }
+const { useSelector, useNext } = create({
+  state: {
+    value: 0
   }
-)
+})
+
+const [useSlotMachine, SlotMachineService] = useHook('slot-machine', () => {
+  const setValue = useNext((state) => state.value)
+
+  const next = React.useCallback(() => {
+    setValue(Math.floor(Math.random() * 900) + 100)
+  }, [])
+
+  return { next }
+})
 
 function Layout(props: React.PropsWithChildren) {
   return (
@@ -42,7 +38,7 @@ function Layout(props: React.PropsWithChildren) {
 }
 
 function SlotMachine() {
-  const { value } = useSlotMachine()
+  const value = useSelector((s) => s.value)
   return (
     <Layout>
       <Odometer value={value} />
@@ -63,7 +59,7 @@ function PlayButton() {
 const MockSlotMachine = {
   name: 'slot-machine',
   service: () => {
-    return { value: 333, next: () => {} }
+    return { next: () => 333 }
   }
 }
 

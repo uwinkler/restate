@@ -1,0 +1,38 @@
+{
+  "folders": [
+    {
+      "path": "../.."
+    },
+    {
+      "name": "di-dev-tools",
+      "path": "../../di-dev-tools"
+    },
+    {
+      "name": "dev-tools",
+      "path": "../../dev-tools"
+    },
+    {
+      "name": "di",
+      "path": ".."
+    },
+    {
+      "name": "example",
+      "path": "../../example"
+    },
+    {
+      "name": "core",
+      "path": "../../core"
+    },
+    {
+      "name": "di-commons",
+      "path": "../../di-commons"
+    },
+    {
+      "name": "logger",
+      "path": "../../logger"
+    }
+  ],
+  "settings": {
+    "jest.disabledWorkspaceFolders": ["packages", "di-dev-tools", "example"]
+  }
+}

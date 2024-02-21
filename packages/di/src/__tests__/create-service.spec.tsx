@@ -1,6 +1,6 @@
 import React from 'react'
 import renderer from 'react-test-renderer'
-import { createService } from '../create-service'
+import { createHook } from '../create-hook'
 import { ServiceRegistry } from '../service-registry'
 
 // Counter
@@ -8,12 +8,12 @@ function counterService() {
   const count = 12
   return { count }
 }
-const [useMyCounter, CounterService] = createService(
+const [useMyCounter, CounterService] = createHook(
   'CounterService',
   counterService
 )
 
-const [useHello, HelloService] = createService('HelloService', () => {
+const [useHello, HelloService] = createHook('HelloService', () => {
   const { count } = useMyCounter()
   return 'Hello World. Count is ' + count
 })

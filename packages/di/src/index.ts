@@ -1,2 +1,2 @@
-export * from './create-service'
+export * from './create-hook'
 export * from './service-registry'
