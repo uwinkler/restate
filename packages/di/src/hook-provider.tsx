@@ -24,7 +24,7 @@ export function HookProvider({
   )
 }
 
-export function createHook<T extends (...args: any[]) => any>(
+export function createInjectableHook<T extends (...args: any[]) => any>(
   hook: T
 ): (...funcArgs: Parameters<T>) => ReturnType<T> {
   return function useHook(...args: Parameters<T>): ReturnType<T> {

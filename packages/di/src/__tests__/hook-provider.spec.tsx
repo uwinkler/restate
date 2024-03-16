@@ -1,40 +1,40 @@
-import React from "react";
-import renderer from "react-test-renderer";
-import { HookProvider, createHook, mock } from "../hook-provider";
+import React from 'react'
+import renderer from 'react-test-renderer'
+import { HookProvider, createInjectableHook, mock } from '../hook-provider'
 
-const useCounter = createHook(() => {
-  const count = 12;
-  return { count };
-});
+const useCounter = createInjectableHook(() => {
+  const count = 12
+  return { count }
+})
 
-const useHello = createHook(() => {
-  const { count } = useCounter();
-  return "Hello World. Count is " + count;
-});
+const useHello = createInjectableHook(() => {
+  const { count } = useCounter()
+  return 'Hello World. Count is ' + count
+})
 
 function Counter() {
-  const { count } = useCounter();
-  return <>Count is {count}</>;
+  const { count } = useCounter()
+  return <>Count is {count}</>
 }
 
 function Hello() {
-  const message = useHello();
-  return <>{message}</>;
+  const message = useHello()
+  return <>{message}</>
 }
 
 function useMockCounterService() {
-  return { count: 0 };
+  return { count: 0 }
 }
 
-test("it should work with HookProvider", () => {
+test('it should work with HookProvider', () => {
   const Component = (
     <HookProvider>
       <Counter />
       <Hello />
     </HookProvider>
-  );
+  )
 
-  const container = renderer.create(Component);
+  const container = renderer.create(Component)
 
   expect(container.toJSON()).toMatchInlineSnapshot(`
     [
@@ -42,18 +42,18 @@ test("it should work with HookProvider", () => {
       "12",
       "Hello World. Count is 12",
     ]
-  `);
-});
+  `)
+})
 
-test("it should work without a HookProvider", () => {
+test('it should work without a HookProvider', () => {
   const Component = (
     <>
       <Counter />
       <Hello />
     </>
-  );
+  )
 
-  const container = renderer.create(Component);
+  const container = renderer.create(Component)
 
   expect(container.toJSON()).toMatchInlineSnapshot(`
     [
@@ -61,18 +61,18 @@ test("it should work without a HookProvider", () => {
       "12",
       "Hello World. Count is 12",
     ]
-  `);
-});
+  `)
+})
 
-test("it should work with a mock", () => {
+test('it should work with a mock', () => {
   const Component = (
     <HookProvider hooks={[mock(useCounter, useMockCounterService)]}>
       <Counter />
       <Hello />
     </HookProvider>
-  );
+  )
 
-  const container = renderer.create(Component);
+  const container = renderer.create(Component)
 
   expect(container.toJSON()).toMatchInlineSnapshot(`
     [
@@ -80,10 +80,10 @@ test("it should work with a mock", () => {
       "0",
       "Hello World. Count is 0",
     ]
-  `);
-});
+  `)
+})
 
-test("it should work with scope", () => {
+test('it should work with scope', () => {
   const Component = (
     <>
       <HookProvider hooks={[mock(useCounter, useMockCounterService)]}>
@@ -91,9 +91,9 @@ test("it should work with scope", () => {
       </HookProvider>
       <Hello />
     </>
-  );
+  )
 
-  const container = renderer.create(Component);
+  const container = renderer.create(Component)
 
   expect(container.toJSON()).toMatchInlineSnapshot(`
     [
@@ -101,10 +101,10 @@ test("it should work with scope", () => {
       "0",
       "Hello World. Count is 12",
     ]
-  `);
-});
+  `)
+})
 
-test("it should work nested provider", () => {
+test('it should work nested provider', () => {
   const Component = (
     <HookProvider>
       <HookProvider hooks={[mock(useCounter, useMockCounterService)]}>
@@ -112,9 +112,9 @@ test("it should work nested provider", () => {
         <Hello />
       </HookProvider>
     </HookProvider>
-  );
+  )
 
-  const container = renderer.create(Component);
+  const container = renderer.create(Component)
 
   expect(container.toJSON()).toMatchInlineSnapshot(`
     [
@@ -122,10 +122,10 @@ test("it should work nested provider", () => {
       "0",
       "Hello World. Count is 0",
     ]
-  `);
-});
+  `)
+})
 
-test("it should work nested provider", () => {
+test('it should work nested provider', () => {
   const Component = (
     <HookProvider hooks={[mock(useCounter, useMockCounterService)]}>
       <HookProvider>
@@ -133,9 +133,9 @@ test("it should work nested provider", () => {
         <Hello />
       </HookProvider>
     </HookProvider>
-  );
+  )
 
-  const container = renderer.create(Component);
+  const container = renderer.create(Component)
 
   expect(container.toJSON()).toMatchInlineSnapshot(`
     [
@@ -143,10 +143,10 @@ test("it should work nested provider", () => {
       "0",
       "Hello World. Count is 0",
     ]
-  `);
-});
+  `)
+})
 
-test("it should work nested provider and reset the hook to null", () => {
+test('it should work nested provider and reset the hook to null', () => {
   const Component = (
     <HookProvider hooks={[mock(useCounter, useMockCounterService)]}>
       <HookProvider hooks={[mock(useCounter, null as any)]}>
@@ -154,9 +154,9 @@ test("it should work nested provider and reset the hook to null", () => {
         <Hello />
       </HookProvider>
     </HookProvider>
-  );
+  )
 
-  const container = renderer.create(Component);
+  const container = renderer.create(Component)
 
   expect(container.toJSON()).toMatchInlineSnapshot(`
     [
@@ -164,26 +164,26 @@ test("it should work nested provider and reset the hook to null", () => {
       "12",
       "Hello World. Count is 12",
     ]
-  `);
-});
+  `)
+})
 
-test("it should work nested provider and reset the hook to null", () => {
+test('it should work nested provider and reset the hook to null', () => {
   const Component = (
     <HookProvider hooks={[mock(useCounter, useMockCounterService)]}>
       <HookProvider
         hooks={[
           mock(useHello, () => {
-            return "Servus";
-          }),
+            return 'Servus'
+          })
         ]}
       >
         <Counter />
         <Hello />
       </HookProvider>
     </HookProvider>
-  );
+  )
 
-  const container = renderer.create(Component);
+  const container = renderer.create(Component)
 
   expect(container.toJSON()).toMatchInlineSnapshot(`
     [
@@ -191,5 +191,5 @@ test("it should work nested provider and reset the hook to null", () => {
       "0",
       "Servus",
     ]
-  `);
-});
+  `)
+})
